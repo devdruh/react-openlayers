@@ -1,0 +1,43 @@
+@import "./../node_modules/ol/ol.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#map {
+  height: 100vh;
+  width: 100vw;
+}
+
+
+
+@layer components {
+	.ol-popup:after,
+	.ol-popup:before {
+		top: 100%;
+		border: solid transparent;
+		content: " ";
+		height: 0;
+		width: 0;
+		position: absolute;
+		pointer-events: none;
+	}
+
+	.ol-popup:after {
+		border-width: 10px;
+		@apply border-t-white left-12 -ml-3;
+	}
+
+	.ol-popup:before {
+		border-width: 11px;
+		@apply border-t-gray-400 dark:border-t-current left-12 -ml-3;
+	}
+
+    .ol-popup-closer {
+		@apply absolute top-1 right-2 no-underline;
+    }
+
+    .ol-popup-closer:after {
+        content: "✖";
+        color: theme('colors.gray.400');
+    }
+}
