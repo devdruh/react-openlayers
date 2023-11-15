@@ -3,23 +3,25 @@
 @tailwind components;
 @tailwind utilities;
 
-#map {
-  height: 100vh;
-  width: 100vw;
-}
-
-
-
 @layer components {
+
+	.mapRef {
+		height: calc(100vh - 250px);
+		max-height: 60vh;
+		/* height: calc(100vh - 76px); */
+		/* @apply  absolute left-0 right-0 top-16 */
+	}
+
+	@media screen and (max-width: 767px){
+		.mapRef {
+			height: calc(100vh - 72px);
+			@apply  absolute left-0 right-0 top-[72px]
+		}
+	}
 	.ol-popup:after,
 	.ol-popup:before {
-		top: 100%;
-		border: solid transparent;
 		content: " ";
-		height: 0;
-		width: 0;
-		position: absolute;
-		pointer-events: none;
+		@apply absolute w-0 h-0 top-full pointer-events-none border-solid border-transparent
 	}
 
 	.ol-popup:after {
@@ -29,7 +31,7 @@
 
 	.ol-popup:before {
 		border-width: 11px;
-		@apply border-t-gray-400 dark:border-t-current left-12 -ml-3;
+		/* @apply border-t-gray-400 dark:border-t-current left-12 -ml-3; */
 	}
 
     .ol-popup-closer {
