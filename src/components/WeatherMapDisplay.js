@@ -9,9 +9,9 @@ import LayerGroup from 'ol/layer/Group.js';
 import { toStringXY } from 'ol/coordinate';
 import { fromLonLat, toLonLat } from 'ol/proj';
 import { dateOptions, layerSourceInfo } from "../util/variables";
-import { Accordion } from 'flowbite-react';
 import WeatherMapInfo from "./WeatherMapInfo";
 import WeatherLayerList from "./WeatherLayerList";
+import WeatherLayerLegend from "./WeatherLayerLegend";
 
 const WeatherMapDisplay = () => {
 
@@ -287,18 +287,7 @@ const WeatherMapDisplay = () => {
                 {
                     isClickLegendBtn && isClickLegendBtn ? 
                         <div className=" bg-white w-52 transition duration-1000 ease-in">
-                            <Accordion collapseAll className="border-none rounded-none shadow-lg shadow-blue-400/50 dark:shadow-lg dark:shadow-blue-800/80" data-active-classes="bg-white dark:bg-gray-900 text-gray-900 dark:text-white" data-inactive-classes="text-gray-500 dark:text-gray-400">
-                                {
-                                    legendMapUrl && legendMapUrl?.map((data) => (
-                                        <Accordion.Panel key={data.id}>
-                                            <Accordion.Title className="py-1 px-3 focus:ring-0 focus:ring-gray-700 border-gray-200 text-sm hover:rounded-none bg-slate-100 hover:bg-slate-300 text-gray-800 border-b border-b-sky-200 first:rounded-b-none first:rounded-t-none">{ data.title}</Accordion.Title>
-                                            <Accordion.Content className="py-1 px-3 last:rounded-b-lg " id={`accordion-legend-${data.id}`}>
-                                                <img className="h-auto max-w-xs" src={data.url} alt="description"/>
-                                            </Accordion.Content>
-                                        </Accordion.Panel>
-                                    ))
-                                }
-                            </Accordion>
+                            <WeatherLayerLegend legendMapUrl={legendMapUrl} />
                         </div>  : ""
                 }
             </div>
@@ -355,31 +344,29 @@ const WeatherMapDisplay = () => {
                     </div>
                 </div>
             }
-            <div className="flex flex-row bg-slate-300">
-                <div className=" flex-none px-3 items-center ">
-                    <div role="group" aria-label="Animation controls" className="py-3">
-                        {
-                            !isClickPlayBtn ?
-                            <>
-                                <button type="button" className="px-3 py-2 text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80" onClick={handlePlayBtn}>
-                                    <svg className="w-3 h-3 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 18">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1.984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L2.506 1.139A1 1 0 0 0 1 1.984Z" />
-                                    </svg>
-                                    <span className="sr-only">Play</span>
-                                </button>
-                            </>
-                            :
-                            <>  
-                                <button type="button" className="px-3 py-2 text-white bg-gradient-to-br from-orange-400 to-pink-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-orange-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm shadow-lg shadow-orange-500/50 dark:shadow-lg dark:shadow-orange-800/80" onClick={handlePlayBtn}>
-                                    <svg className="w-3 h-3 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 10 16">
-                                        <path fillRule="evenodd" d="M0 .8C0 .358.32 0 .714 0h1.429c.394 0 .714.358.714.8v14.4c0 .442-.32.8-.714.8H.714a.678.678 0 0 1-.505-.234A.851.851 0 0 1 0 15.2V.8Zm7.143 0c0-.442.32-.8.714-.8h1.429c.19 0 .37.084.505.234.134.15.209.354.209.566v14.4c0 .442-.32.8-.714.8H7.857c-.394 0-.714-.358-.714-.8V.8Z" clipRule="evenodd" />
-                                    </svg>
-                                    <span className="sr-only">Pause</span>
-                                </button>
-                                <span id="info"></span>
-                            </>
-                        }
-                    </div>
+            <div className="flex flex-row bg-slate-300 content-center items-center">
+                <div className="px-3">
+                    {
+                        !isClickPlayBtn ?
+                        <>
+                            <button type="button" className="px-3 py-2 text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80" onClick={handlePlayBtn}>
+                                <svg className="w-3 h-3 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 18">
+                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1.984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L2.506 1.139A1 1 0 0 0 1 1.984Z" />
+                                </svg>
+                                <span className="sr-only">Play</span>
+                            </button>
+                        </>
+                        :
+                        <>  
+                            <button type="button" className="px-3 py-2 text-white bg-gradient-to-br from-orange-400 to-pink-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-orange-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm shadow-lg shadow-orange-500/50 dark:shadow-lg dark:shadow-orange-800/80" onClick={handlePlayBtn}>
+                                <svg className="w-3 h-3 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 10 16">
+                                    <path fillRule="evenodd" d="M0 .8C0 .358.32 0 .714 0h1.429c.394 0 .714.358.714.8v14.4c0 .442-.32.8-.714.8H.714a.678.678 0 0 1-.505-.234A.851.851 0 0 1 0 15.2V.8Zm7.143 0c0-.442.32-.8.714-.8h1.429c.19 0 .37.084.505.234.134.15.209.354.209.566v14.4c0 .442-.32.8-.714.8H7.857c-.394 0-.714-.358-.714-.8V.8Z" clipRule="evenodd" />
+                                </svg>
+                                <span className="sr-only">Pause</span>
+                            </button>
+                            <span id="info"></span>
+                        </>
+                    }
                 </div>
                 <div className=" flex-auto">
                     <WeatherMapInfo radarTime={radarTime} isClickPlayBtn={isClickPlayBtn} />
