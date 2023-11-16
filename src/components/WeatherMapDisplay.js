@@ -99,7 +99,8 @@ const WeatherMapDisplay = () => {
                 title: layerSourceInfo[0].name,
                 source: airSurfaceTempWMS,
                 opacity: 0.4,
-                zIndex: 0
+                zIndex: 0,
+                visible: false
             });
 
             const raqdpsLayer = new TileLayer({
@@ -370,7 +371,7 @@ const WeatherMapDisplay = () => {
                 </div>
                 :
                 <div ref={popupDiv}>
-                    <div data-popover role="tooltip" className="ol-popup absolute rounded-lg bottom-3 min-w-max border border-solid border-slate-400 -left-12 transition-opacity duration-300 bg-white shadow-sm max-[w-56] dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+                    <div data-popover role="tooltip" className="ol-popup absolute rounded-lg bottom-3 min-w-max border border-solid border-slate-400 -left-12 transition-opacity duration-300 bg-white max-[w-56] dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800 shadow-lg shadow-blue-400/50 dark:shadow-lg dark:shadow-blue-800/80">
                         <span id="popup-closer" className="ol-popup-closer hover:cursor-pointer" onClick={closePopup}></span>
                         <div className="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
                             <h3 className="font-semibold text-gray-900 dark:text-white">(Lon/Lat): <span className="font-thin text-gray-900 dark:text-white">{airTableData.coordinate}</span></h3>
