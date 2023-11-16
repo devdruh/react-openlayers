@@ -7,4 +7,9 @@ const dateOptions = {
     timeZoneName: 'short'
 };
 
-export { dateOptions }
+const layerSourceInfo = [
+    { name: 'Air Surface Temperature', layer: 'GDPS.ETA_TT' },
+    { name: 'RAQDPS - FireWork', layer: 'RAQDPS-FW.EATM_PM2.5-DIFF' }
+];
+
+export { dateOptions, layerSourceInfo }

@@ -1,21 +1,25 @@
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState, useCallback, useId } from "react";
 import Map from 'ol/Map.js';
 import TileLayer from 'ol/layer/Tile.js';
 import TileWMS from 'ol/source/TileWMS.js';
 import View from 'ol/View.js';
 import OSM from 'ol/source/OSM.js';
 import Overlay from 'ol/Overlay.js';
+import LayerGroup from 'ol/layer/Group.js';
 import { toStringXY } from 'ol/coordinate';
 import { fromLonLat, toLonLat } from 'ol/proj';
-import { dateOptions } from "../util/variables";
+import { dateOptions, layerSourceInfo } from "../util/variables";
 import { Accordion } from 'flowbite-react';
 import WeatherMapInfo from "./WeatherMapInfo";
+import WeatherLayerList from "./WeatherLayerList";
 
 const WeatherMapDisplay = () => {
 
     const map = useRef(null);
     const mapRef = useRef(null);
     const popupDiv = useRef(null);
+    const airTempLayerId = useId();
+    const airQualityLayerId = useId();
     const [isLoading, setIsLoading] = useState(true);
     const [airSurfaceData, setAirSurfaceData] = useState({ coordinate: "", value: "" });
     const [radarTime, setRadarTime] = useState({ start: null, end: null, current: null, iso: null, local: null });
@@ -24,6 +28,7 @@ const WeatherMapDisplay = () => {
     const [isClickLayerBtn, setIsClickLayerBtn] = useState(false);
     const [isNewTimeVal, setIsNewTimeVal] = useState();
     const [legendMapUrl, setLegendMapUrl] = useState([]);
+    const [layerGroupList, setLayerGroupList] = useState([]);
     
     const closePopup = (e) => {
         e.target.parentElement.setAttribute('class', 'invisible');
@@ -57,27 +62,31 @@ const WeatherMapDisplay = () => {
             
             const airSurfaceTempWMS = new TileWMS({
                 url: 'https://geo.weather.gc.ca/geomet',
-                params: { 'LAYERS': 'GDPS.ETA_TT' },
+                params: { 'LAYERS': layerSourceInfo[0].layer },
                 transition: 0
             });
 
             const raqdpsWMS = new TileWMS({
                 url: 'https://geo.weather.gc.ca/geomet',
-                params: { 'LAYERS': 'RAQDPS-FW.EATM_PM2.5-DIFF', 't': new Date(Math.round(Date.now())).toISOString().split('.')[0] + "Z" },
+                params: { 'LAYERS': layerSourceInfo[1].layer, 't': new Date(Math.round(Date.now())).toISOString().split('.')[0] + "Z" },
                 
             });
 
-            const raqdpsLayer = new TileLayer({
-                source: raqdpsWMS,
-                // opacity: 0.4,
-                zIndex: 1
-            })
-
             const airSurfaceTempLayer = new TileLayer({
+                id: airTempLayerId,
+                title: layerSourceInfo[0].name,
                 source: airSurfaceTempWMS,
                 opacity: 0.4,
                 zIndex: 0
             });
+
+            const raqdpsLayer = new TileLayer({
+                id: airQualityLayerId,
+                title: layerSourceInfo[1].name,
+                source: raqdpsWMS,
+                // opacity: 0.4,
+                zIndex: 1
+            })
 
             const view = new View({
                 center: fromLonLat([-97, 57]),
@@ -85,8 +94,12 @@ const WeatherMapDisplay = () => {
                 maxZoom: 7
             });
 
+            const layerGroup = new LayerGroup({
+                layers: [airSurfaceTempLayer, raqdpsLayer]
+            });
+
             map.current = new Map({
-                layers: [basemapLayer, airSurfaceTempLayer, raqdpsLayer],
+                layers: [basemapLayer, layerGroup],
                 view: view,
                 overlays: [overlay]
             });
@@ -98,7 +111,8 @@ const WeatherMapDisplay = () => {
                 const coordinate = event.coordinate;
                 const toStringCoordinate = toStringXY(toLonLat(coordinate), 4)
                 const viewResolution = map.current.getView().getResolution();
-                const wms_source = map.current.getLayers().item(1).getSource();
+                // const wms_source = map.current.getLayers().item(1).getSource();
+                const wms_source = layerGroup.getLayers().item(0).getSource();
                 const wms_url = wms_source.getFeatureInfoUrl(
                     coordinate,
                     viewResolution,
@@ -143,7 +157,7 @@ const WeatherMapDisplay = () => {
                             if (raqdpsWMSParams.LAYERS === layerName) {
                                 return [{
                                     id: Math.floor(Math.random() * 100),
-                                    title: "RAQDPS - FireWork",
+                                    title: raqdpsLayer.get('title'),
                                     url: airQualityUrl
                                 }, ...data]
                             }
@@ -151,7 +165,7 @@ const WeatherMapDisplay = () => {
                             if (airSurfaceTempWMSParams.LAYERS === layerName) { 
                                 return [{
                                     id: Math.floor(Math.random() * 100),
-                                    title: "Air Surface Temperature",
+                                    title: airSurfaceTempLayer.get('title'),
                                     url: airTempUrl
                                 }, ...data]
                             }
@@ -161,9 +175,10 @@ const WeatherMapDisplay = () => {
             }
             const initLegend = map?.current.getView().getResolution();
             updateLegend(initLegend);
+            setLayerGroupList(layerGroup.getLayers());
         }
 
-    }, []);
+    }, [airQualityLayerId, airTempLayerId]);
 
     useEffect(() => {
 
@@ -287,8 +302,8 @@ const WeatherMapDisplay = () => {
                         </div>  : ""
                 }
             </div>
-            <div className="absolute right-5 top-[120px] flex flex-col">
-                <div className="flex justify-end">
+            <div className="absolute right-5 top-[120px] flex flex-row-reverse z-[2] justify-end gap-2">
+                <div className="flex">
                     {
                         isClickLayerBtn && isClickLayerBtn ? 
                             <button type="button" className="h-7 bg-slate-200 hover:bg-slate-200 focus:ring-2 focus:outline-none focus:ring-sky-400 font-sm rounded text-sm p-1 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800 hover:border-sky-400 ease-in duration-300 hover:ease-in hover:scale-125 transition bg-gradient-to-br from-emerald-500 to-indigo-800 hover:bg-gradient-to-b hover:text-slate-100 hover:focus:scale-110" onClick={handleLayerBtn} title="Layer">
@@ -306,15 +321,16 @@ const WeatherMapDisplay = () => {
                             </button>
                     }
                 </div>
-                {
-                    isClickLayerBtn && isClickLayerBtn ?
-                        <div className=" bg-white w-52 transition duration-1000 ease-in">
-
-                        </div>
-                        :
-                        null
-
-                }
+                <div className="flex justify-end">
+                    {
+                        isClickLayerBtn && isClickLayerBtn ?
+                            <div className=" bg-white w-52 transition duration-1000 ease-in shadow-lg shadow-blue-400/50 dark:shadow-lg last:rounded-b-lg">
+                                <WeatherLayerList layerGroupList={layerGroupList} />
+                            </div>
+                            :
+                            null
+                    }
+                </div>
             </div>
             {isLoading ?
                 <div ref={popupDiv}>
