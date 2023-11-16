@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, useCallback, useId } from "react";
+import { useRef, useEffect, useState, useCallback, useId, useMemo } from "react";
 import Map from 'ol/Map.js';
 import TileLayer from 'ol/layer/Tile.js';
 import TileWMS from 'ol/source/TileWMS.js';
@@ -12,6 +12,10 @@ import { dateOptions, layerSourceInfo } from "../util/variables";
 import WeatherMapInfo from "./WeatherMapInfo";
 import WeatherLayerList from "./WeatherLayerList";
 import WeatherLayerLegend from "./WeatherLayerLegend";
+import VectorSource from "ol/source/Vector";
+import GeoJSON from 'ol/format/GeoJSON.js';
+import VectorLayer from 'ol/layer/Vector.js';
+import { Circle as CircleStyle, Stroke, Style } from 'ol/style.js';
 
 const WeatherMapDisplay = () => {
 
@@ -21,7 +25,7 @@ const WeatherMapDisplay = () => {
     const airTempLayerId = useId();
     const airQualityLayerId = useId();
     const [isLoading, setIsLoading] = useState(true);
-    const [airSurfaceData, setAirSurfaceData] = useState({ coordinate: "", value: "" });
+    const [airTableData, setAirTableData] = useState({});
     const [radarTime, setRadarTime] = useState({ start: null, end: null, current: null, iso: null, local: null });
     const [isClickPlayBtn, setIsClickPlayBtn] = useState(false);
     const [isClickLegendBtn, setIsClickLegendBtn] = useState(false);
@@ -46,7 +50,25 @@ const WeatherMapDisplay = () => {
     const handleLayerBtn = (e) => {
         setIsClickLayerBtn(!isClickLayerBtn);
     }
-   
+
+    const imageStyle = useMemo(() => (
+        new CircleStyle({
+            radius: 5,
+            fill: null,
+            stroke: new Stroke({ color: 'red', width: 1 }),
+        })
+    ), [])
+    
+    const featureStyles = useMemo(() => ({
+        'Point': new Style({
+            image: imageStyle,
+        }),
+    }),[imageStyle])
+                
+    const getFeatureSyle = useCallback((feature) => {
+        return featureStyles[feature.getGeometry().getType()];
+    },[featureStyles]);
+
     const initMap = useCallback(() => {
 
         if (mapRef.current) {
@@ -86,7 +108,18 @@ const WeatherMapDisplay = () => {
                 source: raqdpsWMS,
                 // opacity: 0.4,
                 zIndex: 1
-            })
+            });
+
+            const aqhiVector = new VectorSource({
+                url: 'https://api.weather.gc.ca/collections/aqhi-forecasts-realtime/items?f=json',
+                format: new GeoJSON()
+            });
+
+            const aqhiVectorLayer = new VectorLayer({
+                source: aqhiVector,
+                style: getFeatureSyle,
+                opacity: 0
+            });
 
             const view = new View({
                 center: fromLonLat([-97, 57]),
@@ -99,7 +132,7 @@ const WeatherMapDisplay = () => {
             });
 
             map.current = new Map({
-                layers: [basemapLayer, layerGroup],
+                layers: [basemapLayer, layerGroup, aqhiVectorLayer],
                 view: view,
                 overlays: [overlay]
             });
@@ -123,6 +156,10 @@ const WeatherMapDisplay = () => {
                 overlay.setPosition(coordinate);
                 setIsLoading(true);
 
+                const aqhiClosestLocation = aqhiVector.getClosestFeatureToCoordinate(coordinate);
+                const aqhiToLocalTime = new Date(aqhiClosestLocation.values_.forecast_datetime);
+                const aqhiLocalTime = aqhiToLocalTime.toLocaleString(navigator.local, dateOptions);
+
                 if (wms_url) {
                     fetch(wms_url)
                         .then(function (response) {
@@ -132,8 +169,9 @@ const WeatherMapDisplay = () => {
                             const isObjNull = Object.keys(json).length;
                             if (isObjNull > 0) {
                                 const temperature = json.features[0].properties.value;
-                                setAirSurfaceData(airSurfaceData => {
-                                    return { ...airSurfaceData, coordinate: toStringCoordinate, value: temperature }
+
+                                setAirTableData(data => {
+                                    return { ...data, coordinate: toStringCoordinate, airsurftemp: temperature, aqhi: aqhiClosestLocation.values_.aqhi, aqhiforecastdate: aqhiLocalTime, aqhiLocName: aqhiClosestLocation.values_.location_name_en }
                                 });
                             }
                             setIsLoading(false);
@@ -178,7 +216,7 @@ const WeatherMapDisplay = () => {
             setLayerGroupList(layerGroup.getLayers());
         }
 
-    }, [airQualityLayerId, airTempLayerId]);
+    }, [airQualityLayerId, airTempLayerId, getFeatureSyle]);
 
     useEffect(() => {
 
@@ -332,14 +370,44 @@ const WeatherMapDisplay = () => {
                 </div>
                 :
                 <div ref={popupDiv}>
-                    <div data-popover role="tooltip" className="ol-popup absolute rounded-lg bottom-3 min-w-max border border-solid border-slate-400 -left-12 transition-opacity duration-300 bg-white shadow-sm dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+                    <div data-popover role="tooltip" className="ol-popup absolute rounded-lg bottom-3 min-w-max border border-solid border-slate-400 -left-12 transition-opacity duration-300 bg-white shadow-sm max-[w-56] dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
                         <span id="popup-closer" className="ol-popup-closer hover:cursor-pointer" onClick={closePopup}></span>
                         <div className="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
-                            <h3 className="font-semibold text-gray-900 dark:text-white">Air surface temperature</h3>
+                            <h3 className="font-semibold text-gray-900 dark:text-white">(Lon/Lat): <span className="font-thin text-gray-900 dark:text-white">{airTableData.coordinate}</span></h3>
                         </div>
-                        <div className="px-3 py-2">
-                            <p className="text-sm">Value: <span className="font-semibold text-gray-900 dark:text-white">{Math.round(airSurfaceData.value)} °C </span></p>
-                            <p className="text-sm">Coordinates (Lon/Lat): <span className="font-semibold text-gray-900 dark:text-white">{airSurfaceData.coordinate}</span></p>
+                        <div className="grid grid-cols-2 border-b border-b-slate-300 gap-3 p-1">
+                            
+                            <div className="text-right self-center">
+                                <p className="text-xs text-gray-900 dark:text-white">Air Surface Temperature : </p>
+                            </div>
+                            <div className="px-1 self-center text-xs">
+                                <p>{Math.round(airTableData.airsurftemp)} °C</p>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3 p-1">
+                            
+                            <div className="text-right self-center">
+                                <p className="text-xs text-gray-900 dark:text-white">AQHI-Forecast : </p>
+                            </div>
+                            <div className="px-1 self-center text-xs">
+                                <p>{Math.round(airTableData.aqhi)}</p>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3 p-1">
+                            <div className="text-right self-center">
+                                <p className="text-xs text-gray-900 dark:text-white">Forecast DateTime : </p>
+                            </div>
+                            <div className="px-1 self-center text-xs">
+                                <p>{airTableData.aqhiforecastdate}</p>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3 p-1">
+                            <div className="text-right self-center">
+                                <p className="text-xs text-gray-900 dark:text-white">Closest Forecast Location : </p>
+                            </div>
+                            <div className="px-1 self-center text-xs">
+                                <p>{airTableData.aqhiLocName}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
