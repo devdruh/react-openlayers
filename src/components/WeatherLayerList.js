@@ -23,6 +23,25 @@ const WeatherLayerList = ({ layerGroupList }) => {
         }));
     }
 
+    const handleLayerOpacity = (e) => {
+
+        const items = layerGroupList.array_;
+        const findLayer = items.find((data) => {
+            var layerId = data.get('id');
+            return layerId === e.target.id;
+        });
+        
+        findLayer.setOpacity(parseFloat(e.target.value));
+
+        setLayerList(layerList.map(list => {
+            if (list.id === e.target.id) {
+                return { ...list, opacity: e.target.value }
+            } else {
+                return list;
+            }
+        }));
+    }
+
     const layerListFunction = useCallback(() => {
 
         if (layerGroupList.array_) {
@@ -77,7 +96,7 @@ const WeatherLayerList = ({ layerGroupList }) => {
                                 <li>
                                     <div className="flex items-center ps-5 pr-2 gap-1">
                                         <label htmlFor="vue-checkbox" className=" w-1/4 py-1 ms-2 text-xs font-thin text-gray-900 dark:text-gray-300">Opacity</label>
-                                        <input className=" h-1 w-3/4 rounded-lg range-sm dark:bg-gray-700" defaultValue={item.opacity} type="range" min="0" max="1" step="0.01"/>
+                                        <input className=" h-1 w-3/4 rounded-lg range-sm dark:bg-gray-700" id={item.id} value={item.opacity} onChange={handleLayerOpacity} type="range" min="0" max="1" step="0.01"/>
                                     </div>
                                 </li>
                             </ul>
