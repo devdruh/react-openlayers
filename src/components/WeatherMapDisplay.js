@@ -7,7 +7,7 @@ import OSM from 'ol/source/OSM.js';
 import Overlay from 'ol/Overlay.js';
 import LayerGroup from 'ol/layer/Group.js';
 import { toStringXY } from 'ol/coordinate';
-import { fromLonLat, toLonLat } from 'ol/proj';
+import { fromLonLat, toLonLat, transformExtent } from 'ol/proj';
 import { dateOptions, layerSourceInfo } from "../util/variables";
 import WeatherMapInfo from "./WeatherMapInfo";
 import WeatherLayerList from "./WeatherLayerList";
@@ -89,13 +89,13 @@ const WeatherMapDisplay = () => {
             })
             
             const airSurfaceTempWMS = new TileWMS({
-                url: 'https://geo.weather.gc.ca/geomet',
+                url: layerSourceInfo[0].url,
                 params: { 'LAYERS': layerSourceInfo[0].layer },
                 transition: 0
             });
 
             const raqdpsWMS = new TileWMS({
-                url: 'https://geo.weather.gc.ca/geomet',
+                url: layerSourceInfo[1].url,
                 params: { 'LAYERS': layerSourceInfo[1].layer, 't': new Date(Math.round(Date.now())).toISOString().split('.')[0] + "Z" },
                 
             });
@@ -118,16 +118,16 @@ const WeatherMapDisplay = () => {
             });
 
             const aqhiVector = new VectorSource({
-                url: 'https://api.weather.gc.ca/collections/aqhi-forecasts-realtime/items?f=json',
+                url: layerSourceInfo[2].url,
                 format: new GeoJSON()
             });
-
+            
             const aqhiVectorLayer = new VectorLayer({
                 source: aqhiVector,
                 style: getFeatureSyle,
-                opacity: 0
+                opacity: 1
             });
-
+            
             const view = new View({
                 center: fromLonLat([-97, 57]),
                 zoom: 3,
@@ -144,7 +144,15 @@ const WeatherMapDisplay = () => {
                 overlays: [overlay]
             });
 
-            map.current.setTarget(mapRef.current)
+            map.current.setTarget(mapRef.current);
+
+            map?.current.on('moveend', function (event) {
+                const mapExtent = event.map.getView().calculateExtent(event.map.getSize());
+                const transExt = transformExtent(mapExtent, 'EPSG:3857', 'EPSG:4326');
+                const newBbox = '&bbox='+transExt[0] + ',' + transExt[1] + ',' + transExt[2] + ',' + transExt[3];
+                aqhiVector.setUrl(layerSourceInfo[2].url+newBbox);
+                aqhiVector.refresh();
+            })
 
             map?.current.on('singleclick', function (event) {
 

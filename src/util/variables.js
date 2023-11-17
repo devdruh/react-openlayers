@@ -8,8 +8,9 @@ const dateOptions = {
 };
 
 const layerSourceInfo = [
-    { name: 'Air Surface Temperature', layer: 'GDPS.ETA_TT' },
-    { name: 'RAQDPS - FireWork', layer: 'RAQDPS-FW.EATM_PM2.5-DIFF' }
+    { name: 'Air Surface Temperature', layer: 'GDPS.ETA_TT', url: 'https://geo.weather.gc.ca/geomet' },
+    { name: 'RAQDPS - FireWork', layer: 'RAQDPS-FW.EATM_PM2.5-DIFF', url: 'https://geo.weather.gc.ca/geomet' },
+    { name: 'Air Quality Health Index', layer: '', url: 'https://api.weather.gc.ca/collections/aqhi-forecasts-realtime/items?f=json' }
 ];
 
 export { dateOptions, layerSourceInfo }
