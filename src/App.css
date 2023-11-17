@@ -26,7 +26,8 @@
 
 	.ol-popup:after {
 		border-width: 10px;
-		@apply border-t-white left-12 -ml-3;
+		margin-left: -0.7rem;
+		@apply border-t-white left-12;
 	}
 
 	.ol-popup:before {

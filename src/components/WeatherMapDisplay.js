@@ -6,8 +6,10 @@ import View from 'ol/View.js';
 import OSM from 'ol/source/OSM.js';
 import Overlay from 'ol/Overlay.js';
 import LayerGroup from 'ol/layer/Group.js';
+import { Point } from "ol/geom";
 import { toStringXY } from 'ol/coordinate';
 import { fromLonLat, toLonLat, transformExtent } from 'ol/proj';
+import { Circle as CircleStyle, Stroke, Style, Fill } from 'ol/style.js';
 import { dateOptions, layerSourceInfo } from "../util/variables";
 import WeatherMapInfo from "./WeatherMapInfo";
 import WeatherLayerList from "./WeatherLayerList";
@@ -15,7 +17,7 @@ import WeatherLayerLegend from "./WeatherLayerLegend";
 import VectorSource from "ol/source/Vector";
 import GeoJSON from 'ol/format/GeoJSON.js';
 import VectorLayer from 'ol/layer/Vector.js';
-import { Circle as CircleStyle, Stroke, Style } from 'ol/style.js';
+import Feature from 'ol/Feature.js';
 
 const WeatherMapDisplay = () => {
 
@@ -127,6 +129,10 @@ const WeatherMapDisplay = () => {
                 style: getFeatureSyle,
                 opacity: 1
             });
+
+            const pinLocLayer = new VectorLayer({
+                source: new VectorSource()
+            });
             
             const view = new View({
                 center: fromLonLat([-97, 57]),
@@ -139,7 +145,7 @@ const WeatherMapDisplay = () => {
             });
 
             map.current = new Map({
-                layers: [basemapLayer, layerGroup, aqhiVectorLayer],
+                layers: [basemapLayer, layerGroup, aqhiVectorLayer, pinLocLayer],
                 view: view,
                 overlays: [overlay]
             });
@@ -157,6 +163,30 @@ const WeatherMapDisplay = () => {
             map?.current.on('singleclick', function (event) {
 
                 const coordinate = event.coordinate;
+
+                const pinLocCircle = new CircleStyle({
+                    radius: 5,
+                    fill: new Fill({
+                         color: '#16a34a',
+                     }),
+                    stroke: new Stroke({ color: '#22d3ee', width: 1 }),
+                });
+                const pinLocStyle = new Style({
+                    image: pinLocCircle,
+                });
+
+                const pinFeature = new Feature({
+                    geometry: new Point(event.coordinate),
+                });
+                
+                const pinLayerSource = new VectorSource({
+                    features: [pinFeature]
+                });
+
+                pinLocLayer.getSource().clear();
+                pinLocLayer.setSource(pinLayerSource);
+                pinLocLayer.setStyle(pinLocStyle);
+                
                 const toStringCoordinate = toStringXY(toLonLat(coordinate), 4)
                 const viewResolution = map.current.getView().getResolution();
                 // const wms_source = map.current.getLayers().item(1).getSource();
