@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, useCallback, useId, useMemo } from "react";
+import { useRef, useEffect, useState, useCallback, useId } from "react";
 import Map from 'ol/Map.js';
 import TileLayer from 'ol/layer/Tile.js';
 import TileWMS from 'ol/source/TileWMS.js';
@@ -9,7 +9,7 @@ import LayerGroup from 'ol/layer/Group.js';
 import { Point } from "ol/geom";
 import { toStringXY } from 'ol/coordinate';
 import { fromLonLat, toLonLat, transformExtent } from 'ol/proj';
-import { Circle as CircleStyle, Stroke, Style, Fill } from 'ol/style.js';
+import { Circle as CircleStyle, Stroke, Style, Fill, Icon } from 'ol/style.js';
 import { dateOptions, layerSourceInfo } from "../util/variables";
 import WeatherMapInfo from "./WeatherMapInfo";
 import WeatherLayerList from "./WeatherLayerList";
@@ -58,24 +58,6 @@ const WeatherMapDisplay = () => {
             setIsClickLegendBtn(false);
         }
     }
-
-    const imageStyle = useMemo(() => (
-        new CircleStyle({
-            radius: 5,
-            fill: null,
-            stroke: new Stroke({ color: 'red', width: 1 }),
-        })
-    ), [])
-    
-    const featureStyles = useMemo(() => ({
-        'Point': new Style({
-            image: imageStyle,
-        }),
-    }),[imageStyle])
-                
-    const getFeatureSyle = useCallback((feature) => {
-        return featureStyles[feature.getGeometry().getType()];
-    },[featureStyles]);
 
     const initMap = useCallback(() => {
 
@@ -126,9 +108,18 @@ const WeatherMapDisplay = () => {
             
             const aqhiVectorLayer = new VectorLayer({
                 source: aqhiVector,
-                style: getFeatureSyle,
                 opacity: 1
             });
+
+            aqhiVectorLayer.setStyle(
+                new Style({
+                    image: new Icon({
+                        crossOrigin: 'anonymous',
+                        src: 'https://img.icons8.com/nolan/64/map-pin.png',
+                        scale: 0.3,
+                    }),
+                })
+            );
 
             const pinLocLayer = new VectorLayer({
                 source: new VectorSource()
@@ -137,7 +128,9 @@ const WeatherMapDisplay = () => {
             const view = new View({
                 center: fromLonLat([-97, 57]),
                 zoom: 3,
-                maxZoom: 7
+                minZoom: 3,
+                maxZoom: 7,
+                constrainOnlyCenter: true,
             });
 
             const layerGroup = new LayerGroup({
@@ -228,7 +221,7 @@ const WeatherMapDisplay = () => {
             setLayerLegendList(layerGroup.getLayers());
         }
 
-    }, [airQualityLayerId, airTempLayerId, getFeatureSyle]);
+    }, [airQualityLayerId, airTempLayerId]);
 
     useEffect(() => {
 
