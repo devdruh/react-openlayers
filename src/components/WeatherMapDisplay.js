@@ -31,8 +31,8 @@ const WeatherMapDisplay = () => {
     const [isClickLegendBtn, setIsClickLegendBtn] = useState(false);
     const [isClickLayerBtn, setIsClickLayerBtn] = useState(false);
     const [isNewTimeVal, setIsNewTimeVal] = useState();
-    const [legendMapUrl, setLegendMapUrl] = useState([]);
     const [layerGroupList, setLayerGroupList] = useState([]);
+    const [layerLegendList, setLayerLegendList] = useState([]);
     
     const closePopup = (e) => {
         e.target.parentElement.setAttribute('class', 'invisible');
@@ -45,10 +45,16 @@ const WeatherMapDisplay = () => {
 
     const handleLegendBtn = (e) => {
         setIsClickLegendBtn(!isClickLegendBtn);
+        if (!isClickLegendBtn) {
+            setIsClickLayerBtn(false);
+        }
     }
 
     const handleLayerBtn = (e) => {
         setIsClickLayerBtn(!isClickLayerBtn);
+        if (!isClickLayerBtn) {
+            setIsClickLegendBtn(false);
+        }
     }
 
     const imageStyle = useMemo(() => (
@@ -180,41 +186,8 @@ const WeatherMapDisplay = () => {
                 }
             });
 
-            const updateLegend = (resolution) => {
-
-                const allLayers = map.current.getAllLayers();
-                const raqdpsWMSParams = raqdpsWMS.getParams();
-                const airQualityUrl = raqdpsWMS.getLegendUrl(resolution, { "SLD_VERSION": '1.1.0' });
-                const airSurfaceTempWMSParams = airSurfaceTempWMS.getParams();
-                const airTempUrl = airSurfaceTempWMS.getLegendUrl(resolution, { "SLD_VERSION": '1.1.0' });
-                
-                for (let index = 0; index < allLayers.length; index++) {
-                    const element = allLayers[index].getSource();
-                    if (element.params_) {
-                        const layerName = element.params_.LAYERS;
-                        setLegendMapUrl(data => {
-                            if (raqdpsWMSParams.LAYERS === layerName) {
-                                return [{
-                                    id: Math.floor(Math.random() * 100),
-                                    title: raqdpsLayer.get('title'),
-                                    url: airQualityUrl
-                                }, ...data]
-                            }
-
-                            if (airSurfaceTempWMSParams.LAYERS === layerName) { 
-                                return [{
-                                    id: Math.floor(Math.random() * 100),
-                                    title: airSurfaceTempLayer.get('title'),
-                                    url: airTempUrl
-                                }, ...data]
-                            }
-                        });
-                    }
-                }
-            }
-            const initLegend = map?.current.getView().getResolution();
-            updateLegend(initLegend);
             setLayerGroupList(layerGroup.getLayers());
+            setLayerLegendList(layerGroup.getLayers());
         }
 
     }, [airQualityLayerId, airTempLayerId, getFeatureSyle]);
@@ -326,7 +299,7 @@ const WeatherMapDisplay = () => {
                 {
                     isClickLegendBtn && isClickLegendBtn ? 
                         <div className=" bg-white w-52 transition duration-1000 ease-in">
-                            <WeatherLayerLegend legendMapUrl={legendMapUrl} />
+                            <WeatherLayerLegend layerLegendList={layerLegendList} map={map.current} />
                         </div>  : ""
                 }
             </div>
