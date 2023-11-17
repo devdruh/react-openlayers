@@ -313,8 +313,8 @@ const WeatherMapDisplay = () => {
                     {
                         isClickLegendBtn && isClickLegendBtn ? 
                             <button type="button" className="h-7 bg-slate-200 hover:bg-slate-200 focus:ring-2 focus:outline-none focus:ring-sky-400 font-sm rounded text-sm p-1 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800 hover:border-sky-400 ease-in duration-300 hover:ease-in hover:scale-125 transition bg-gradient-to-br from-emerald-500 to-sky-800 hover:bg-gradient-to-b hover:text-slate-100 hover:focus:scale-110" onClick={handleLegendBtn} title="Legend">
-                                <svg className="w-5 h-5 text-gray-200 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 10">
-                                    <path stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M6 1h10M6 5h10M6 9h10M1.49 1h.01m-.01 4h.01m-.01 4h.01"/>
+                                <svg className="w-5 h-5 text-gray-200 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 10">
+                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m7 9 4-4-4-4M1 9l4-4-4-4"/>
                                 </svg>
                                 <span className="sr-only">Layers Legend</span>
                             </button>
@@ -339,8 +339,8 @@ const WeatherMapDisplay = () => {
                     {
                         isClickLayerBtn && isClickLayerBtn ? 
                             <button type="button" className="h-7 bg-slate-200 hover:bg-slate-200 focus:ring-2 focus:outline-none focus:ring-sky-400 font-sm rounded text-sm p-1 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800 hover:border-sky-400 ease-in duration-300 hover:ease-in hover:scale-125 transition bg-gradient-to-br from-emerald-500 to-indigo-800 hover:bg-gradient-to-b hover:text-slate-100 hover:focus:scale-110" onClick={handleLayerBtn} title="Layer">
-                                <svg className="w-5 h-5 text-gray-200 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 19 20">
-                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2 9.376v.786l8 3.925 8-3.925v-.786M1.994 14.191v.786l8 3.925 8-3.925v-.786M10 1.422 2 5.347l8 3.925 8-3.925-8-3.925Z"/>
+                                <svg className="w-5 h-5 text-gray-200 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 10">
+                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m7 9 4-4-4-4M1 9l4-4-4-4"/>
                                 </svg>
                                 <span className="sr-only">Layers Legend</span>
                             </button>
