@@ -11,8 +11,11 @@ import { toStringXY } from 'ol/coordinate';
 import { fromLonLat, toLonLat, transformExtent } from 'ol/proj';
 import { Circle as CircleStyle, Stroke, Style, Fill, Icon } from 'ol/style.js';
 import { dateOptions, layerSourceInfo } from "../util/variables";
+import { initFlowbite } from "flowbite";
+import { getAirSurfaceTemp, getClosestAqhi, getClosestAqhiNow, getClosestAqhiToday } from "../util/api";
 import WeatherMapInfo from "./WeatherMapInfo";
 import WeatherLayerList from "./WeatherLayerList";
+import WeatherWidgetChart from "./WeatherWidgetChart";
 import WeatherLayerLegend from "./WeatherLayerLegend";
 import VectorSource from "ol/source/Vector";
 import GeoJSON from 'ol/format/GeoJSON.js';
@@ -32,9 +35,12 @@ const WeatherMapDisplay = () => {
     const [isClickPlayBtn, setIsClickPlayBtn] = useState(false);
     const [isClickLegendBtn, setIsClickLegendBtn] = useState(false);
     const [isClickLayerBtn, setIsClickLayerBtn] = useState(false);
+    const [isClickChartBtn, setIsClickChartBtn] = useState(false);
+    const [showChartBtn, setShowChartBtn] = useState(false);
     const [isNewTimeVal, setIsNewTimeVal] = useState();
     const [layerGroupList, setLayerGroupList] = useState([]);
     const [layerLegendList, setLayerLegendList] = useState([]);
+    const [aqhiChartData, setAqhiChartData] = useState([]);
     
     const closePopup = (e) => {
         e.target.parentElement.setAttribute('class', 'invisible');
@@ -49,6 +55,7 @@ const WeatherMapDisplay = () => {
         setIsClickLegendBtn(!isClickLegendBtn);
         if (!isClickLegendBtn) {
             setIsClickLayerBtn(false);
+            setIsClickChartBtn(false);
         }
     }
 
@@ -56,6 +63,15 @@ const WeatherMapDisplay = () => {
         setIsClickLayerBtn(!isClickLayerBtn);
         if (!isClickLayerBtn) {
             setIsClickLegendBtn(false);
+            setIsClickChartBtn(false);
+        }
+    }
+    
+    const handleChartBtn = (e) => {
+        setIsClickChartBtn(!isClickChartBtn);
+        if (!isClickChartBtn) {
+            setIsClickLegendBtn(false);
+            setIsClickLayerBtn(false);
         }
     }
 
@@ -148,14 +164,15 @@ const WeatherMapDisplay = () => {
             map?.current.on('moveend', function (event) {
                 const mapExtent = event.map.getView().calculateExtent(event.map.getSize());
                 const transExt = transformExtent(mapExtent, 'EPSG:3857', 'EPSG:4326');
-                const newBbox = '&bbox='+transExt[0] + ',' + transExt[1] + ',' + transExt[2] + ',' + transExt[3];
-                aqhiVector.setUrl(layerSourceInfo[2].url+newBbox);
+                const newBbox = '&bbox=' + transExt[0] + ',' + transExt[1] + ',' + transExt[2] + ',' + transExt[3];
+                aqhiVector.setUrl(layerSourceInfo[2].url + newBbox);
                 aqhiVector.refresh();
-            })
+            });
 
             map?.current.on('singleclick', function (event) {
 
                 const coordinate = event.coordinate;
+                const toStringCoordinate = toStringXY(toLonLat(coordinate), 4);
 
                 const pinLocCircle = new CircleStyle({
                     radius: 5,
@@ -180,42 +197,91 @@ const WeatherMapDisplay = () => {
                 pinLocLayer.setSource(pinLayerSource);
                 pinLocLayer.setStyle(pinLocStyle);
                 
-                const toStringCoordinate = toStringXY(toLonLat(coordinate), 4)
+                overlay.setPosition(coordinate);
+                setIsLoading(true);
+
+                findAqhiFeatures(coordinate);
+                findAstFeatures(coordinate);
+
+                setAirTableData(data => {
+                    return { ...data, coordinate: toStringCoordinate }
+                });
+
+            });
+
+            async function findAstFeatures(coordinate) {
+                
                 const viewResolution = map.current.getView().getResolution();
-                // const wms_source = map.current.getLayers().item(1).getSource();
-                const wms_source = layerGroup.getLayers().item(0).getSource();
-                const wms_url = wms_source.getFeatureInfoUrl(
+                const astUrl = airSurfaceTempWMS.getFeatureInfoUrl(
                     coordinate,
                     viewResolution,
                     "EPSG:3857",
                     { INFO_FORMAT: "application/json" }
                 );
-                
-                overlay.setPosition(coordinate);
-                setIsLoading(true);
 
-                const aqhiClosestLocation = aqhiVector.getClosestFeatureToCoordinate(coordinate);
-                const aqhiToLocalTime = new Date(aqhiClosestLocation.values_.forecast_datetime);
-                const aqhiLocalTime = aqhiToLocalTime.toLocaleString(navigator.local, dateOptions);
-
-                if (wms_url) {
-                    fetch(wms_url)
-                        .then(function (response) {
-                            return response.json();
-                        })
-                        .then(function (json) {
-                            const isObjNull = Object.keys(json).length;
-                            if (isObjNull > 0) {
-                                const temperature = json.features[0].properties.value;
-
-                                setAirTableData(data => {
-                                    return { ...data, coordinate: toStringCoordinate, airsurftemp: temperature, aqhi: aqhiClosestLocation.values_.aqhi, aqhiforecastdate: aqhiLocalTime, aqhiLocName: aqhiClosestLocation.values_.location_name_en }
-                                });
-                            }
-                            setIsLoading(false);
+                getAirSurfaceTemp(astUrl).then(response => {
+                    if (response.features.length > 0) {
+                        const temperature = response.features[0].properties.value;
+                        setAirTableData(data => {
+                            return { ...data, airsurftemp: temperature }
                         });
-                }
-            });
+                    }
+                    setIsLoading(false);
+                });
+
+
+            }
+
+            async function findAqhiFeatures(coordinate) {
+
+                const closestFeatures = await getClosestAqhi(aqhiVector, coordinate);
+                const aqhiFeaturesToday = await getClosestAqhiToday(closestFeatures);
+                aqhiFeaturesToday.sort((a, b) => new Date(a.properties.forecast_datetime) - new Date(b.properties.forecast_datetime));
+
+                var aqhiData = [];
+
+                aqhiFeaturesToday.forEach((element) => {
+                                
+                    if (aqhiData.length > 0) {
+
+                        const findNewElement = aqhiData.find((item) => item.properties.forecast_datetime_text_en === element.properties.forecast_datetime_text_en);
+
+                        if (findNewElement !== undefined) {
+
+                            const pubDate = new Date(findNewElement.properties.publication_datetime);
+                            const newPubDate = new Date(element.properties.publication_datetime);
+                                
+                            if (newPubDate > pubDate) {
+                                    
+                                const aqhiDataIndex = aqhiData.findIndex((item) => item.properties.forecast_datetime_text_en === findNewElement.properties.forecast_datetime_text_en);
+                                aqhiData[aqhiDataIndex] = element;
+                            }
+
+                        } else {
+
+                            aqhiData.push(element);
+                        }
+
+                    } else {
+
+                        aqhiData.push(element);
+
+                    }
+
+                });
+
+                getClosestAqhiNow(aqhiData).then(response => { 
+
+                    const aqhiLocalTime = new Date(response.properties.forecast_datetime).toLocaleDateString(navigator.local, dateOptions);
+                    setAirTableData(data => {
+                        return { ...data, aqhi: response.properties.aqhi, aqhiforecastdate: aqhiLocalTime, aqhiLocName: response.properties.location_name_en }
+                    });
+
+                });
+
+                setAqhiChartData(aqhiData);
+                setShowChartBtn(true);
+            }
 
             setLayerGroupList(layerGroup.getLayers());
             setLayerLegendList(layerGroup.getLayers());
@@ -224,6 +290,8 @@ const WeatherMapDisplay = () => {
     }, [airQualityLayerId, airTempLayerId]);
 
     useEffect(() => {
+
+        initFlowbite();
 
         initMap();
 
@@ -309,24 +377,27 @@ const WeatherMapDisplay = () => {
         <>
             <div className="mapRef" id='mapRef' ref={mapRef}></div>
             <div className="absolute right-5 top-[85px] flex flex-row-reverse z-[1] justify-end gap-2">
-                <div className="flex">
-                    {
-                        isClickLegendBtn && isClickLegendBtn ? 
+                {
+                    isClickLegendBtn && isClickLegendBtn ? 
+                        <div className="flex">
                             <button type="button" className="h-7 bg-slate-200 hover:bg-slate-200 focus:ring-2 focus:outline-none focus:ring-sky-400 font-sm rounded text-sm p-1 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800 hover:border-sky-400 ease-in duration-300 hover:ease-in hover:scale-125 transition bg-gradient-to-br from-emerald-500 to-sky-800 hover:bg-gradient-to-b hover:text-slate-100 hover:focus:scale-110" onClick={handleLegendBtn} title="Collapse">
                                 <svg className="w-5 h-5 text-gray-200 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 10">
                                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="m7 9 4-4-4-4M1 9l4-4-4-4"/>
                                 </svg>
                                 <span className="sr-only">Layers Legend</span>
                             </button>
-                            : 
+                        
+                        </div>
+                        : 
+                        <div className="flex">
                             <button type="button" className="h-7 bg-slate-200 hover:bg-slate-50 ring-1 ring-sky-300 hover:text-slate-200 hover:ring-sky-500 focus:ring-2 focus:outline-none focus:ring-sky-300 font-sm rounded text-sm p-1 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800 hover:border-sky-400 ease-in duration-300 hover:ease-in hover:scale-110 transition" onClick={handleLegendBtn} title="Legend">
                                 <svg className="w-5 h-5 text-slate-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 10">
                                     <path stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M6 1h10M6 5h10M6 9h10M1.49 1h.01m-.01 4h.01m-.01 4h.01"/>
                                 </svg>
                                 <span className="sr-only">Layers Legend</span>
                             </button>
-                    }
-                </div>
+                        </div>
+                }
                 {
                     isClickLegendBtn && isClickLegendBtn ? 
                         <div className=" bg-white w-52 transition duration-1000 ease-in">
@@ -362,6 +433,43 @@ const WeatherMapDisplay = () => {
                             :
                             null
                     }
+                </div>
+            </div>
+            <div className="absolute right-5 top-[155px] flex flex-row-reverse z-[2] justify-end gap-2">
+                <div className="flex">
+                    {
+                        showChartBtn && showChartBtn ?
+                            <>
+                                <button type="button" className="h-7 bg-slate-200 hover:bg-slate-50 ring-1 ring-sky-300 hover:text-slate-200 hover:ring-sky-500 focus:ring-2 focus:outline-none focus:ring-sky-300 font-sm rounded text-sm p-1 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800 hover:border-sky-400 ease-in duration-300 hover:ease-in hover:scale-110 transition" onClick={handleChartBtn} title="Charts">
+                                        <svg className="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
+                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1v14h16m0-9-3-2-3 5-3-2-3 4"/>
+                                        </svg>
+                                    <span className="sr-only">Chart</span>
+                                </button>
+                                <span className="flex absolute h-3 w-3 top-0 right-0 -mt-1 -mr-1">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                                </span>
+                            </>
+                            : <></>
+                            
+                    }
+                </div>
+                <div className="flex justify-end">
+                    <div className={`max-w-sm bg-white transition duration-1000 ease-in shadow-lg shadow-blue-400/50 dark:shadow-lg last:rounded-b-lg ${isClickChartBtn ? null : 'hidden'}` }>
+                        <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
+                            <ul className="flex flex-wrap focus:bg-sky-600 -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
+                                <li className="me-2" role="presentation">
+                                    <button className="inline-block p-4 border-b-2 rounded-t-lg" id="aqhi-tab" data-tabs-target="#aqhi-tab-id" type="button" role="tab" aria-controls="aqhi-tab-id" aria-selected="false">AQHI</button>
+                                </li>
+                            </ul>
+                        </div>
+                        <div id="default-tab-content">
+                            <div className="hidden rounded-lg bg-gray-50 dark:bg-gray-800" id="aqhi-tab-id" role="tabpanel" aria-labelledby="aqhi-tab">
+                                <WeatherWidgetChart aqhiChartData={aqhiChartData} />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             {isLoading ?
