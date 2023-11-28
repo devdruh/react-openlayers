@@ -6,7 +6,7 @@ import { weatherForecastChartOptions } from '../util/variables';
 
 
 const WeatherMeteogram = ({ cityWeather }) => {
-    
+
     const [chartOptions, setChartOptions] = useState(weatherForecastChartOptions);
 
     const initHighCharts = useCallback(async () => {
@@ -66,7 +66,9 @@ const WeatherMeteogram = ({ cityWeather }) => {
                                 {
                                     x: x_hrs,
                                     y: parseFloat(element.temperature),
-                                    to: to
+                                    to: to,
+                                    symbolName: element.condition,
+                                    symbolCode: element.iconCode
                                 }
                             ]
                         }]
@@ -92,16 +94,16 @@ const WeatherMeteogram = ({ cityWeather }) => {
     }, [initHighCharts]);
 
     return (
-        <>
-            <div className='flex flex-grow'>
+        <div className='flex flex-col'>
+            <div>
                 <div className='pt-5 w-full'>
                     <HighchartsReact highcharts={Highcharts} options={chartOptions} />
                 </div>
             </div>
-            <div className='flex'>
+            <div>
                 <div className='p-5 w-full bg-slate-200 text-center'>5-Day Weather Forecast</div>
             </div>
-        </>
+        </div>
     )
 }
 
