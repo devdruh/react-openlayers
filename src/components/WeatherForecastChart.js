@@ -189,7 +189,7 @@ const DisplayForecastChart = () => {
     return (
         <div className='flex flex-col'>
             <DisplayAlert />
-            <div className="flex self-center grow">
+            <div className="flex self-center">
                 <button id="dropdown-button-2"  className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600" type="button" onClick={handleSearchProvince} title={provinceName.description}>
                     
                     {provinceName.term} <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
