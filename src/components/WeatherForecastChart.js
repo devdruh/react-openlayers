@@ -215,7 +215,7 @@ const DisplayForecastChart = () => {
                         }
                     </ul>
                 </div>
-                <div className="relative sm:w-80">
+                <div className="relative max-sm:w-80 sm:w-80">
                     <input type="search" id="location-search" className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-sky-500 focus:border-sky-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-sky-500" placeholder="Search for city | address | station" required value={stationName} onChange={handleSearchStation}/>
                     
                     <div id='list-station-result' className={`z-10 w-full absolute translate-y-1 bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 ${!isSelectStation ? '' : 'hidden'}`}>
