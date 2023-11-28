@@ -15,7 +15,8 @@
 	@media screen and (max-width: 767px){
 		.mapRef {
 			height: calc(100vh - 72px);
-			@apply  absolute left-0 right-0 top-[72px]
+			/* @apply  absolute left-0 right-0 top-[72px] */
+			/* background-color: #000; */
 		}
 	}
 	.ol-popup:after,

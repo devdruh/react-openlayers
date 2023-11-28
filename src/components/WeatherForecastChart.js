@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useEffect, useCallback, useState } from 'react';
+import WeatherMeteogram from './WeatherMeteogram';
+import { getProvincesName, getProvinceCitiesByProvCode, getCityWeatherByCode } from '../util/api';
 import "flowbite";
 
 const DisplayAlert = () => {
     return (
         <>
-            <div id="advisory-alert" className="p-4 mb-4 border border-sky-300 rounded-lg bg-slate-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800" role="alert">
+            <div id="advisory-alert" className="p-4 mb-10 border border-sky-300 rounded-lg bg-slate-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800" role="alert">
                 <div className="flex items-center">
                     <svg className="flex-shrink-0 w-4 h-4 mr-2 fill-sky-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
@@ -31,22 +33,219 @@ const DisplayAlert = () => {
     )
 }
 
-const DisplayChart = () => {
-    return (
-        <div className='grid grid-cols-1'>
-            <div className='p-10 bg-slate-100 text-center'>Today's Weather Forecast (Meteogram)</div>
-            <div className='p-5 bg-slate-200 text-center'>5-Day Weather Forecast</div>
-        </div>
-    )
-}
+const defaultCityName = "Toronto";
+const defaultProvinceCode = "ON";
+const defaultCityCode = "s0000458";
 
 const DisplayForecastChart = () => {
+
+    const [provinces, setProvinces] = useState([]);
+    const [provinceName, setProvinceName] = useState({ code: 35, term: defaultProvinceCode, description: 'Ontario' });
+    const [citiesName, setCitiesName] = useState([]);
+    const [cityCode, setCityCode] = useState('');
+    const [cityWeather, setCityWeather] = useState({});
+
+    const [stationName, setStationName] = useState('');
+    const [searchTimeout, setSearchTimeout] = useState(null);
+    const [searchResults, setSearchResults] = useState([]);
+    const [isSelectProvince, setIsSelectProvince] = useState(false);
+    const [isSelectStation, setIsSelectStation] = useState(false);
+    const [isDisSearchBtn, setIsDisSearchBtn] = useState(true);
+
+    const findProvinces = useCallback(async () => {
+
+        getProvincesName().then((response) => {
+
+            const sortProvinces = response.definitions.sort((a, b) => {
+                const nameA = a.description.toUpperCase(); // ignore upper and lowercase
+                const nameB = b.description.toUpperCase(); // ignore upper and lowercase
+                if (nameA < nameB) {
+                    return -1;
+                }
+                if (nameA > nameB) {
+                    return 1;
+                }
+                return 0;
+            });
+            
+            const filteredProvinces = sortProvinces.filter(function (prov) {
+                return prov.term !== 'IW' && prov.term !== 'UF';
+            });
+
+            setProvinces(filteredProvinces);
+        });
+
+    }, []);
+
+    const findProvinceCities = useCallback(async (province) => {
+
+        getProvinceCitiesByProvCode(province).then((response) => {
+            // start loading 
+            if (response) {
+                // end loading
+                setCitiesName(response);
+            }
+        });
+
+    }, []);
+
+
+    const initClimateWeather = useCallback(async (province, code) => {
+
+        findProvinces();
+        findProvinceCities(province);
+
+        getCityWeatherByCode(province, code).then((response) => {
+            // console.log(response, "<<<<< set data initCityClimateWeather");
+            setCityWeather(response);
+        });
+
+    }, [findProvinceCities, findProvinces]);
+    
+    const cityWeatherClimate = useCallback(async (province, code) => {
+
+        getCityWeatherByCode(province, code).then((response) => {
+            // console.log(response, "<<<<< set data cityWeatherClimate");
+            setCityWeather(response);
+        });
+
+    },[]);
+
+
+    const handleSearchProvince = (e) => {
+        
+        setIsSelectStation(true);
+        setIsSelectProvince(!isSelectProvince)
+    }
+
+    const handleSelectProvince = (e) => {
+        setIsSelectProvince(!isSelectProvince);
+        setProvinceName((data) => {
+            return {
+                ...data,
+                code: e.target.key,
+                description: e.target.innerHTML,
+                term: e.target.id
+            }
+        });
+
+        setStationName('');
+
+        findProvinceCities(e.target.id);
+        
+    }
+
+    const handleSearchStation = (e) => {
+        clearTimeout(searchTimeout);
+        setStationName(e.target.value);
+        setIsDisSearchBtn(true);
+        setIsSelectProvince(false);
+
+        
+        if (e.target.value === '') {
+            setIsSelectStation(true);
+            setIsDisSearchBtn(true);
+        }
+
+        setSearchTimeout(
+            setTimeout(() => {
+
+                if (e.target.value.length === 1) {
+                    console.log("set error")
+                    setIsSelectStation(true);
+                    setIsDisSearchBtn(true);
+                } else if (e.target.value.length >= 2) { 
+
+                    const findCities = citiesName.filter((item) => item.properties['English Names'].toLowerCase().includes(e.target.value.toLowerCase()));                    
+                    setSearchResults(findCities);
+                    setIsSelectStation(false);
+                }
+                
+            }, 1000)
+        )
+    }
+
+    const handleSelectCity = (e) => {
+        setCityCode(e.target.id);
+        setStationName(e.target.innerHTML);
+        setIsSelectStation(true);
+        setIsDisSearchBtn(false);
+    }
+
+    const handleSearchBtn = useCallback(async () => {
+
+        cityWeatherClimate(provinceName.term, cityCode);
+
+    }, [cityCode, provinceName, cityWeatherClimate]);
+
+    
+    useEffect(() => {
+        
+        initClimateWeather(defaultProvinceCode, defaultCityCode);
+        setStationName(defaultCityName);
+
+    }, [initClimateWeather]);
+    
     return (
-        <div className='container'>
+        <div className='flex flex-col'>
             <DisplayAlert />
-            <DisplayChart />
+            <div className="flex self-center grow">
+                <button id="dropdown-button-2"  className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600" type="button" onClick={handleSearchProvince} title={provinceName.description}>
+                    
+                    {provinceName.term} <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
+                    </svg>
+                </button>
+                <div id="dropdown-search-city" className={`absolute order-1 z-10 translate-y-12 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 ${isSelectProvince ? '': 'hidden'}`}>
+                    <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-button-2">
+                        {
+                            provinces.length > 0 ? 
+                                provinces.map((item) => {
+                                    return (
+                                        <li key={item.code}>
+                                            <button type="button" id={item.term} className="inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem" onClick={handleSelectProvince}>
+                                                       
+                                                {item.description}
+                                                
+                                            </button>
+                                        </li>
+                                    )
+                                })
+                                : null
+                        }
+                    </ul>
+                </div>
+                <div className="relative w-80">
+                    <input type="search" id="location-search" className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-sky-500 focus:border-sky-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-sky-500" placeholder="Search for city | address | station" required value={stationName} onChange={handleSearchStation}/>
+                    
+                    <div id='list-station-result' className={`z-10 w-full absolute translate-y-1 bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 ${!isSelectStation ? '' : 'hidden'}`}>
+                        <ul className="text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-button-2">
+                        {
+                            searchResults.length > 0 ? 
+                                searchResults.map((item, i) => {
+                                    return (
+                                        <li key={i} className='border-b last:border-b-0'>
+                                            <button type="button" id={item.properties.Codes} className="inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem" onClick={handleSelectCity}>
+                                                {item.properties["English Names"]}
+                                            </button>
+                                        </li>
+                                    )
+                                })
+                                : null
+                        }
+                        </ul>
+                    </div>
+                    <button type="submit" className="absolute top-0 end-0 h-full p-2.5 text-sm font-medium disabled:bg-slate-500 text-white enabled:bg-gradient-to-br enabled:from-green-400 enabled:to-blue-600 hover:bg-gradient-to-bl hover:bg-sky-800 rounded-e-lg focus:ring-2 focus:outline-none focus:ring-blue-300 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800 focus:ease-in focus:duration-300 focus:scale-110 focus:transition" disabled={isDisSearchBtn} onClick={handleSearchBtn}>
+                        <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                        </svg>
+                        <span className="sr-only">Search</span>
+                    </button>
+                </div>
+            </div>
+            <WeatherMeteogram cityWeather={cityWeather} />
         </div>
     )
 }
 
-export default DisplayForecastChart
+export default DisplayForecastChart;

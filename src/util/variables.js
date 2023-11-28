@@ -10,7 +10,9 @@ const dateOptions = {
 const layerSourceInfo = [
     { name: 'Air Surface Temperature', layer: 'GDPS.ETA_TT', url: 'https://geo.weather.gc.ca/geomet' },
     { name: 'RAQDPS - FireWork', layer: 'RAQDPS-FW.EATM_PM2.5-DIFF', url: 'https://geo.weather.gc.ca/geomet' },
-    { name: 'Air Quality Health Index', layer: '', url: 'https://api.weather.gc.ca/collections/aqhi-forecasts-realtime/items?f=json' }
+    { name: 'Air Quality Health Index', layer: '', url: 'https://api.weather.gc.ca/collections/aqhi-forecasts-realtime/items?f=json' },
+    { name: 'Climate Hourly', layer: '', url: 'https://api.weather.gc.ca/collections/climate-hourly/items' },
+    { name: 'Weather Condition', layer: 'CURRENT_CONDITIONS', url: 'https://geo.weather.gc.ca/geomet' }
 ];
 
 var aqhiChartOptions = {
@@ -90,4 +92,126 @@ var aqhiChartOptions = {
     },
 }
 
-export { dateOptions, layerSourceInfo, aqhiChartOptions }
+const weatherForecastChartOptions = {
+
+    time: {
+        useUTC: false,
+    },
+
+    title: {
+        text: '',
+        style: {
+            fontWeight: '500',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis'
+        }
+    },
+
+    credits: {
+        text: 'Data from <a href="https://weather.gc.ca/">Canada Weather</a>',
+        href: 'https://weather.gc.ca/',
+        // position: {
+        //     x: -40
+        // }
+    },
+
+
+    subtitle: {
+      text: 'As of '  
+    },
+
+    xAxis: [
+        { // Bottom X axis
+            type: 'datetime',
+            tickInterval: 2 * 36e5, // two hours
+            minorTickInterval: 36e5, // one hour
+            tickLength: 0,
+            gridLineWidth: 1,
+            gridLineColor: 'rgba(128, 128, 128, 0.1)',
+            startOnTick: false,
+            endOnTick: false,
+            minPadding: 0,
+            maxPadding: 0,
+            offset: 30,
+            showLastLabel: true,
+            labels: {
+                format: '{value:%H}'
+            },
+            crosshair: true
+        },
+        { // Top X axis
+            linkedTo: 0,
+            type: 'datetime',
+            tickInterval: 24 * 3600 * 1000,
+            labels: {
+                format: '{value:<span style="font-size: 12px; font-weight: bold">%a</span> %b %e}',
+                align: 'left',
+                x: 3,
+                y: 8
+            },
+            opposite: true,
+            tickLength: 20,
+            gridLineWidth: 1
+        }
+    ],
+
+    yAxis: [
+        { // temperature axis
+            title: {
+                text: null
+            },
+            labels: {
+                format: '{value}°',
+                style: {
+                    fontSize: '10px'
+                },
+                x: -3
+            },
+            plotLines: [{ // zero plane
+                value: 0,
+                color: '#BBBBBB',
+                width: 1,
+                zIndex: 2
+            }],
+            maxPadding: 0.3,
+            minRange: 8,
+            tickInterval: 1,
+            gridLineColor: 'rgba(128, 128, 128, 0.1)'
+        }
+    ],
+
+    legend: {
+        enabled: false
+    },
+
+    plotOptions: {
+        series: {
+            pointPlacement: 'between'
+        }
+    },
+
+    series: [
+        {
+            name: 'Temperature',
+            data: [],
+            type: 'spline',
+            marker: {
+                enabled: false,
+                states: {
+                    hover: {
+                        enabled: true
+                    }
+                }
+            },
+            tooltip: {
+                pointFormat: '<span style="color:{point.color}">\u25CF</span> ' +
+                    '{series.name}: <b>{point.y}°C</b><br/>'
+            },
+            zIndex: 1,
+            color: '#FF3333',
+            negativeColor: '#48AFE8'
+        },
+    ]
+}
+
+export { dateOptions, layerSourceInfo, aqhiChartOptions, weatherForecastChartOptions }

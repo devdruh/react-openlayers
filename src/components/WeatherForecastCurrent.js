@@ -5,7 +5,7 @@ import WeatherForecastChart from './WeatherForecastChart'
 const CurrentForecasted = () => {
     return (
         <div className='pt-3 px-3'>
-            <div className='columns-2 gap-3'>
+            <div className='grid sm:grid-cols-2 sm:grid-rows-1 gap-3'>
                 <WeatherForecastChart/>
                 <WeatherMapDisplay/>
             </div>
