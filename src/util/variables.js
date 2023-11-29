@@ -94,6 +94,55 @@ var aqhiChartOptions = {
 
 const weatherForecastChartOptions = {
 
+    chart: {
+        events: {
+            render: function (event) { 
+
+                var _data = event.target.series[0];
+
+                if (_data.customMarkers) {
+                    _data.customMarkers.forEach(function(marker) {
+                        marker.destroy();
+                    });
+                }
+
+                _data.customMarkers = [];
+                
+                if (_data.hasOwnProperty('data')) {
+
+                    setTimeout(() => {
+
+                        for (let index = 0; index < _data.data.length; index++) {
+                            const element = _data.data[index];
+
+                            if (index % 2 === 0) {
+                                const markerImage = 'https://meteo.gc.ca/weathericons/' + element.symbolCode + '.gif';
+                                const markerWidth = 35;
+                                const markerHeight = 30;
+                                const markerXOffset = event.target.plotLeft - 8;
+                                const markerYOffset = event.target.plotTop - 40;
+                                const xPos = element.plotX + markerXOffset;
+                                const yPos = element.plotY + markerYOffset;
+
+                                const marker = event.target.renderer.image(markerImage, xPos, yPos, markerWidth, markerHeight)
+                                    .attr({
+                                        zIndex: 5
+                                    })
+                                    .add();
+
+                                _data.customMarkers.push(marker);
+
+                            }
+
+                        }
+
+                    }, 1000);
+                    
+                }
+            }
+        },
+    },
+
     time: {
         useUTC: false,
     },
@@ -117,7 +166,7 @@ const weatherForecastChartOptions = {
 
 
     subtitle: {
-      text: 'As of '  
+        text: 'As of '
     },
 
     xAxis: [
@@ -208,7 +257,7 @@ const weatherForecastChartOptions = {
                 states: {
                     hover: {
                         enabled: true
-                    }
+                    },
                 }
             },
             tooltip: {
