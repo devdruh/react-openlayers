@@ -96,48 +96,50 @@ const weatherForecastChartOptions = {
 
     chart: {
         events: {
-            render: function (event) { 
 
-                var _data = event.target.series[0];
+            redraw: function (event) {
 
-                if (_data.customMarkers) {
-                    _data.customMarkers.forEach(function(marker) {
-                        marker.destroy();
-                    });
+                const _data = event.target.series;
+
+                const node = event.target.renderer.box.children;
+                for (let index = 0; index < node.length; index++) {
+                    const element = node[index];
+                    if (element.id === "weather-condition-container") {
+                        element.remove();
+                    }
                 }
 
-                _data.customMarkers = [];
-                
-                if (_data.hasOwnProperty('data')) {
+                const container = event.target.renderer.g(event.target.plotLeft, event.target.plotTop, event.target.plotWidth, event.target.plotHeight)
+                .attr({
+                    id: "weather-condition-container"
+                }).attr({
+                    zIndex: 5
+                })
+                .add();
 
-                    setTimeout(() => {
+                for (let index = 0; index < _data.length; index++) {
+                    const element = _data[index];
+                    if (element.points) {
+                        
+                        element.points.forEach((series, i) => {
+                            
+                            if (i % 2 === 0) {
+                                const imageUrl = 'https://meteo.gc.ca/weathericons/' + series.symbolCode + '.gif';
+                                const imageWidth = 35;
+                                const imageHeight = 30;
+                                const imageXOffset = event.target.plotLeft - 8;
+                                const imageYOffset = event.target.plotTop - 40;
+                                const xPos = series.plotX + imageXOffset;
+                                const yPos = series.plotY + imageYOffset;
 
-                        for (let index = 0; index < _data.data.length; index++) {
-                            const element = _data.data[index];
-
-                            if (index % 2 === 0) {
-                                const markerImage = 'https://meteo.gc.ca/weathericons/' + element.symbolCode + '.gif';
-                                const markerWidth = 35;
-                                const markerHeight = 30;
-                                const markerXOffset = event.target.plotLeft - 8;
-                                const markerYOffset = event.target.plotTop - 40;
-                                const xPos = element.plotX + markerXOffset;
-                                const yPos = element.plotY + markerYOffset;
-
-                                const marker = event.target.renderer.image(markerImage, xPos, yPos, markerWidth, markerHeight)
+                                event.target.renderer.image(imageUrl, xPos, yPos, imageWidth, imageHeight)
                                     .attr({
                                         zIndex: 5
                                     })
-                                    .add();
-
-                                _data.customMarkers.push(marker);
-
+                                    .add(container);
                             }
-
-                        }
-
-                    }, 1000);
-                    
+                        })
+                    }
                 }
             }
         },

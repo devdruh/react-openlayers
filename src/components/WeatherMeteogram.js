@@ -4,11 +4,10 @@ import HighchartsReact from 'highcharts-react-official';
 import { useCallback } from 'react';
 import { weatherForecastChartOptions } from '../util/variables';
 
-
 const WeatherMeteogram = ({ cityWeather }) => {
 
     const [chartOptions, setChartOptions] = useState(weatherForecastChartOptions);
-    const currentCondition = cityWeather.siteData?.currentConditions;
+    const currentCondition = cityWeather?.siteData?.currentConditions;
 
     const initHighCharts = useCallback(async () => {
 
@@ -105,7 +104,7 @@ const WeatherMeteogram = ({ cityWeather }) => {
                                         <img src={`https://meteo.gc.ca/weathericons/${currentCondition?.iconCode}.gif`} className='h-[51px] translate-y-1' width={60} alt={`${currentCondition?.condition}`} />
                                         : null
                                 }
-                                <h5 className="text-5xl font-semibold tracking-tight text-gray-900 dark:text-white">{ Math.floor(currentCondition?.temperature) }</h5>
+                                <h5 className="text-5xl font-semibold tracking-tight text-gray-900 dark:text-white">{ currentCondition?.temperature ? Math.floor(currentCondition?.temperature) : null }</h5>
                                 {/* <p className='pl-2 flex gap-1'><a href='/'>°C</a> | <a href='/' className='text-gray-500'>°F</a></p> */}
                                 <p className='pl-2 flex gap-1'>°C</p>
                                 <div className='text-xs pl-4 whitespace-nowrap'>
@@ -119,7 +118,7 @@ const WeatherMeteogram = ({ cityWeather }) => {
                         <div>
                             <div className='md:text-right text-center'>
                                 <h5 className='text-lg'>Weather</h5>
-                                <p className='text-sm font-thin text-gray-500 dark:text-gray-400'>{ new Date(currentCondition?.dateTime[1].year, currentCondition?.dateTime[1].month - 1, currentCondition?.dateTime[1].day, currentCondition?.dateTime[1].hour, currentCondition?.dateTime[1].minute).toLocaleDateString(undefined, { weekday: 'long',hour: 'numeric', hour12: false, minute: 'numeric', timeZoneName:'shortGeneric'}) }</p>
+                                <p className='text-sm font-thin text-gray-500 dark:text-gray-400'>{ new Date(currentCondition?.dateTime[1].year, currentCondition?.dateTime[1].month - 1, currentCondition?.dateTime[1].day, currentCondition?.dateTime[1].hour, currentCondition?.dateTime[1].minute).toLocaleDateString(undefined, { weekday: 'short', hour: 'numeric', minute: 'numeric', timeZoneName:'short'}) }</p>
                                 <p className='text-sm font-thin text-gray-500 dark:text-gray-400'>{ currentCondition?.condition }</p>
                             </div>
                         </div>

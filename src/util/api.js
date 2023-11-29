@@ -3,7 +3,8 @@ import { dateOptions, layerSourceInfo } from "./variables";
 
 const currDate = new Date();
 const myLocalDate = currDate.toLocaleDateString(navigator.local, dateOptions);
-const proxy_url = 'https://api.allorigins.win/raw?url=';
+// const proxy_url = 'https://api.allorigins.win/raw?url=';
+const proxy_url = 'https://corsproxy.io/?';
 
 const getAirQualityHealthIndex = async (locId) => {
 
@@ -162,7 +163,8 @@ const getProvincesName = async () => {
 const getProvinceCitiesByProvCode = async (code) => { 
 
     try {
-        const response = await fetch(proxy_url + 'https://collaboration.cmc.ec.gc.ca/cmc/cmos/public_doc/msc-data/citypage-weather/site_list_en.geojson')
+        // const response = await fetch(proxy_url + 'https://collaboration.cmc.ec.gc.ca/cmc/cmos/public_doc/msc-data/citypage-weather/site_list_en.geojson')
+        const response = await fetch(proxy_url + encodeURIComponent('https://collaboration.cmc.ec.gc.ca/cmc/cmos/public_doc/msc-data/citypage-weather/site_list_en.geojson'));
         
         if (!response.ok) {
             throw new Error(response.statusText);
