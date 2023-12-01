@@ -113,33 +113,33 @@ const WeatherMeteogram = ({ cityWeather }) => {
                     <div className='grid sm:grid-cols-2 max-sm:grid-cols-2 gap-4 p-4 border border-gray-200 rounded-lg shadow animate-pulse md:p-6 dark:border-gray-700'>
                         <div role="status">
                             <div className="flex items-center max-sm:justify-stretch">
-                                <div className="h-[60px] max-sm:h-12 max-sm:w-14 max-sm:pl-0 max-sm:mt-4 sm:w-[75px] sm:mt-3 pl-2 pt-2 mr-2 mb-3 bg-gray-300 rounded-full dark:bg-gray-700">
-                                    <svg className="w-10 h-10 max-sm:w-12 max-sm:h-8 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
+                                <div className="max-sm:h-14 max-sm:pt-2 max-sm:mr-2 max-sm:mt-2 sm:h-12 sm:w-24 sm:mr-4 sm:mt-3 md:h-14 md:w-24 w-24 md:mt-3 xl:w-20 bg-gray-300 rounded-full dark:bg-gray-700">
+                                    <svg className="max-sm:w-14 max-sm:h-7 max-sm:mt-1 sm:w-6 sm:ml-3 sm:mt-2 md:ml-4 md:mt-3 xl:ml-4 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
                                         <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM10.5 6a1.5 1.5 0 1 1 0 2.999A1.5 1.5 0 0 1 10.5 6Zm2.221 10.515a1 1 0 0 1-.858.485h-8a1 1 0 0 1-.9-1.43L5.6 10.039a.978.978 0 0 1 .936-.57 1 1 0 0 1 .9.632l1.181 2.981.541-1a.945.945 0 0 1 .883-.522 1 1 0 0 1 .879.529l1.832 3.438a1 1 0 0 1-.031.988Z"/>
                                         <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z"/>
                                     </svg>
                                 </div>
                                 <div className='w-full'>
-                                    <div className="h-2 w-32 bg-gray-200 rounded-full dark:bg-gray-700 mb-2"></div>
-                                    <div className="h-2 w-60 bg-gray-200 rounded-full dark:bg-gray-700 mb-2"></div>
-                                    <div className="h-2 w-40 bg-gray-200 rounded-full dark:bg-gray-700 mb-2"></div>
+                                    <div className="h-2 w-4/5 bg-gray-200 rounded-full dark:bg-gray-700 mb-2 max-sm:mt-3 sm:mt-4 md:mt-4 lg:mt-0"></div>
+                                    <div className="h-2 w-10/12 bg-gray-200 rounded-full dark:bg-gray-700 mb-2"></div>
+                                    <div className="h-2 w-full bg-gray-200 rounded-full dark:bg-gray-700 mb-2"></div>
                                     <div className="h-2 w-full bg-gray-200 rounded-full dark:bg-gray-700 mb-2"></div>
                                 </div>
                             </div>
                             <div className='w-full'>
-                                <div className="h-2 w-2/3 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                                <div className="h-2 w-2/3 bg-gray-200 rounded-full dark:bg-gray-700 mt-2 sm:mt-4 sm:mb-5 md:mt-4 md:mb-1 lg:mb-0"></div>
                             </div>
                         </div>
                         <div role="status">
                             <div className="flex justify-end">
                                 <div className='w-1/2'>
-                                    <div className="h-7 w-3/4 bg-gray-200 rounded-full dark:bg-gray-700 mt-2"></div>
+                                    <div className="h-7 w-3/4 bg-gray-200 rounded-full dark:bg-gray-700 mt-2 md:mt-3 sm:mt-3 lg:mt-0"></div>
                                     <div className="h-2 w-3/4 bg-gray-200 rounded-full dark:bg-gray-700  mt-2"></div>
                                     <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mt-2"></div>
                                 </div>
                             </div>  
                             <div className='flex justify-end'>
-                                <div className="h-2 w-1/2 bg-gray-200 rounded-full dark:bg-gray-700 mt-4"></div>
+                                <div className="h-2 w-1/2 bg-gray-200 rounded-full dark:bg-gray-700 sm:mt-5 md:mt-6 mt-3"></div>
                             </div>
                         </div>
                     </div>  
