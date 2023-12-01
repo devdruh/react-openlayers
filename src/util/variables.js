@@ -159,7 +159,7 @@ const weatherForecastChartOptions = {
     },
 
     credits: {
-        text: 'Data from <a href="https://weather.gc.ca/">Canada Weather</a>',
+        text: 'Source: <a href="https://weather.gc.ca/">Canada Weather</a>',
         href: 'https://weather.gc.ca/',
         // position: {
         //     x: -40
