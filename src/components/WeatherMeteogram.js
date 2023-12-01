@@ -8,6 +8,7 @@ const WeatherMeteogram = ({ cityWeather }) => {
 
     const [chartOptions, setChartOptions] = useState(weatherForecastChartOptions);
     const currentCondition = cityWeather?.siteData?.currentConditions;
+    const sunriseSunset = cityWeather?.siteData?.riseSet;
 
     const initHighCharts = useCallback(async () => {
 
@@ -40,7 +41,7 @@ const WeatherMeteogram = ({ cityWeather }) => {
             _date.setHours('00');
             _date.setMinutes('00');
             _date.setSeconds('00');
-            var pointStart;
+            var pointStart, maxValue = 0;
             
             for (let index = 0; index < hourlyForecast.length; index++) {
 
@@ -70,7 +71,12 @@ const WeatherMeteogram = ({ cityWeather }) => {
                                     symbolCode: element.iconCode
                                 }
                             ]
-                        }]
+                        }],
+                        yAxis: [
+                            {
+                                softMax: Math.max(maxValue, element.temperature) + 2
+                            }
+                        ]
                     }
                 });
                 
@@ -109,9 +115,22 @@ const WeatherMeteogram = ({ cityWeather }) => {
                                 <p className='pl-2 flex gap-1'>°C</p>
                                 <div className='text-xs pl-4 whitespace-nowrap'>
                                     <p className='font-normal text-gray-500 dark:text-gray-400'>Dew point: { currentCondition?.dewpoint}°C</p> 
-                                    <p className='font-normal text-gray-500 dark:text-gray-400'>Humidity: { currentCondition?.relativeHumidity }%</p> 
-                                    <p className='font-normal text-gray-500 dark:text-gray-400'>Wind: { currentCondition?.wind.speed } km/h</p>
-                                    <p className='font-normal text-gray-500 dark:text-gray-400'>Wind Chill: { currentCondition?.windChill }</p>
+                                    <p className='font-normal text-gray-500 dark:text-gray-400'>Humidity: {currentCondition?.relativeHumidity}%</p> 
+                                    {
+                                        currentCondition?.wind ?
+                                            <p className='font-normal text-gray-500 dark:text-gray-400'>Wind: {
+                                                    currentCondition?.wind.direction + ' ' + currentCondition?.wind.speed
+                                                }
+                                                {
+                                                    currentCondition?.wind.gust === '' ? '' : ' gust ' + currentCondition?.wind.gust
+                                                } km/h</p>
+                                            :
+                                            null
+                                    }
+                                    {
+                                        currentCondition?.windChill !== undefined ?  <p className='font-normal text-gray-500 dark:text-gray-400'>Wind Chill: { currentCondition?.windChill }</p> : null
+                                    }
+                                    
                                 </div>
                             </div>
                         </div>
@@ -122,7 +141,10 @@ const WeatherMeteogram = ({ cityWeather }) => {
                                 <p className='text-sm font-thin text-gray-500 dark:text-gray-400'>{ currentCondition?.condition }</p>
                             </div>
                         </div>
-                        <div className='col-span-2 pt-2'><p className='text-xs font-normal text-gray-400 dark:text-gray-400'>Observed at: { currentCondition?.station}</p></div>
+                        <div className='col-span-2 columns-2 align-middle'>
+                            <div className='pt-2'><p className='flex flex-nowrap text-xs font-normal text-gray-400 dark:text-gray-400'>Observed at: {currentCondition?.station}</p></div>
+                            <div className='pt-2 text-right'><p className='flex justify-end text-xs font-normal text-gray-400 dark:text-gray-400'><img width="15" height="15" src="https://img.icons8.com/ios-filled/50/sunrise--v1.png" alt="sunrise" title='Sunrise' /> {new Date(sunriseSunset?.dateTime[1].year, sunriseSunset?.dateTime[1].month - 1, sunriseSunset?.dateTime[1].day, sunriseSunset?.dateTime[1].hour, sunriseSunset?.dateTime[1].minute).toLocaleTimeString(undefined, { hour: 'numeric', minute: 'numeric', hour12: false, timeZoneName: 'short' })} <img width="15" height="15" src="https://img.icons8.com/ios-filled/50/sunset.png" alt="sunset" title='Sunset'/> {new Date(sunriseSunset?.dateTime[3].year, sunriseSunset?.dateTime[3].month - 1, sunriseSunset?.dateTime[3].day, sunriseSunset?.dateTime[3].hour, sunriseSunset?.dateTime[3].minute).toLocaleTimeString(undefined, { hour: 'numeric', minute: 'numeric', hour12: false, timeZoneName: 'short' })}</p></div>
+                        </div>
                     </div>
 
                     <HighchartsReact highcharts={Highcharts} options={chartOptions} />
