@@ -7,6 +7,7 @@ import { weatherForecastChartOptions } from '../util/variables';
 const WeatherMeteogram = ({ cityWeather }) => {
 
     const [chartOptions, setChartOptions] = useState(weatherForecastChartOptions);
+    const [isLoading, setIsLoading] = useState(true);
     const currentCondition = cityWeather?.siteData?.currentConditions;
     const sunriseSunset = cityWeather?.siteData?.riseSet;
 
@@ -87,6 +88,10 @@ const WeatherMeteogram = ({ cityWeather }) => {
                 }
                 
             }
+
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 1000);
         }
 
     }, [cityWeather]);
@@ -94,6 +99,7 @@ const WeatherMeteogram = ({ cityWeather }) => {
     
     useEffect(() => { 
     
+        setIsLoading(true);
         initHighCharts();
 
     }, [initHighCharts]);
@@ -102,6 +108,43 @@ const WeatherMeteogram = ({ cityWeather }) => {
         <div className='flex flex-col'>
             <div>
                 <div className='pt-5 w-full'>
+                {
+                    isLoading ? 
+                    <div className='grid sm:grid-cols-2 max-sm:grid-cols-2 gap-4 p-4 border border-gray-200 rounded-lg shadow animate-pulse md:p-6 dark:border-gray-700'>
+                        <div role="status">
+                            <div className="flex items-center max-sm:justify-stretch">
+                                <div className="h-[60px] max-sm:h-12 max-sm:w-14 max-sm:pl-0 max-sm:mt-4 sm:w-[75px] sm:mt-3 pl-2 pt-2 mr-2 mb-3 bg-gray-300 rounded-full dark:bg-gray-700">
+                                    <svg className="w-10 h-10 max-sm:w-12 max-sm:h-8 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
+                                        <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM10.5 6a1.5 1.5 0 1 1 0 2.999A1.5 1.5 0 0 1 10.5 6Zm2.221 10.515a1 1 0 0 1-.858.485h-8a1 1 0 0 1-.9-1.43L5.6 10.039a.978.978 0 0 1 .936-.57 1 1 0 0 1 .9.632l1.181 2.981.541-1a.945.945 0 0 1 .883-.522 1 1 0 0 1 .879.529l1.832 3.438a1 1 0 0 1-.031.988Z"/>
+                                        <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z"/>
+                                    </svg>
+                                </div>
+                                <div className='w-full'>
+                                    <div className="h-2 w-32 bg-gray-200 rounded-full dark:bg-gray-700 mb-2"></div>
+                                    <div className="h-2 w-60 bg-gray-200 rounded-full dark:bg-gray-700 mb-2"></div>
+                                    <div className="h-2 w-40 bg-gray-200 rounded-full dark:bg-gray-700 mb-2"></div>
+                                    <div className="h-2 w-full bg-gray-200 rounded-full dark:bg-gray-700 mb-2"></div>
+                                </div>
+                            </div>
+                            <div className='w-full'>
+                                <div className="h-2 w-2/3 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                            </div>
+                        </div>
+                        <div role="status">
+                            <div className="flex justify-end">
+                                <div className='w-3/4'>
+                                    <div className="h-7 w-1/2 bg-gray-200 rounded-full dark:bg-gray-700 mb-1"></div>
+                                    <div className="h-2 w-48 bg-gray-200 rounded-full dark:bg-gray-700  mb-1"></div>
+                                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-1"></div>
+                                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-4"></div>
+                                    
+                                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-1"></div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>  
+                    : 
                     <div className='grid md:grid-cols-2 items-center p-4 sm:p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700'>
                         <div>
                             <div className='flex sm:flex-row justify-center '>
@@ -146,8 +189,8 @@ const WeatherMeteogram = ({ cityWeather }) => {
                             <div className='pt-2 text-right'><p className='flex justify-end text-xs font-normal text-gray-400 dark:text-gray-400'><img width="15" height="15" src="https://img.icons8.com/ios-filled/50/sunrise--v1.png" alt="sunrise" title='Sunrise' /> {new Date(sunriseSunset?.dateTime[1].year, sunriseSunset?.dateTime[1].month - 1, sunriseSunset?.dateTime[1].day, sunriseSunset?.dateTime[1].hour, sunriseSunset?.dateTime[1].minute).toLocaleTimeString(undefined, { hour: 'numeric', minute: 'numeric', hour12: false, timeZoneName: 'short' })} <img width="15" height="15" src="https://img.icons8.com/ios-filled/50/sunset.png" alt="sunset" title='Sunset'/> {new Date(sunriseSunset?.dateTime[3].year, sunriseSunset?.dateTime[3].month - 1, sunriseSunset?.dateTime[3].day, sunriseSunset?.dateTime[3].hour, sunriseSunset?.dateTime[3].minute).toLocaleTimeString(undefined, { hour: 'numeric', minute: 'numeric', hour12: false, timeZoneName: 'short' })}</p></div>
                         </div>
                     </div>
-
-                    <HighchartsReact highcharts={Highcharts} options={chartOptions} />
+                }
+                <HighchartsReact highcharts={Highcharts} options={chartOptions} />
                 </div>
             </div>
             <div>
