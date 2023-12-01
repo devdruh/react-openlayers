@@ -226,7 +226,7 @@ const weatherForecastChartOptions = {
             }],
             maxPadding: 0.3,
             minRange: 8,
-            tickInterval: 1,
+            // tickInterval: 1,
             gridLineColor: 'rgba(128, 128, 128, 0.1)'
         }
     ],
