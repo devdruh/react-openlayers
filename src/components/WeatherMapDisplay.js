@@ -12,7 +12,7 @@ import { fromLonLat, toLonLat, transformExtent } from 'ol/proj';
 import { Circle as CircleStyle, Stroke, Style, Fill, Icon } from 'ol/style.js';
 import { dateOptions, layerSourceInfo } from "../util/variables";
 import { initFlowbite } from "flowbite";
-import { getAirSurfaceTemp, getClosestAqhi, getClosestAqhiNow, getClosestAqhiToday } from "../util/api";
+import { getAirSurfaceTemp, getClosestAqhi, getClosestAqhiNow, getClosestAqhiToday, getWeatherAlerts } from "../util/api";
 import WeatherMapInfo from "./WeatherMapInfo";
 import WeatherLayerList from "./WeatherLayerList";
 import WeatherWidgetChart from "./WeatherWidgetChart";
@@ -29,9 +29,10 @@ const WeatherMapDisplay = () => {
     const popupDiv = useRef(null);
     const airTempLayerId = useId();
     const airQualityLayerId = useId();
-    const weatherCondLayerId = useId();
+    const weatherAlertsLayerId = useId();
     const [isLoading, setIsLoading] = useState(true);
     const [airTableData, setAirTableData] = useState({});
+    const [alertsTableData, setAlertsTableData] = useState([]);
     const [radarTime, setRadarTime] = useState({ start: null, end: null, current: null, iso: null, local: null });
     const [isClickPlayBtn, setIsClickPlayBtn] = useState(false);
     const [isClickLegendBtn, setIsClickLegendBtn] = useState(false);
@@ -101,6 +102,10 @@ const WeatherMapDisplay = () => {
                 params: { 'LAYERS': layerSourceInfo[1].layer, 't': new Date(Math.round(Date.now())).toISOString().split('.')[0] + "Z" },
                 
             });
+            const weatherAlertsWMS = new TileWMS({
+                url: layerSourceInfo[5].url,
+                params: { 'LAYERS': layerSourceInfo[5].layer},
+            });
 
             const airSurfaceTempLayer = new TileLayer({
                 id: airTempLayerId,
@@ -117,6 +122,13 @@ const WeatherMapDisplay = () => {
                 source: raqdpsWMS,
                 // opacity: 0.4,
                 zIndex: 1
+            });
+
+            const weatherAlertsLayer = new TileLayer({
+                id: weatherAlertsLayerId,
+                title: layerSourceInfo[5].name,
+                source: weatherAlertsWMS,
+                opacity: 0.7
             });
 
             const aqhiVector = new VectorSource({
@@ -142,19 +154,6 @@ const WeatherMapDisplay = () => {
             const pinLocLayer = new VectorLayer({
                 source: new VectorSource()
             });
-
-            const weatherConditionSource = new TileWMS({
-                url: layerSourceInfo[4].url,
-                params: { 'LAYERS': layerSourceInfo[4].layer },
-                transition: 0
-            });
-
-            const weatherConditionLayer = new TileLayer({
-                id: weatherCondLayerId,
-                title: layerSourceInfo[4].name,
-                source: weatherConditionSource,
-                zIndex: 2,
-            });
             
             const view = new View({
                 center: fromLonLat([-97, 57]),
@@ -165,7 +164,7 @@ const WeatherMapDisplay = () => {
             });
 
             const layerGroup = new LayerGroup({
-                layers: [airSurfaceTempLayer, raqdpsLayer, weatherConditionLayer]
+                layers: [airSurfaceTempLayer, raqdpsLayer, weatherAlertsLayer]
             });
 
             map.current = new Map({
@@ -225,12 +224,58 @@ const WeatherMapDisplay = () => {
 
                 findAqhiFeatures(coordinate);
                 findAstFeatures(coordinate);
+                findAlertsFeatures(coordinate);
 
                 setAirTableData(data => {
                     return { ...data, coordinate: toStringCoordinate }
                 });
 
             });
+
+            async function findAlertsFeatures(coordinate) {
+
+                const viewResolution = map.current.getView().getResolution();
+                const alertsUrl = weatherAlertsWMS.getFeatureInfoUrl(
+                    coordinate,
+                    viewResolution,
+                    "EPSG:3857",
+                    { INFO_FORMAT: "application/json" }
+                );
+
+                getWeatherAlerts(alertsUrl).then(response => {
+
+                    if (response?.features.length > 0) {
+
+                        const features = response.features;
+
+                        for (let index = 0; index < features.length; index++) {
+                            const element = features[index];
+
+                            setAlertsTableData((data) => {
+                                return [{
+                                    ...data,
+                                    id: element.properties.identifier,
+                                    type: element.properties.alert_type,
+                                    area_en: element.properties.area,
+                                    area_fr: element.properties.zone,
+                                    desc_en: element.properties.descrip_en,
+                                    desc_fr: element.properties.descrip_fr,
+                                    effective: new Date(element.properties.effective).toLocaleDateString(navigator.local, dateOptions),
+                                    expires: new Date(element.properties.expires).toLocaleDateString(navigator.local, dateOptions),
+                                    headline: element.properties.headline,
+                                    status: element.properties.status,
+                                    title: element.properties.titre
+                                }]
+                            });                            
+                        }
+                        
+                    } else {
+                        setAlertsTableData([]);
+                    }
+                    
+                });
+                
+            }
 
             async function findAstFeatures(coordinate) {
                 
@@ -310,7 +355,7 @@ const WeatherMapDisplay = () => {
             setLayerLegendList(layerGroup.getLayers());
         }
 
-    }, [airQualityLayerId, airTempLayerId, weatherCondLayerId]);
+    }, [airQualityLayerId, airTempLayerId, weatherAlertsLayerId]);
 
     useEffect(() => {
 
@@ -527,7 +572,6 @@ const WeatherMapDisplay = () => {
                             <h3 className="font-semibold text-gray-900 dark:text-white">(Lon/Lat): <span className="font-thin text-gray-900 dark:text-white">{airTableData.coordinate}</span></h3>
                         </div>
                         <div className="grid grid-cols-2 border-b border-b-slate-300 gap-3 p-1">
-                            
                             <div className="text-right self-center">
                                 <p className="text-xs text-gray-900 dark:text-white">Air Surface Temperature : </p>
                             </div>
@@ -535,8 +579,7 @@ const WeatherMapDisplay = () => {
                                 <p>{Math.round(airTableData.airsurftemp)} °C</p>
                             </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-3 p-1">
-                            
+                        <div className="grid grid-cols-2 gap-3 py-1">
                             <div className="text-right self-center">
                                 <p className="text-xs text-gray-900 dark:text-white">AQHI-Forecast : </p>
                             </div>
@@ -544,7 +587,7 @@ const WeatherMapDisplay = () => {
                                 <p>{Math.round(airTableData.aqhi)}</p>
                             </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-3 p-1">
+                        <div className="grid grid-cols-2 gap-3 pb-1">
                             <div className="text-right self-center">
                                 <p className="text-xs text-gray-900 dark:text-white">Forecast DateTime : </p>
                             </div>
@@ -552,7 +595,7 @@ const WeatherMapDisplay = () => {
                                 <p>{airTableData.aqhiforecastdate}</p>
                             </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-3 p-1">
+                        <div className="grid grid-cols-2 gap-3 pb-1 border-b border-b-slate-300">
                             <div className="text-right self-center">
                                 <p className="text-xs text-gray-900 dark:text-white">Closest Forecast Location : </p>
                             </div>
@@ -560,6 +603,51 @@ const WeatherMapDisplay = () => {
                                 <p>{airTableData.aqhiLocName}</p>
                             </div>
                         </div>
+
+                        {
+                            alertsTableData.length > 0 ?
+                                alertsTableData.map((item) => {
+                                    return (
+                                        <div key={item.id}>
+                                            <div className="grid grid-flow-row p-1">
+                                                <div className={`text-center self-center py-1 ${item.type === 'warning' ? 'bg-[#FF0000] text-white' : item.type === 'watch' ? ' bg-[#FFFF00] text-slate-600' : item.type === 'statement' ? 'bg-[#7F7F7F] text-slate-100' : item.type === 'advisory' ? 'bg-slate-600' : null}`}>
+                                                  <p className='text-xs capitalize font-medium'>{item.headline} </p>
+                                                </div>
+                                                <div className="text-center self-center">
+                                                    <p className="text-xs font-medium text-gray-900 dark:text-white">{item.area_en} </p>
+                                                </div>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-3 pb-1">
+                                                <div className="text-right self-center">
+                                                    <p className="text-xs text-gray-900 dark:text-white">Effective : </p>
+                                                </div>
+                                                <div className="px-1 self-center text-xs">
+                                                    <p>{item.effective}</p>
+                                                </div>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-3 pb-1">
+                                                <div className="text-right self-center">
+                                                    <p className="text-xs text-gray-900 dark:text-white">Expires : </p>
+                                                </div>
+                                                <div className="px-1 self-center text-xs">
+                                                    <p>{item.expires}</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid pb-1 px-1">
+                                                <div className="mb-1">
+                                                    <p className="text-xs text-center text-gray-900 dark:text-white">Description </p>
+                                                </div>
+                                                <div className=" max-w-xs overflow-y-auto max-h-20 border-t">
+                                                    <p className="text-xs whitespace-normal p-2 text-justify text-gray-900 dark:text-white">{item.desc_en} </p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    )
+                                })
+                                : null
+                        }
                     </div>
                 </div>
             }

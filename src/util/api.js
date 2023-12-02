@@ -89,7 +89,23 @@ const getAirSurfaceTemp = async (url) => {
         return result;
 
     } catch (error) {
+        console.log(error);
+    }
+}
+
+const getWeatherAlerts = async (url) => {
+
+    try {
         
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+        const result = await response.json();
+        return result;
+
+    } catch (error) {
+        console.log(error);
     }
 }
 
@@ -209,5 +225,6 @@ export {
     getWeatherClimateHourly,
     getProvincesName,
     getProvinceCitiesByProvCode,
-    getCityWeatherByCode
+    getCityWeatherByCode,
+    getWeatherAlerts
 }

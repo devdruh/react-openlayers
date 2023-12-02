@@ -12,7 +12,8 @@ const layerSourceInfo = [
     { name: 'RAQDPS - FireWork', layer: 'RAQDPS-FW.EATM_PM2.5-DIFF', url: 'https://geo.weather.gc.ca/geomet' },
     { name: 'Air Quality Health Index', layer: '', url: 'https://api.weather.gc.ca/collections/aqhi-forecasts-realtime/items?f=json' },
     { name: 'Climate Hourly', layer: '', url: 'https://api.weather.gc.ca/collections/climate-hourly/items' },
-    { name: 'Weather Condition', layer: 'CURRENT_CONDITIONS', url: 'https://geo.weather.gc.ca/geomet' }
+    { name: 'Weather Condition', layer: 'CURRENT_CONDITIONS', url: 'https://geo.weather.gc.ca/geomet' },
+    { name: 'Weather Alerts', layer: 'ALERTS', url: 'https://geo.weather.gc.ca/geomet' }
 ];
 
 var aqhiChartOptions = {
