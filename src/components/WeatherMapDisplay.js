@@ -610,7 +610,7 @@ const WeatherMapDisplay = () => {
                                     return (
                                         <div key={item.id}>
                                             <div className="grid grid-flow-row p-1">
-                                                <div className={`text-center self-center py-1 ${item.type === 'warning' ? 'bg-[#FF0000] text-white' : item.type === 'watch' ? ' bg-[#FFFF00] text-slate-600' : item.type === 'statement' ? 'bg-[#7F7F7F] text-slate-100' : item.type === 'advisory' ? 'bg-slate-600' : null}`}>
+                                                <div className={`text-center self-center py-1 ${item.type === 'warning' ? 'bg-[#FF0000] text-white' : item.type === 'watch' ? ' bg-[#FFFF00] text-slate-600' : item.type === 'statement' ? 'bg-[#7F7F7F] text-slate-100' : item.type === 'advisory' ? 'bg-slate-600 text-slate-100' : null}`}>
                                                   <p className='text-xs capitalize font-medium'>{item.headline} </p>
                                                 </div>
                                                 <div className="text-center self-center">
