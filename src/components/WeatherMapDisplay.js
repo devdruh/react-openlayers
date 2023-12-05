@@ -10,7 +10,7 @@ import { Point } from "ol/geom";
 import { toStringXY } from 'ol/coordinate';
 import { fromLonLat, toLonLat, transformExtent } from 'ol/proj';
 import { Circle as CircleStyle, Stroke, Style, Fill, Icon } from 'ol/style.js';
-import { dateOptions, layerSourceInfo } from "../util/variables";
+import { dateOptions, dateOptions_1, layerSourceInfo } from "../util/variables";
 import { initFlowbite } from "flowbite";
 import { getAirSurfaceTemp, getClosestAqhi, getClosestAqhiNow, getClosestAqhiToday, getWeatherAlerts } from "../util/api";
 import WeatherMapInfo from "./WeatherMapInfo";
@@ -21,6 +21,7 @@ import VectorSource from "ol/source/Vector";
 import GeoJSON from 'ol/format/GeoJSON.js';
 import VectorLayer from 'ol/layer/Vector.js';
 import Feature from 'ol/Feature.js';
+import { useTranslation } from "react-i18next";
 
 const WeatherMapDisplay = () => {
 
@@ -32,7 +33,6 @@ const WeatherMapDisplay = () => {
     const weatherAlertsLayerId = useId();
     const [isLoading, setIsLoading] = useState(true);
     const [airTableData, setAirTableData] = useState({});
-    const [alertsTableData, setAlertsTableData] = useState([]);
     const [radarTime, setRadarTime] = useState({ start: null, end: null, current: null, iso: null, local: null });
     const [isClickPlayBtn, setIsClickPlayBtn] = useState(false);
     const [isClickLegendBtn, setIsClickLegendBtn] = useState(false);
@@ -44,6 +44,10 @@ const WeatherMapDisplay = () => {
     const [layerLegendList, setLayerLegendList] = useState([]);
     const [aqhiChartData, setAqhiChartData] = useState([]);
     const [isMapLoading, setIsMapLoading] = useState(true);
+    const { t, i18n } = useTranslation();
+
+    const _alertsPopup = t('alerts', { returnObjects: true });
+    const _aqhiPopup = t('aqhi', { returnObjects: true });
     
     const closePopup = (e) => {
         e.target.parentElement.setAttribute('class', 'invisible');
@@ -250,27 +254,54 @@ const WeatherMapDisplay = () => {
 
                         for (let index = 0; index < features.length; index++) {
                             const element = features[index];
+                            
+                            i18n.addResourceBundle('en', 'translation', {
+                                "alerts": {
+                                    "data": [
+                                        {
+                                            "id": element.properties.identifier,
+                                            "type": element.properties.alert_type,
+                                            "headline": element.properties.headline,
+                                            "description": element.properties.descrip_en,
+                                            "area": element.properties.area,
+                                            "status": element.properties.status,
+                                            "expires": new Date(element.properties.expires).toLocaleDateString(navigator.local, dateOptions_1),
+                                            "effective": new Date(element.properties.effective).toLocaleDateString(navigator.local, dateOptions_1)
+                                        }
+                                    ]
+                                },
+                            }, true, true);
 
-                            setAlertsTableData((data) => {
-                                return [{
-                                    ...data,
-                                    id: element.properties.identifier,
-                                    type: element.properties.alert_type,
-                                    area_en: element.properties.area,
-                                    area_fr: element.properties.zone,
-                                    desc_en: element.properties.descrip_en,
-                                    desc_fr: element.properties.descrip_fr,
-                                    effective: new Date(element.properties.effective).toLocaleDateString(navigator.local, dateOptions),
-                                    expires: new Date(element.properties.expires).toLocaleDateString(navigator.local, dateOptions),
-                                    headline: element.properties.headline,
-                                    status: element.properties.status,
-                                    title: element.properties.titre
-                                }]
-                            });                            
+                            i18n.addResourceBundle('fr', 'translation', {
+                                "alerts": {
+                                    "data": [
+                                        {
+                                            "id": element.properties.identifier,
+                                            "type": element.properties.alert_type,
+                                            "headline": element.properties.titre,
+                                            "description": element.properties.descrip_fr,
+                                            "area": element.properties.zone,
+                                            "status": element.properties.status,
+                                            "expires": new Date(element.properties.expires).toLocaleDateString('fr-CA', dateOptions_1),
+                                            "effective": new Date(element.properties.effective).toLocaleDateString('fr-CA', dateOptions_1)
+                                        }
+                                    ]
+                                },
+                            }, true, true);
+                            
                         }
                         
                     } else {
-                        setAlertsTableData([]);
+                        i18n.addResourceBundle('en', 'translation', {
+                            "alerts": {
+                                "data": []
+                            }
+                        });
+                        i18n.addResourceBundle('fr', 'translation', {
+                            "alerts": {
+                                "data": []
+                            }
+                        });
                     }
                     
                 });
@@ -340,10 +371,31 @@ const WeatherMapDisplay = () => {
 
                 getClosestAqhiNow(aqhiData).then(response => { 
 
-                    const aqhiLocalTime = new Date(response.properties.forecast_datetime).toLocaleDateString(navigator.local, dateOptions);
-                    setAirTableData(data => {
-                        return { ...data, aqhi: response.properties.aqhi, aqhiforecastdate: aqhiLocalTime, aqhiLocName: response.properties.location_name_en }
-                    });
+                    i18n.addResourceBundle('en', 'translation', {
+                        "aqhi": {
+                            "data": [
+                                {
+                                    "id": response.properties.id,
+                                    "value": response.properties.aqhi,
+                                    "forecastLoc": response.properties.location_name_en,
+                                    "forecastDate": new Date(response.properties.forecast_datetime).toLocaleDateString(navigator.local, dateOptions_1)
+                                }
+                            ]
+                        },
+                    }, true, true);
+
+                    i18n.addResourceBundle('fr', 'translation', {
+                        "aqhi": {
+                            "data": [
+                                {
+                                    "id": response.properties.id,
+                                    "value": response.properties.aqhi,
+                                    "forecastLoc": response.properties.location_name_fr,
+                                    "forecastDate": new Date(response.properties.forecast_datetime).toLocaleDateString('fr-CA', dateOptions_1)
+                                }
+                            ]
+                        },
+                    }, true, true);
 
                 });
 
@@ -355,7 +407,35 @@ const WeatherMapDisplay = () => {
             setLayerLegendList(layerGroup.getLayers());
         }
 
-    }, [airQualityLayerId, airTempLayerId, weatherAlertsLayerId]);
+                
+        i18n.addResourceBundle('en', 'common', {
+           
+            "effective": "Effective",
+            "expires": "Expires",
+            "forecastAQHI": "Forecast AQHI",
+            "forecastDateTime": "Forecast DateTime",
+            "forecastClosestLoc": "Closest Forecast Location",
+            "airSurfaceTemperature": "Air Surface Temperature",
+            "lonlat": "Lon/Lat",
+            "AQHI": "AQHI"
+
+           
+        }, true, true);
+
+        i18n.addResourceBundle('fr', 'common', {
+           
+            "effective": "Efficace",
+            "expires": "Expire",
+            "forecastAQHI": "Prévisions CAS",
+            "forecastDateTime": "DateHeure de la prévision",
+            "forecastClosestLoc": "Emplacement de prévision le plus proche",
+            "airSurfaceTemperature": "Température de la surface de l'air",
+            "lonlat": "Longeur/Latitude",
+            "AQHI": "CAS"
+           
+        }, true, true);
+
+    }, [airQualityLayerId, airTempLayerId, weatherAlertsLayerId, i18n]);
 
     useEffect(() => {
 
@@ -569,83 +649,86 @@ const WeatherMapDisplay = () => {
                     <div data-popover role="tooltip" className="ol-popup absolute rounded-lg bottom-3 min-w-max border border-solid border-slate-400 -left-12 transition-opacity duration-300 bg-white max-[w-56] dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800 shadow-lg shadow-blue-400/50 dark:shadow-lg dark:shadow-blue-800/80">
                         <span id="popup-closer" className="ol-popup-closer hover:cursor-pointer" onClick={closePopup}></span>
                         <div className="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
-                            <h3 className="font-semibold text-gray-900 dark:text-white">(Lon/Lat): <span className="font-thin text-gray-900 dark:text-white">{airTableData.coordinate}</span></h3>
+                            <h4 className="font-medium text-sm text-gray-900 dark:text-white">({t('common:lonlat')}): <span className="font-thin text-gray-900 dark:text-white">{airTableData.coordinate}</span></h4>
                         </div>
-                        <div className="grid grid-cols-2 border-b border-b-slate-300 gap-3 p-1">
+                        <div className="grid grid-cols-2 border-b border-b-slate-300 gap-3 p-1 max-w-xs">
                             <div className="text-right self-center">
-                                <p className="text-xs text-gray-900 dark:text-white">Air Surface Temperature : </p>
+                                <p className="text-xs text-gray-900 dark:text-white">{t('common:airSurfaceTemperature')} : </p>
                             </div>
-                            <div className="px-1 self-center text-xs">
+                            <div className="self-center text-xs">
                                 <p>{Math.round(airTableData.airsurftemp)} °C</p>
                             </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-3 py-1">
-                            <div className="text-right self-center">
-                                <p className="text-xs text-gray-900 dark:text-white">AQHI-Forecast : </p>
-                            </div>
-                            <div className="px-1 self-center text-xs">
-                                <p>{Math.round(airTableData.aqhi)}</p>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-3 pb-1">
-                            <div className="text-right self-center">
-                                <p className="text-xs text-gray-900 dark:text-white">Forecast DateTime : </p>
-                            </div>
-                            <div className="px-1 self-center text-xs">
-                                <p>{airTableData.aqhiforecastdate}</p>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-3 pb-1 border-b border-b-slate-300">
-                            <div className="text-right self-center">
-                                <p className="text-xs text-gray-900 dark:text-white">Closest Forecast Location : </p>
-                            </div>
-                            <div className="px-1 self-center text-xs">
-                                <p>{airTableData.aqhiLocName}</p>
-                            </div>
-                        </div>
-
                         {
-                            alertsTableData.length > 0 ?
-                                alertsTableData.map((item) => {
-                                    return (
-                                        <div key={item.id}>
-                                            <div className="grid grid-flow-row p-1">
-                                                <div className={`text-center self-center py-1 ${item.type === 'warning' ? 'bg-[#FF0000] text-white' : item.type === 'watch' ? ' bg-[#FFFF00] text-slate-600' : item.type === 'statement' ? 'bg-[#7F7F7F] text-slate-100' : item.type === 'advisory' ? 'bg-[#7F7F7F] text-slate-100' : null}`}>
-                                                  <p className='text-xs capitalize font-medium'>{item.headline} </p>
-                                                </div>
-                                                <div className="text-center self-center">
-                                                    <p className="text-xs font-medium text-gray-900 dark:text-white">{item.area_en} </p>
-                                                </div>
+                            _aqhiPopup?.data.length > 0 ?
+                                _aqhiPopup?.data.map((item) => (
+                                    <div key={item.id} className="px-1">
+                                        <div className="grid grid-cols-2 gap-3 py-1 max-w-xs">
+                                            <div className="text-right self-center">
+                                                <p className="text-xs text-gray-900 dark:text-white">{i18n.t('common:forecastAQHI')} : </p>
                                             </div>
-                                            <div className="grid grid-cols-2 gap-3 pb-1">
-                                                <div className="text-right self-center">
-                                                    <p className="text-xs text-gray-900 dark:text-white">Effective : </p>
-                                                </div>
-                                                <div className="px-1 self-center text-xs">
-                                                    <p>{item.effective}</p>
-                                                </div>
+                                            <div className="self-center text-xs">
+                                                <p>{item.value}</p>
                                             </div>
-                                            <div className="grid grid-cols-2 gap-3 pb-1">
-                                                <div className="text-right self-center">
-                                                    <p className="text-xs text-gray-900 dark:text-white">Expires : </p>
-                                                </div>
-                                                <div className="px-1 self-center text-xs">
-                                                    <p>{item.expires}</p>
-                                                </div>
-                                            </div>
-
-                                            <div className="grid pb-1 px-1">
-                                                <div className="mb-1">
-                                                    <p className="text-xs text-center text-gray-900 dark:text-white">Description </p>
-                                                </div>
-                                                <div className=" max-w-xs overflow-y-auto max-h-20 border-t">
-                                                    <p className="text-xs whitespace-normal p-2 text-justify text-gray-900 dark:text-white">{item.desc_en} </p>
-                                                </div>
-                                            </div>
-
                                         </div>
-                                    )
-                                })
+                                        <div className="grid grid-cols-2 gap-3 pb-1 max-w-xs">
+                                            <div className="text-right self-center">
+                                                <p className="text-xs text-gray-900 dark:text-white">{i18n.t('common:forecastDateTime')} : </p>
+                                            </div>
+                                            <div className="self-center text-xs">
+                                                <p className="text-xs text-gray-900 dark:text-white">{item.forecastDate}</p>
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-3 pb-1 border-b border-b-slate-300 max-w-xs">
+                                            <div className="text-right self-center">
+                                                <p className="text-xs text-gray-900 dark:text-white">{i18n.t('common:forecastClosestLoc')} : </p>
+                                            </div>
+                                            <div className="self-center">
+                                                <p className="text-xs text-gray-900 dark:text-white">{item.forecastLoc}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            : null
+                        }
+                        {
+                            _alertsPopup?.data.length > 0 ? 
+                                _alertsPopup?.data.map((item) => (
+                                    <div key={item.id}>
+                                        <div className="grid grid-flow-row p-1">
+                                            <div className={`text-center self-center py-1 ${item.type === 'warning' ? 'bg-[#FF0000] text-white' : item.type === 'watch' ? ' bg-[#FFFF00] text-slate-600' : item.type === 'statement' ? 'bg-[#7F7F7F] text-slate-100' : item.type === 'advisory' ? 'bg-[#7F7F7F] text-slate-100' : null}`}>
+                                                <p className='text-xs whitespace-pre-line capitalize font-medium'>{item.headline} </p>
+                                            </div>
+                                            <div className="text-center self-center max-w-xs">
+                                                <p className="text-xs font-medium text-gray-900 dark:text-white">{item.area} </p>
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-3 pb-1 max-w-xs">
+                                            <div className="text-right self-center">
+                                                <p className="text-xs text-gray-900 dark:text-white">{ i18n.t('common:effective') } : </p>
+                                            </div>
+                                            <div className="self-center text-xs">
+                                                <p>{item.effective}</p>
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-3 pb-1 max-w-xs">
+                                            <div className="text-right self-center">
+                                                <p className="text-xs text-gray-900 dark:text-white">{ i18n.t('common:expires') } : </p>
+                                            </div>
+                                            <div className="self-center text-xs">
+                                                <p>{item.expires}</p>
+                                            </div>
+                                        </div>
+                                        <div className="grid pb-1 px-1 max-w-xs">
+                                            <div className="mb-1">
+                                                <p className="text-xs text-center text-gray-900 dark:text-white">Description </p>
+                                            </div>
+                                            <div className=" max-w-xs overflow-y-auto max-h-20 border-t">
+                                                <p className="text-xs whitespace-normal p-2 text-justify text-gray-900 dark:text-white">{item.description} </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
                                 : null
                         }
                     </div>

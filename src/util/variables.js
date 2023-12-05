@@ -7,6 +7,15 @@ const dateOptions = {
     timeZoneName: 'short'
 };
 
+const dateOptions_1 = {
+    year: '2-digit',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZoneName: 'short'
+}
+
 const layerSourceInfo = [
     { name: 'Air Surface Temperature', layer: 'GDPS.ETA_TT', url: 'https://geo.weather.gc.ca/geomet' },
     { name: 'RAQDPS - FireWork', layer: 'RAQDPS-FW.EATM_PM2.5-DIFF', url: 'https://geo.weather.gc.ca/geomet' },
@@ -274,4 +283,4 @@ const weatherForecastChartOptions = {
     ]
 }
 
-export { dateOptions, layerSourceInfo, aqhiChartOptions, weatherForecastChartOptions }
+export { dateOptions, layerSourceInfo, aqhiChartOptions, weatherForecastChartOptions, dateOptions_1 }
