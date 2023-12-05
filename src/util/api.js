@@ -200,10 +200,15 @@ const getProvinceCitiesByProvCode = async (code) => {
 
 }
 
-const getCityWeatherByCode = async (province, code) => {
+const getCityWeatherByCode = async (province, code, lang) => {
+
+    var language = 'e';
+    if (lang === 'fr') {
+        language = 'f';
+    }
 
     try {
-        const response = await fetch(proxy_url + 'https://dd.weather.gc.ca/citypage_weather/xml/' + province + '/' + code + '_e.xml');
+        const response = await fetch(proxy_url + 'https://dd.weather.gc.ca/citypage_weather/xml/' + province + '/' + code + '_'+language+'.xml');
 
         if (!response.ok) {
             throw new Error(response.statusText);

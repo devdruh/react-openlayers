@@ -2,6 +2,7 @@ import React, { useEffect, useCallback, useState } from 'react';
 import WeatherMeteogram from './WeatherMeteogram';
 import { getProvincesName, getProvinceCitiesByProvCode, getCityWeatherByCode } from '../util/api';
 import "flowbite";
+import { useTranslation } from "react-i18next";
 
 const DisplayAlert = () => {
     return (
@@ -15,7 +16,7 @@ const DisplayAlert = () => {
                     <h3 className="text-lg font-medium">Weather Advisory</h3>
                 </div>
                 <div className="mt-2 mb-4 text-sm">
-                    More info about this advisory goes here.
+                   <p>More info about this advisory goes here.</p>
                 </div>
                 <div className="flex">
                     <button type="button" className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-3 focus:outline-none focus:ring-blue-200 font-medium rounded-lg text-xs px-3 py-1.5 mr-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
@@ -51,6 +52,9 @@ const DisplayForecastChart = () => {
     const [isSelectProvince, setIsSelectProvince] = useState(false);
     const [isSelectStation, setIsSelectStation] = useState(false);
     const [isDisSearchBtn, setIsDisSearchBtn] = useState(true);
+    const { i18n } = useTranslation();
+
+    const currentLang = i18n.language;
 
     const findProvinces = useCallback(async () => {
 
@@ -95,21 +99,21 @@ const DisplayForecastChart = () => {
         findProvinces();
         findProvinceCities(province);
 
-        getCityWeatherByCode(province, code).then((response) => {
+        getCityWeatherByCode(province, code, currentLang).then((response) => {
             // console.log(response, "<<<<< set data initCityClimateWeather");
             setCityWeather(response);
         });
 
-    }, [findProvinceCities, findProvinces]);
+    }, [findProvinceCities, findProvinces, currentLang]);
     
     const cityWeatherClimate = useCallback(async (province, code) => {
-
-        getCityWeatherByCode(province, code).then((response) => {
+        
+        getCityWeatherByCode(province, code, currentLang).then((response) => {
             // console.log(response, "<<<<< set data cityWeatherClimate");
             setCityWeather(response);
         });
 
-    },[]);
+    },[currentLang]);
 
 
     const handleSearchProvince = (e) => {
@@ -177,7 +181,6 @@ const DisplayForecastChart = () => {
         cityWeatherClimate(provinceName.term, cityCode);
 
     }, [cityCode, provinceName, cityWeatherClimate]);
-
     
     useEffect(() => {
         

@@ -3,6 +3,7 @@ import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official';
 import { useCallback } from 'react';
 import { weatherForecastChartOptions } from '../util/variables';
+import { useTranslation } from "react-i18next";
 
 const WeatherMeteogram = ({ cityWeather }) => {
 
@@ -10,6 +11,7 @@ const WeatherMeteogram = ({ cityWeather }) => {
     const [isLoading, setIsLoading] = useState(true);
     const currentCondition = cityWeather?.siteData?.currentConditions;
     const sunriseSunset = cityWeather?.siteData?.riseSet;
+    const { t, i18n } = useTranslation();
 
     const initHighCharts = useCallback(async () => {
 
@@ -19,17 +21,22 @@ const WeatherMeteogram = ({ cityWeather }) => {
             const dateForecast = cityWeather.siteData.hourlyForecastGroup.dateTime[1];
             const hourlyForecast = cityWeather.siteData.hourlyForecastGroup.hourlyForecast;
 
+            const forecastTitle = t('common:forecastFor');
+            const forecastSubTitle = t('common:forecastAsOf');
+            const langTemperature = t('common:temperature');
+
             setChartOptions(data => {
                 return {
                     ...data,
                     title: {
-                        text: 'Forecast for ' + forecastLocation.region + ', ' + forecastLocation.province
+                        text: forecastTitle + ' ' + forecastLocation.region + ', ' + forecastLocation.province
                     },
                     subtitle: {
-                        text: 'As of '+dateForecast.textSummary
+                        text: forecastSubTitle + ' ' + dateForecast.textSummary
                     },
                     series: [{
                         ...data.series[0],
+                        name: langTemperature,
                         data: []
                     }]
                 }
@@ -92,9 +99,38 @@ const WeatherMeteogram = ({ cityWeather }) => {
             setTimeout(() => {
                 setIsLoading(false);
             }, 1000);
+
+
+            if (i18n.language === 'fr') {
+                Highcharts.setOptions({
+                    lang: {
+                        months: [
+                            'Jan', 'Fév', 'Mar', 'Avr', 'Peut', 'juin',
+                            'Juillet', 'Août', 'septembre', 'Octobre', 'Nov', 'Déc'
+                        ],
+                        weekdays: [
+                            'Dimanche', 'Lundi', 'Mardi', 'Mercredi',
+                            'Jeudi', 'Vendredi', 'Samedi'
+                        ],
+                    }
+                })
+            } else if (i18n.language === 'en') {
+                Highcharts.setOptions({
+                    lang: {
+                        months: [
+                            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                            'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'
+                        ],
+                        weekdays: [
+                            'Sunday', 'Monday', 'Tuesday', 'Wednesday',
+                            'Thursday', 'Friday', 'Saturday'
+                        ],
+                    }
+                })
+            }
         }
 
-    }, [cityWeather]);
+    }, [cityWeather, i18n.language, t]);
 
     
     useEffect(() => { 
@@ -156,11 +192,11 @@ const WeatherMeteogram = ({ cityWeather }) => {
                                 {/* <p className='pl-2 flex gap-1'><a href='/'>°C</a> | <a href='/' className='text-gray-500'>°F</a></p> */}
                                 <p className='pl-2 flex gap-1'>°C</p>
                                 <div className='text-xs pl-4 whitespace-nowrap'>
-                                    <p className='font-normal text-gray-500 dark:text-gray-400'>Dew point: { currentCondition?.dewpoint}°C</p> 
-                                    <p className='font-normal text-gray-500 dark:text-gray-400'>Humidity: {currentCondition?.relativeHumidity}%</p> 
+                                    <p className='font-normal text-gray-500 dark:text-gray-400'>{t('common:dewPoint')}: { currentCondition?.dewpoint}°C</p> 
+                                            <p className='font-normal text-gray-500 dark:text-gray-400'>{ t('common:humidity')}: {currentCondition?.relativeHumidity}%</p> 
                                     {
                                         currentCondition?.wind ?
-                                            <p className='font-normal text-gray-500 dark:text-gray-400'>Wind: {
+                                            <p className='font-normal text-gray-500 dark:text-gray-400'>{t('common:wind')}: {
                                                     currentCondition?.wind.direction + ' ' + currentCondition?.wind.speed
                                                 }
                                                 {
@@ -170,7 +206,7 @@ const WeatherMeteogram = ({ cityWeather }) => {
                                             null
                                     }
                                     {
-                                        currentCondition?.windChill !== undefined ?  <p className='font-normal text-gray-500 dark:text-gray-400'>Wind Chill: { currentCondition?.windChill }</p> : null
+                                        currentCondition?.windChill !== undefined ?  <p className='font-normal text-gray-500 dark:text-gray-400'>{t('common:windChill')}: { currentCondition?.windChill }</p> : null
                                     }
                                     
                                 </div>
@@ -178,14 +214,14 @@ const WeatherMeteogram = ({ cityWeather }) => {
                         </div>
                         <div>
                             <div className='md:text-right text-center'>
-                                <h5 className='text-lg'>Weather</h5>
-                                <p className='text-sm font-thin text-gray-500 dark:text-gray-400'>{ new Date(currentCondition?.dateTime[1].year, currentCondition?.dateTime[1].month - 1, currentCondition?.dateTime[1].day, currentCondition?.dateTime[1].hour, currentCondition?.dateTime[1].minute).toLocaleDateString(undefined, { weekday: 'short', hour: 'numeric', minute: 'numeric', timeZoneName:'short'}) }</p>
+                                <h5 className='text-lg'>{t('common:weather')}</h5>
+                                <p className='text-sm font-thin text-gray-500 dark:text-gray-400'>{ new Date(currentCondition?.dateTime[1].year, currentCondition?.dateTime[1].month - 1, currentCondition?.dateTime[1].day, currentCondition?.dateTime[1].hour, currentCondition?.dateTime[1].minute).toLocaleDateString(i18n.language === 'fr' ? 'fr-CA' : undefined, { weekday: 'short', hour: 'numeric', minute: 'numeric', timeZoneName:'short'}) }</p>
                                 <p className='text-sm font-thin text-gray-500 dark:text-gray-400'>{ currentCondition?.condition }</p>
                             </div>
                         </div>
                         <div className='col-span-2 columns-2 align-middle'>
-                            <div className='pt-2'><p className='flex flex-nowrap text-xs font-normal text-gray-400 dark:text-gray-400'>Observed at: {currentCondition?.station}</p></div>
-                            <div className='pt-2 text-right'><p className='flex justify-end text-xs font-normal text-gray-400 dark:text-gray-400'><img width="15" height="15" src="https://img.icons8.com/ios-filled/50/sunrise--v1.png" alt="sunrise" title='Sunrise' /> {new Date(sunriseSunset?.dateTime[1].year, sunriseSunset?.dateTime[1].month - 1, sunriseSunset?.dateTime[1].day, sunriseSunset?.dateTime[1].hour, sunriseSunset?.dateTime[1].minute).toLocaleTimeString(undefined, { hour: 'numeric', minute: 'numeric', hour12: false, timeZoneName: 'short' })} <img width="15" height="15" src="https://img.icons8.com/ios-filled/50/sunset.png" alt="sunset" title='Sunset'/> {new Date(sunriseSunset?.dateTime[3].year, sunriseSunset?.dateTime[3].month - 1, sunriseSunset?.dateTime[3].day, sunriseSunset?.dateTime[3].hour, sunriseSunset?.dateTime[3].minute).toLocaleTimeString(undefined, { hour: 'numeric', minute: 'numeric', hour12: false, timeZoneName: 'short' })}</p></div>
+                            <div className='pt-2'><p className='flex flex-nowrap text-xs font-normal text-gray-400 dark:text-gray-400'>{t('common:observedAt')}: {currentCondition?.station}</p></div>
+                            <div className='pt-2 text-right'><p className='flex justify-end text-xs font-normal text-gray-400 dark:text-gray-400'><img width="15" height="15" src="https://img.icons8.com/ios-filled/50/sunrise--v1.png" alt="sunrise" title='Sunrise' /> {new Date(sunriseSunset?.dateTime[1].year, sunriseSunset?.dateTime[1].month - 1, sunriseSunset?.dateTime[1].day, sunriseSunset?.dateTime[1].hour, sunriseSunset?.dateTime[1].minute).toLocaleTimeString(i18n.language === 'fr' ? 'fr-CA' : undefined, { hour: 'numeric', minute: 'numeric', hour12: false, timeZoneName: 'short' })} <img width="15" height="15" src="https://img.icons8.com/ios-filled/50/sunset.png" alt="sunset" title='Sunset'/> {new Date(sunriseSunset?.dateTime[3].year, sunriseSunset?.dateTime[3].month - 1, sunriseSunset?.dateTime[3].day, sunriseSunset?.dateTime[3].hour, sunriseSunset?.dateTime[3].minute).toLocaleTimeString(i18n.language === 'fr' ? 'fr-CA' : undefined, { hour: 'numeric', minute: 'numeric', hour12: false, timeZoneName: 'short' })}</p></div>
                         </div>
                     </div>
                 }

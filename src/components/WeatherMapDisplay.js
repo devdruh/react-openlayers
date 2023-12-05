@@ -328,7 +328,6 @@ const WeatherMapDisplay = () => {
                     setIsLoading(false);
                 });
 
-
             }
 
             async function findAqhiFeatures(coordinate) {
@@ -411,34 +410,6 @@ const WeatherMapDisplay = () => {
             setLayerGroupList(layerGroup.getLayers());
             setLayerLegendList(layerGroup.getLayers());
         }
-
-                
-        i18n.addResourceBundle('en', 'common', {
-           
-            "effective": "Effective",
-            "expires": "Expires",
-            "forecastAQHI": "Forecast AQHI",
-            "forecastDateTime": "Forecast DateTime",
-            "forecastClosestLoc": "Closest Forecast Location",
-            "airSurfaceTemperature": "Air Surface Temperature",
-            "lonlat": "Lon/Lat",
-            "AQHI": "AQHI"
-
-           
-        }, true, true);
-
-        i18n.addResourceBundle('fr', 'common', {
-           
-            "effective": "Efficace",
-            "expires": "Expire",
-            "forecastAQHI": "Prévisions CAS",
-            "forecastDateTime": "DateHeure de la prévision",
-            "forecastClosestLoc": "Emplacement de prévision le plus proche",
-            "airSurfaceTemperature": "Température de la surface de l'air",
-            "lonlat": "Longeur/Latitude",
-            "AQHI": "CAS"
-           
-        }, true, true);
 
     }, [airQualityLayerId, airTempLayerId, weatherAlertsLayerId, i18n]);
 
