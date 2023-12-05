@@ -334,8 +334,11 @@ const WeatherMapDisplay = () => {
             async function findAqhiFeatures(coordinate) {
 
                 const closestFeatures = await getClosestAqhi(aqhiVector, coordinate);
-                const aqhiFeaturesToday = await getClosestAqhiToday(closestFeatures);
-                aqhiFeaturesToday.sort((a, b) => new Date(a.properties.forecast_datetime) - new Date(b.properties.forecast_datetime));
+                var aqhiFeaturesToday = [];
+                if (closestFeatures !== null) {
+                    aqhiFeaturesToday = await getClosestAqhiToday(closestFeatures);
+                    aqhiFeaturesToday.sort((a, b) => new Date(a.properties.forecast_datetime) - new Date(b.properties.forecast_datetime));
+                }
 
                 var aqhiData = [];
 
@@ -369,35 +372,37 @@ const WeatherMapDisplay = () => {
 
                 });
 
-                getClosestAqhiNow(aqhiData).then(response => { 
+                if (aqhiData.length > 0) {
+                    getClosestAqhiNow(aqhiData).then(response => { 
 
-                    i18n.addResourceBundle('en', 'translation', {
-                        "aqhi": {
-                            "data": [
-                                {
-                                    "id": response.properties.id,
-                                    "value": response.properties.aqhi,
-                                    "forecastLoc": response.properties.location_name_en,
-                                    "forecastDate": new Date(response.properties.forecast_datetime).toLocaleDateString(navigator.local, dateOptions_1)
-                                }
-                            ]
-                        },
-                    }, true, true);
+                        i18n.addResourceBundle('en', 'translation', {
+                            "aqhi": {
+                                "data": [
+                                    {
+                                        "id": response.properties.id,
+                                        "value": response.properties.aqhi,
+                                        "forecastLoc": response.properties.location_name_en,
+                                        "forecastDate": new Date(response.properties.forecast_datetime).toLocaleDateString(navigator.local, dateOptions_1)
+                                    }
+                                ]
+                            },
+                        }, true, true);
 
-                    i18n.addResourceBundle('fr', 'translation', {
-                        "aqhi": {
-                            "data": [
-                                {
-                                    "id": response.properties.id,
-                                    "value": response.properties.aqhi,
-                                    "forecastLoc": response.properties.location_name_fr,
-                                    "forecastDate": new Date(response.properties.forecast_datetime).toLocaleDateString('fr-CA', dateOptions_1)
-                                }
-                            ]
-                        },
-                    }, true, true);
+                        i18n.addResourceBundle('fr', 'translation', {
+                            "aqhi": {
+                                "data": [
+                                    {
+                                        "id": response.properties.id,
+                                        "value": response.properties.aqhi,
+                                        "forecastLoc": response.properties.location_name_fr,
+                                        "forecastDate": new Date(response.properties.forecast_datetime).toLocaleDateString('fr-CA', dateOptions_1)
+                                    }
+                                ]
+                            },
+                        }, true, true);
 
-                });
+                    });
+                }
 
                 setAqhiChartData(aqhiData);
                 setShowChartBtn(true);

@@ -50,6 +50,10 @@ const getAirQualityHealthIndexByGeometry = async (locGeo) => {
 const getClosestAqhi = async (layer, coordinate) => {
     
     const aqhiClosestLocation = layer.getClosestFeatureToCoordinate(coordinate);
+
+    if (aqhiClosestLocation === null) {
+        return null
+    }
     const aqhiLocationId = aqhiClosestLocation.values_.location_id;
     const result = await getAirQualityHealthIndex(aqhiLocationId);
 
