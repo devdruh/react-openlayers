@@ -200,22 +200,22 @@ const getProvinceCitiesByProvCode = async (code) => {
 
 }
 
-const getCityWeatherByCode = async (province, code, lang) => {
-
-    var language = 'e';
-    if (lang === 'fr') {
-        language = 'f';
-    }
+const getCityWeatherByCode = async (province, code) => {
 
     try {
-        const response = await fetch(proxy_url + 'https://dd.weather.gc.ca/citypage_weather/xml/' + province + '/' + code + '_'+language+'.xml');
+        
+        const lang_en = await fetch(proxy_url + 'https://dd.weather.gc.ca/citypage_weather/xml/' + province + '/' + code + '_e.xml').then(response => response.text());
+        const lang_fr = await fetch(proxy_url + 'https://dd.weather.gc.ca/citypage_weather/xml/' + province + '/' + code + '_f.xml').then(response => response.text());
 
-        if (!response.ok) {
-            throw new Error(response.statusText);
-        }
-        const toText = await response.text();
-        const parseText = new DOMParser().parseFromString(toText,'text/xml');
-        const result = xml2json(parseText);
+        const result = await Promise.all([lang_en, lang_fr]).then(response => {
+            const parseText_0 = new DOMParser().parseFromString(response[0], 'text/xml');
+            const parseText_1 = new DOMParser().parseFromString(response[1], 'text/xml');
+            const result_0 = xml2json(parseText_0);
+            const result_1 = xml2json(parseText_1);
+            
+            return [result_0, result_1]
+
+        });
 
         return result;
     } catch (error) {

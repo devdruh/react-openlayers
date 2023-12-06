@@ -9,21 +9,64 @@ const WeatherMeteogram = ({ cityWeather }) => {
 
     const [chartOptions, setChartOptions] = useState(weatherForecastChartOptions);
     const [isLoading, setIsLoading] = useState(true);
-    const currentCondition = cityWeather?.siteData?.currentConditions;
-    const sunriseSunset = cityWeather?.siteData?.riseSet;
     const { t, i18n } = useTranslation();
 
+    const language = i18n.language;
+    var currentCondition, sunriseSunset;
+
+    if (language === 'en') {
+        currentCondition = cityWeather[0]?.siteData?.currentConditions;
+        sunriseSunset = cityWeather[0]?.siteData?.riseSet;
+    } else if (language === 'fr') {
+        currentCondition = cityWeather[1]?.siteData?.currentConditions;
+        sunriseSunset = cityWeather[1]?.siteData?.riseSet;
+    }
+    
     const initHighCharts = useCallback(async () => {
 
-        if (cityWeather.hasOwnProperty('siteData')) {
+        if (Array.isArray(cityWeather) && cityWeather.length > 0) {
 
-            const forecastLocation = cityWeather.siteData.location;
-            const dateForecast = cityWeather.siteData.hourlyForecastGroup.dateTime[1];
-            const hourlyForecast = cityWeather.siteData.hourlyForecastGroup.hourlyForecast;
+            var forecastLocation, dateForecast, hourlyForecast;
 
             const forecastTitle = t('common:forecastFor');
             const forecastSubTitle = t('common:forecastAsOf');
             const langTemperature = t('common:temperature');
+
+            if (language === 'en') {
+                forecastLocation = cityWeather[0].siteData.location;
+                dateForecast = cityWeather[0].siteData.hourlyForecastGroup.dateTime[1];
+                hourlyForecast = cityWeather[0].siteData.hourlyForecastGroup.hourlyForecast;
+
+                Highcharts.setOptions({
+                    lang: {
+                        months: [
+                            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                            'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'
+                        ],
+                        weekdays: [
+                            'Sunday', 'Monday', 'Tuesday', 'Wednesday',
+                            'Thursday', 'Friday', 'Saturday'
+                        ],
+                    }
+                });
+            } else if (language === 'fr') {
+                forecastLocation = cityWeather[1].siteData.location;
+                dateForecast = cityWeather[1].siteData.hourlyForecastGroup.dateTime[1];
+                hourlyForecast = cityWeather[1].siteData.hourlyForecastGroup.hourlyForecast;
+
+                Highcharts.setOptions({
+                    lang: {
+                        months: [
+                            'Jan', 'Fév', 'Mar', 'Avr', 'Peut', 'juin',
+                            'Juillet', 'Août', 'septembre', 'Octobre', 'Nov', 'Déc'
+                        ],
+                        weekdays: [
+                            'Dimanche', 'Lundi', 'Mardi', 'Mercredi',
+                            'Jeudi', 'Vendredi', 'Samedi'
+                        ],
+                    }
+                });
+            }
 
             setChartOptions(data => {
                 return {
@@ -100,37 +143,9 @@ const WeatherMeteogram = ({ cityWeather }) => {
                 setIsLoading(false);
             }, 1000);
 
-
-            if (i18n.language === 'fr') {
-                Highcharts.setOptions({
-                    lang: {
-                        months: [
-                            'Jan', 'Fév', 'Mar', 'Avr', 'Peut', 'juin',
-                            'Juillet', 'Août', 'septembre', 'Octobre', 'Nov', 'Déc'
-                        ],
-                        weekdays: [
-                            'Dimanche', 'Lundi', 'Mardi', 'Mercredi',
-                            'Jeudi', 'Vendredi', 'Samedi'
-                        ],
-                    }
-                })
-            } else if (i18n.language === 'en') {
-                Highcharts.setOptions({
-                    lang: {
-                        months: [
-                            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                            'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'
-                        ],
-                        weekdays: [
-                            'Sunday', 'Monday', 'Tuesday', 'Wednesday',
-                            'Thursday', 'Friday', 'Saturday'
-                        ],
-                    }
-                })
-            }
         }
 
-    }, [cityWeather, i18n.language, t]);
+    }, [cityWeather, language, t]);
 
     
     useEffect(() => { 
