@@ -66,7 +66,7 @@ const WeatherForecastWeek = ({ forecast }) => {
                                     <div><p className='text-sm font-medium text-gray-700 dark:text-gray-400'>DAY</p></div>
                                     <div className='border-b border-b-slate-400 grid grid-cols-2 justify-items-center'>
                                         <div>
-                                            <p className='text-xs text-gray-500 dark:text-gray-400'>{item[0].period}</p>
+                                            <p className='text-xs text-gray-500 dark:text-gray-400 capitalize'>{item[0].period}</p>
                                         </div>
                                         <div>
                                             <p className='text-xs text-gray-500 dark:text-gray-400'></p>
@@ -129,7 +129,7 @@ const WeatherForecastWeek = ({ forecast }) => {
                                     <div><p className='text-sm font-medium text-gray-700 dark:text-gray-400'>NIGHT </p></div>
                                     <div className='border-b border-b-slate-400 grid grid-cols-2 justify-items-center'>
                                         <div>
-                                            <p className='text-xs text-gray-500 dark:text-gray-400'>{item[1].period.replace(' night','') }</p>
+                                            <p className='text-xs text-gray-500 dark:text-gray-400 capitalize'>{item[0].period.replace(' night','') }</p>
                                         </div>
                                         <div>
                                             <p className='text-xs text-gray-500 dark:text-gray-400'></p>
