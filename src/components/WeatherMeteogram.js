@@ -4,12 +4,14 @@ import HighchartsReact from 'highcharts-react-official';
 import { useCallback } from 'react';
 import { weatherForecastChartOptions } from '../util/variables';
 import { useTranslation } from "react-i18next";
+import WeatherForecastWeek from './WeatherForecastWeek';
 
 const WeatherMeteogram = ({ cityWeather }) => {
 
     const [chartOptions, setChartOptions] = useState(weatherForecastChartOptions);
     const [isLoading, setIsLoading] = useState(true);
     const { t, i18n } = useTranslation();
+    const [weekForecast, setWeekForecast] = useState({});
 
     const language = i18n.language;
     var currentCondition, sunriseSunset;
@@ -36,7 +38,7 @@ const WeatherMeteogram = ({ cityWeather }) => {
                 forecastLocation = cityWeather[0].siteData.location;
                 dateForecast = cityWeather[0].siteData.hourlyForecastGroup.dateTime[1];
                 hourlyForecast = cityWeather[0].siteData.hourlyForecastGroup.hourlyForecast;
-
+                setWeekForecast(cityWeather[0].siteData.forecastGroup);
                 Highcharts.setOptions({
                     lang: {
                         months: [
@@ -53,7 +55,7 @@ const WeatherMeteogram = ({ cityWeather }) => {
                 forecastLocation = cityWeather[1].siteData.location;
                 dateForecast = cityWeather[1].siteData.hourlyForecastGroup.dateTime[1];
                 hourlyForecast = cityWeather[1].siteData.hourlyForecastGroup.hourlyForecast;
-
+                setWeekForecast(cityWeather[1].siteData.forecastGroup);
                 Highcharts.setOptions({
                     lang: {
                         months: [
@@ -244,7 +246,7 @@ const WeatherMeteogram = ({ cityWeather }) => {
                 </div>
             </div>
             <div>
-                <div className='p-5 w-full bg-slate-200 text-center'>5-Day Weather Forecast</div>
+                <WeatherForecastWeek forecast={weekForecast} />
             </div>
         </div>
     )
