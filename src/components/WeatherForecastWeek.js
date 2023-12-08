@@ -6,10 +6,11 @@ const WeatherForecastWeek = ({ forecast }) => {
 
     const [formatWeek, setFormatWeek] = useState([]);
     const { t, i18n } = useTranslation();
+    const [forecastData, setForecastData] = useState();
 
     useEffect(() => {
         if (Object.keys(forecast).length > 0) {
-
+            setForecastData(forecast);
             var _format = [];
 
             for (let index = 0; index < forecast.forecast.length; index++) {
@@ -48,7 +49,7 @@ const WeatherForecastWeek = ({ forecast }) => {
     return (
         <div className='py-5 px-2 w-full bg-gradient-to-br from-sky-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% rounded-md'>
             <h4 className='text-center text-slate-50 font-normal text-lg'>7 Day Weather Forecast</h4>
-            <p className='text-center text-slate-200 font-normal text-xs'>{t('common:forecastAsOf') } { new Date(forecast?.dateTime[1].year, forecast?.dateTime[1].month - 1, forecast?.dateTime[1].day, forecast?.dateTime[1].hour, forecast?.dateTime[1].minute).toLocaleDateString(i18n.language === 'fr' ? 'fr-CA' : undefined, { weekday: 'short', hour: 'numeric', minute: 'numeric', timeZoneName:'short'}) }</p>
+            <p className='text-center text-slate-200 font-normal text-xs'>{t('common:forecastAsOf')}  { new Date(forecastData?.dateTime[1].year, forecastData?.dateTime[1].month - 1, forecastData?.dateTime[1].day, forecastData?.dateTime[1].hour, forecastData?.dateTime[1].minute).toLocaleDateString(i18n.language === 'fr' ? 'fr-CA' : undefined, { weekday: 'short', hour: 'numeric', minute: 'numeric', timeZoneName:'short'}) }</p>
             <div className='flex flex-nowrap max-w-full p-3 gap-1 overflow-y-auto'>
                 {/* xl:justify-center */}
             
@@ -68,13 +69,13 @@ const WeatherForecastWeek = ({ forecast }) => {
                                             <p className='text-xs text-gray-500 dark:text-gray-400'>{item[0].period}</p>
                                         </div>
                                         <div>
-                                            <p className='text-xs text-gray-500 dark:text-gray-400'>Dec 6</p>
+                                            <p className='text-xs text-gray-500 dark:text-gray-400'></p>
                                         </div>
                                     </div>
                                     <div className='flex justify-center'>
                                     <div><img src={`https://meteo.gc.ca/weathericons/${item[0].abbreviatedForecast.iconCode}.gif`} className='h-[51px] translate-y-1' width={60} alt={`${item[0].abbreviatedForecast.textSummary}`} /></div>
                                     </div>
-                                    <h5 className='text-xl font-semibold'>{item[0].temperatures.temperature }</h5>
+                                    <h5 className='text-xl font-semibold'>{item[0].temperatures.temperature } °C</h5>
                                     <div className='min-h-[40px] max-h-[40px] mb-2'>
                                         <p className='font-normal text-sm text-gray-500 dark:text-gray-400' title={`${item[0].abbreviatedForecast.textSummary}`}>{item[0].abbreviatedForecast.textSummary}</p>
                                     </div>
@@ -131,13 +132,13 @@ const WeatherForecastWeek = ({ forecast }) => {
                                             <p className='text-xs text-gray-500 dark:text-gray-400'>{item[1].period.replace(' night','') }</p>
                                         </div>
                                         <div>
-                                            <p className='text-xs text-gray-500 dark:text-gray-400'>Dec 6</p>
+                                            <p className='text-xs text-gray-500 dark:text-gray-400'></p>
                                         </div>
                                     </div>
                                     <div className='flex justify-center'>
                                         <div><img src={`https://meteo.gc.ca/weathericons/${item[1].abbreviatedForecast.iconCode}.gif`} className='h-[51px] translate-y-1' width={60} alt={`${item[1].abbreviatedForecast.textSummary}`} /></div>
                                     </div>
-                                    <h5 className='text-xl font-medium'>{item[1].temperatures.temperature} C</h5>
+                                    <h5 className='text-xl font-medium'>{item[1].temperatures.temperature} °C</h5>
                                     <div className='min-h-[40px] max-h-[40px] mb-2'>
                                         <p className='font-normal text-sm text-gray-500 dark:text-gray-400' title={`${item[1].abbreviatedForecast.textSummary}`}>{item[1].abbreviatedForecast.textSummary}</p>
                                     </div>
@@ -201,19 +202,19 @@ const WeatherForecastWeek = ({ forecast }) => {
                                         </div>
 
                                         <div className="sm:w-[120px] min-h-[198px] min-w-[100px] p-1 text-center bg-white border border-gray-200 rounded-lg shadow-lg shadow-sky-100/50 dark:bg-gray-800 dark:border-gray-700">
-                                            <div><p className='text-sm font-medium text-gray-700 dark:text-gray-400'>NIGHTs</p></div>
+                                            <div><p className='text-sm font-medium text-gray-700 dark:text-gray-400'>NIGHT</p></div>
                                             <div className='border-b border-b-slate-400 grid grid-cols-2 justify-items-center'>
                                                 <div>
                                                     <p className='text-xs text-gray-500 dark:text-gray-400'>{item[0].period.replace(' night','') }</p>
                                                 </div>
                                                 <div>
-                                                    <p className='text-xs text-gray-500 dark:text-gray-400'>Dec 6</p>
+                                                    <p className='text-xs text-gray-500 dark:text-gray-400'>{ new Date(forecastData?.dateTime[0].year, forecastData?.dateTime[0].month - 1, forecastData?.dateTime[0].day, forecastData?.dateTime[0].hour, forecastData?.dateTime[0].minute).toLocaleDateString(i18n.language === 'fr' ? 'fr-CA' : undefined, { month: 'short', day: '2-digit'}) }</p>
                                                 </div>
                                             </div>
                                             <div className='flex justify-center'>
                                                 <div><img src={`https://meteo.gc.ca/weathericons/${item[0].abbreviatedForecast.iconCode}.gif`} className='h-[51px] translate-y-1' width={60} alt={`${item[0].abbreviatedForecast.textSummary}`} /></div>
                                             </div>
-                                            <h5 className='text-xl font-medium'>{item[0].temperatures.temperature } C</h5>
+                                            <h5 className='text-xl font-medium'>{item[0].temperatures.temperature } °C</h5>
                                             <div className='min-h-[40px] max-h-[40px] mb-2'>
                                                 <p className='font-normal text-sm text-gray-500 dark:text-gray-400' title={`${item[0].abbreviatedForecast.textSummary}`}>{item[0].abbreviatedForecast.textSummary}</p>
                                             </div>
@@ -275,13 +276,13 @@ const WeatherForecastWeek = ({ forecast }) => {
                                                     <p className='text-xs text-gray-500 dark:text-gray-400'>{item[0].period}</p>
                                                 </div>
                                                 <div>
-                                                    <p className='text-xs text-gray-500 dark:text-gray-400'>Dec 6</p>
+                                                    <p className='text-xs text-gray-500 dark:text-gray-400'></p>
                                                 </div>
                                             </div>
                                             <div className='flex justify-center'>
                                             <div><img src={`https://meteo.gc.ca/weathericons/${item[0].abbreviatedForecast.iconCode}.gif`} className='h-[51px] translate-y-1' width={60} alt={`${item[0].abbreviatedForecast.textSummary}`} /></div>
                                             </div>
-                                            <h5 className='text-xl font-semibold'>{item[0].temperatures.temperature }</h5>
+                                            <h5 className='text-xl font-semibold'>{item[0].temperatures.temperature } °C</h5>
                                             <div className='min-h-[40px] max-h-[40px] mb-2'>
                                                 <p className='font-normal text-sm text-gray-500 dark:text-gray-400' title={`${item[0].abbreviatedForecast.textSummary}`}>{item[0].abbreviatedForecast.textSummary}</p>
                                             </div>
