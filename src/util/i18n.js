@@ -40,6 +40,11 @@ i18n.addResourceBundle('en', 'common', {
     "forecastFor": "Forecast for",
     "forecastAsOf": "As of",
     "temperature": "Temperature",
+    "summary": "Summary",
+    "moreInfo": "More info",
+    "day": "Day",
+    "night": "Night",
+    "weekForecast": "7 Day Weather Forecast",
 
 }, true, true);
 
@@ -62,6 +67,11 @@ i18n.addResourceBundle('fr', 'common', {
     "forecastFor": "Prévisions pour",
     "forecastAsOf": "Au",
     "temperature": "Température",
+    "summary": "résumé",
+    "moreInfo": "Plus d'informations",
+    "day": "Jour",
+    "night": "Nuit",
+    "weekForecast": "Prévisions météo à 7 jours"
 
 }, true, true);
 
