@@ -3,7 +3,7 @@ import React from 'react'
 const Footer = () => {
     return (
         // md:bottom-0 md:absolute
-        <footer className='w-full translate-y-full relative bg-[#285430] bg-gradient-to-tr from-emerald-800 to-sky-700 dark:from-emerald-800 dark:to-zinc-800'>
+        <footer className='w-full translate-y-full relative bg-[#285430] bg-gradient-to-tr from-emerald-800 to-sky-700 dark:from-slate-900 dark:to-slate-950'>
             <div className='divide-y-2 divide-stone-500 px-5'>
                 {/* <div className='text-center py-10 text-sm text-green-100'>
                     Footer Links 
