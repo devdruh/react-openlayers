@@ -205,9 +205,9 @@ const WeatherMeteogram = ({ cityWeather }) => {
                                         <img src={`https://meteo.gc.ca/weathericons/${currentCondition?.iconCode}.gif`} className='h-[51px] translate-y-1' width={60} alt={`${currentCondition?.condition}`} />
                                         : null
                                 }
-                                <h5 className="text-5xl font-semibold tracking-tight text-gray-900 dark:text-slate-300">{ currentCondition?.temperature ? Math.floor(currentCondition?.temperature) : null }</h5>
+                                <h5 className="text-5xl font-semibold tracking-tight ml-5 text-gray-900 dark:text-slate-300">{ currentCondition?.temperature ? Math.floor(currentCondition?.temperature) : null }</h5>
                                 {/* <p className='pl-2 flex gap-1'><a href='/'>°C</a> | <a href='/' className='text-gray-500'>°F</a></p> */}
-                                <p className='pl-2 flex gap-1 text-gray-500 dark:text-gray-400'>°C</p>
+                                <p className='pl-1 flex gap-1 text-gray-500 dark:text-gray-400'>°C</p>
                                 <div className='text-xs pl-4 whitespace-nowrap'>
                                     <p className='font-normal text-gray-500 dark:text-gray-400'>{t('common:dewPoint')}: { currentCondition?.dewpoint}°C</p> 
                                             <p className='font-normal text-gray-500 dark:text-gray-400'>{ t('common:humidity')}: {currentCondition?.relativeHumidity}%</p> 
