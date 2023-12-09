@@ -4,7 +4,7 @@ import Footer from '../components/Footer'
 
 const Index = () => {
     return (
-        <div className="dark:bg-slate-900">
+        <div className="dark:bg-slate-900 bg-gray-100">
             <Navbar />
             <Outlet/>
             <Footer />
