@@ -47,9 +47,9 @@ const WeatherForecastWeek = ({ forecast }) => {
     },[forecast])
 
     return (
-        <div className='py-5 px-2 w-full bg-gradient-to-br from-sky-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% rounded-md dark:from-gray-900 dark:to-gray-800'>
-            <h4 className='text-center text-slate-50 font-normal text-lg'>{ t('common:weekForecast')}</h4>
-            <p className='text-center text-slate-200 font-normal text-xs'>{t('common:forecastAsOf')}  { new Date(forecastData?.dateTime[1].year, forecastData?.dateTime[1].month - 1, forecastData?.dateTime[1].day, forecastData?.dateTime[1].hour, forecastData?.dateTime[1].minute).toLocaleDateString(i18n.language === 'fr' ? 'fr-CA' : undefined, { weekday: 'short', hour: 'numeric', minute: 'numeric', timeZoneName:'short'}) }</p>
+        <div className='py-5 px-2 w-full bg-gradient-to-br mt-3 from-sky-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% rounded-md dark:from-gray-900 dark:to-gray-800'>
+            <h4 className='text-center text-slate-100 dark:text-gray-300 font-medium text-lg'>{ t('common:weekForecast')}</h4>
+            <p className='text-center text-slate-200 dark:text-gray-400 font-normal text-xs'>{t('common:forecastAsOf')}  { new Date(forecastData?.dateTime[1].year, forecastData?.dateTime[1].month - 1, forecastData?.dateTime[1].day, forecastData?.dateTime[1].hour, forecastData?.dateTime[1].minute).toLocaleDateString(i18n.language === 'fr' ? 'fr-CA' : undefined, { weekday: 'short', hour: 'numeric', minute: 'numeric', timeZoneName:'short'}) }</p>
             <div className='flex flex-nowrap max-w-full p-3 gap-1 overflow-y-auto max-lg:flex-wrap max-md:justify-center weekForecastScroll'>
                 {/* xl:justify-center */}
             

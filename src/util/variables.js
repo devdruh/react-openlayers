@@ -105,6 +105,7 @@ var aqhiChartOptions = {
 const weatherForecastChartOptions = {
 
     chart: {
+        styledMode: true,
         events: {
 
             redraw: function (event) {
@@ -165,7 +166,8 @@ const weatherForecastChartOptions = {
             fontWeight: '500',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis'
-        }
+        },
+        useHTML: true
     },
 
     credits: {
@@ -178,7 +180,8 @@ const weatherForecastChartOptions = {
 
 
     subtitle: {
-        text: 'As of '
+        text: '',
+        useHTML: true
     },
 
     xAxis: [
@@ -253,12 +256,19 @@ const weatherForecastChartOptions = {
 
     tooltip: {
         shared: true,
-        useHTML: true,
+        useHTML: false,
         headerFormat:
-            '<small>{point.x:%A, %b %e, %H:%M} - {point.point.to:%H:%M}</small><br>' +
-            '<b>{point.point.symbolName}</b><br>'
-    },
+            '<small class="dark:text-xs" style="font-size:10px">{point.x:%A, %b %e, %H:%M} - {point.point.to:%H:%M}</small><br>' +
+            '<b style="color:{point.color}">{point.point.symbolName} </b><br>',
+        // formatter: function (tooltip) {
+        //     console.log(tooltip, "<<< p", this.points)
+        //     // chart.options.colors
+        //     console.log(tooltip.chart.options.colors[this.points[0].colorIndex],"<<< color")
+            
+        //     return tooltip.defaultFormatter.call(this, tooltip);
 
+        // },
+    },
     series: [
         {
             name: 'Temperature',

@@ -74,10 +74,10 @@ const WeatherMeteogram = ({ cityWeather }) => {
                 return {
                     ...data,
                     title: {
-                        text: forecastTitle + ' ' + forecastLocation.region + ', ' + forecastLocation.province
+                        text: '<h4 class="dark:text-gray-300 text-gray-700 font-medium">' + forecastTitle + ' ' + forecastLocation.region + ', ' + forecastLocation.province + '</h4>'
                     },
                     subtitle: {
-                        text: forecastSubTitle + ' ' + dateForecast.textSummary
+                        text: '<p class="text-center text-gray-400 dark:text-gray-400 font-normal text-xs">' + forecastSubTitle + ' ' + dateForecast.textSummary + '<p>'
                     },
                     series: [{
                         ...data.series[0],
@@ -163,7 +163,7 @@ const WeatherMeteogram = ({ cityWeather }) => {
                 <div className='pt-5 w-full'>
                 {
                     isLoading ? 
-                    <div className='grid sm:grid-cols-2 max-sm:grid-cols-2 gap-4 p-4 border border-gray-200 rounded-lg shadow animate-pulse md:p-6 dark:border-gray-700'>
+                    <div className='grid sm:grid-cols-2 max-sm:grid-cols-2 gap-4 p-4 md:p-6 border mb-3 border-gray-200 rounded-lg shadow animate-pulse dark:border-gray-700'>
                         <div role="status">
                             <div className="flex items-center max-sm:justify-stretch">
                                 <div className="max-sm:h-14 max-sm:pt-2 max-sm:mr-2 max-sm:mt-2 sm:h-12 sm:w-24 sm:mr-4 sm:mt-3 md:h-14 md:w-24 w-24 md:mt-3 xl:w-20 bg-gray-300 rounded-full dark:bg-gray-700">
@@ -197,7 +197,7 @@ const WeatherMeteogram = ({ cityWeather }) => {
                         </div>
                     </div>  
                     : 
-                    <div className='grid md:grid-cols-2 items-center p-4 sm:p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700'>
+                    <div className='grid md:grid-cols-2 items-center p-4 sm:p-6 mb-3 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700'>
                         <div>
                             <div className='flex sm:flex-row justify-center '>
                                 {
@@ -256,7 +256,7 @@ const WeatherMeteogram = ({ cityWeather }) => {
                         </div>
                     </div>
                 }
-                <HighchartsReact highcharts={Highcharts} options={chartOptions} />
+                    <HighchartsReact highcharts={Highcharts} options={chartOptions} containerProps={{ id: 'forecast-weather-highchart'} } />
                 </div>
             </div>
             <div>

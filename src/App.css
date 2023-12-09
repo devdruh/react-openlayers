@@ -5,6 +5,8 @@
 
 @layer components {
 
+	@import url("https://code.highcharts.com/css/highcharts.css");
+
 	.mapRef {
 		height: calc(100vh - 250px);
 		max-height: 60vh;
@@ -73,4 +75,25 @@
 	::-webkit-scrollbar-thumb:hover {
 		@apply bg-slate-600;
 	}
+
+	.highcharts-background {
+		transition: all 250ms;
+	}
+
+	.highcharts-description {
+		margin: 1rem 0;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		:root {
+			/* UI colors */
+			--highcharts-background-color: rgb(31 41 55 / var(--tw-bg-opacity));
+		}
+	}
+
+	.highcharts-dark {
+		/* UI colors */
+		--highcharts-background-color: rgb(31 41 55 / var(--tw-bg-opacity));	
+	}
+
 }
