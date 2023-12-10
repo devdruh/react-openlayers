@@ -8,7 +8,7 @@ const Footer = () => {
                 {/* <div className='text-center py-10 text-sm text-green-100'>
                     Footer Links 
                 </div> */}
-                <div className='text-center py-3 text-xs text-neutral-300'>
+                <div className='text-center py-3 text-xs text-neutral-300 dark:text-slate-500'>
                     © { Math.round(new Date().getUTCFullYear())} All Rights Reserved. Dev - <a href='https://github.com/devdruh'>Andrew Ragadio</a>
                 </div>
             </div>
