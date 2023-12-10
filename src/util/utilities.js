@@ -30,7 +30,14 @@ function xml2json(srcDOM) {
     return jsonResult;
 }
 
+const isDarkTheme = () => {
+    if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        return true
+    }
+
+    return false
+}
 
 export {
-    xml2json
+    xml2json, isDarkTheme
 }

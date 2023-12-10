@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from "react-i18next";
+import { useDarkTheme } from './DarkThemeContext';
 
 const Navbar = () => {
 
     const { i18n } = useTranslation();
     const [lang, setLang] = useState();
     const [isDarkTheme, setIsDartkTheme] = useState(false);
+
+    const { switchDarkTheme } = useDarkTheme();
 
     const handleChangeLanguage = (e) => {
         const newLang = e.target.innerText === 'English' ? 'en' : 'fr';
@@ -28,6 +31,7 @@ const Navbar = () => {
                 forecastWeatherChart.firstChild.classList.add('highcharts-light');
             }
         }
+        switchDarkTheme(!isDarkTheme);
     }
 
     useEffect(() => {

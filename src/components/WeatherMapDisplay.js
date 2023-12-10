@@ -22,6 +22,8 @@ import GeoJSON from 'ol/format/GeoJSON.js';
 import VectorLayer from 'ol/layer/Vector.js';
 import Feature from 'ol/Feature.js';
 import { useTranslation } from "react-i18next";
+import { StadiaMaps } from 'ol/source.js';
+import { useDarkTheme } from "./DarkThemeContext";
 
 const WeatherMapDisplay = () => {
 
@@ -45,6 +47,8 @@ const WeatherMapDisplay = () => {
     const [aqhiChartData, setAqhiChartData] = useState([]);
     const [isMapLoading, setIsMapLoading] = useState(true);
     const { t, i18n } = useTranslation();
+
+    const { darkTheme } = useDarkTheme();
 
     const _alertsPopup = t('alerts', { returnObjects: true });
     const _aqhiPopup = t('aqhi', { returnObjects: true });
@@ -91,10 +95,25 @@ const WeatherMapDisplay = () => {
                 autoPan: true
             });
 
-            const basemapLayer = new TileLayer({
-                source: new OSM()
-            })
-            
+            const basemapLightLayer = new TileLayer({
+                source: new OSM(),
+                visible: false,
+                title: 'OSM_Map',
+                id: 'basemap_light'
+            });
+
+            const basemapDarkLayer = new TileLayer({
+                title: 'Stadia_Map',
+                id: 'basemap_dark',
+                source: new StadiaMaps({
+                    layer: 'alidade_smooth_dark',
+                    retina: true,
+                    // apiKey: process.env.STADIAMAPS_API_KEY
+                }),
+                opacity: 0.5,
+                visible: false
+            });
+
             const airSurfaceTempWMS = new TileWMS({
                 url: layerSourceInfo[0].url,
                 params: { 'LAYERS': layerSourceInfo[0].layer },
@@ -172,7 +191,7 @@ const WeatherMapDisplay = () => {
             });
 
             map.current = new Map({
-                layers: [basemapLayer, layerGroup, aqhiVectorLayer, pinLocLayer],
+                layers: [basemapLightLayer, basemapDarkLayer, layerGroup, aqhiVectorLayer, pinLocLayer],
                 view: view,
                 overlays: [overlay]
             });
@@ -410,8 +429,19 @@ const WeatherMapDisplay = () => {
             setLayerGroupList(layerGroup.getLayers());
             setLayerLegendList(layerGroup.getLayers());
         }
+        const layers = map?.current.getLayers().array_;
+        const findLightLayer = layers.find((item) => item.values_.id === 'basemap_light');
+        const findDarkLayer = layers.find((item) => item.values_.id === 'basemap_dark');
 
-    }, [airQualityLayerId, airTempLayerId, weatherAlertsLayerId, i18n]);
+        if (darkTheme) {
+            findLightLayer.setVisible(false)
+            findDarkLayer.setVisible(true);
+        } else {
+            findLightLayer.setVisible(true)
+            findDarkLayer.setVisible(false);
+        }
+
+    }, [airQualityLayerId, airTempLayerId, weatherAlertsLayerId, i18n, darkTheme]);
 
     useEffect(() => {
 
