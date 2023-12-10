@@ -47,9 +47,9 @@
     }
 
 	.ol-zoom button {
-		@apply dark:bg-gray-800 dark:text-gray-400
+		@apply dark:bg-gray-800 dark:text-gray-400;
 	}
-	
+
 	.weekForecastScroll::-webkit-scrollbar {
 		@apply h-3;
 	}

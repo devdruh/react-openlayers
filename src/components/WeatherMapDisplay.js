@@ -24,6 +24,7 @@ import Feature from 'ol/Feature.js';
 import { useTranslation } from "react-i18next";
 import { StadiaMaps } from 'ol/source.js';
 import { useDarkTheme } from "./DarkThemeContext";
+import Zoom from 'ol/control/Zoom.js';
 
 const WeatherMapDisplay = () => {
 
@@ -436,6 +437,9 @@ const WeatherMapDisplay = () => {
         if (darkTheme) {
             findLightLayer.setVisible(false)
             findDarkLayer.setVisible(true);
+            new Zoom({
+                className: 'dark:bg-gray-800 dark:text-gray-400'
+            });
         } else {
             findLightLayer.setVisible(true)
             findDarkLayer.setVisible(false);
