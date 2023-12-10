@@ -538,18 +538,17 @@ const WeatherMapDisplay = () => {
                     {
                         isClickLegendBtn && isClickLegendBtn ? 
                             <div className="flex">
-                                <button type="button" className="h-7 bg-slate-200 hover:bg-slate-200 focus:ring-2 focus:outline-none focus:ring-sky-400 font-sm rounded text-sm p-1 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800 hover:border-sky-400 ease-in duration-300 hover:ease-in hover:scale-125 transition bg-gradient-to-br from-emerald-500 to-sky-800 hover:bg-gradient-to-b hover:text-slate-100 hover:focus:scale-110" onClick={handleLegendBtn} title="Collapse">
-                                    <svg className="w-5 h-5 text-gray-200 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 10">
+                                <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-gradient-to-bl from-emerald-500 to-sky-800 ring-2 ring-sky-400 hover:bg-gradient-to-br dark:from-gray-800 dark:to-gray-800 dark:ring-slate-500 hover:scale-110 dark:hover:bg-gray-900" onClick={handleLegendBtn} title="Collapse">
+                                    <svg className="w-5 h-5 text-gray-200 dark:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 10">
                                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="m7 9 4-4-4-4M1 9l4-4-4-4"/>
                                     </svg>
                                     <span className="sr-only">Layers Legend</span>
                                 </button>
-                            
                             </div>
                             : 
                             <div className="flex">
-                                <button type="button" className="h-7 bg-slate-200 hover:bg-slate-50 ring-1 ring-sky-300 hover:text-slate-200 hover:ring-sky-500 focus:ring-2 focus:outline-none focus:ring-sky-300 font-sm rounded text-sm p-1 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800 hover:border-sky-400 ease-in duration-300 hover:ease-in hover:scale-110 transition" onClick={handleLegendBtn} title="Legend">
-                                    <svg className="w-5 h-5 text-slate-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 10">
+                                <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-slate-200 dark:bg-gray-800 hover:scale-110 dark:hover:bg-gray-900 ring-1 dark:ring-slate-600 dark:focus:ring-slate-500 dark:focus:ring-2" onClick={handleLegendBtn} title="Legend">
+                                    <svg className="w-5 h-5 text-slate-800 dark:text-gray-400 dark:hover:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 10">
                                         <path stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M6 1h10M6 5h10M6 9h10M1.49 1h.01m-.01 4h.01m-.01 4h.01"/>
                                     </svg>
                                     <span className="sr-only">Layers Legend</span>
@@ -567,15 +566,15 @@ const WeatherMapDisplay = () => {
                     <div className="flex">
                         {
                             isClickLayerBtn && isClickLayerBtn ? 
-                                <button type="button" className="h-7 bg-slate-200 hover:bg-slate-200 focus:ring-2 focus:outline-none focus:ring-sky-400 font-sm rounded text-sm p-1 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800 hover:border-sky-400 ease-in duration-300 hover:ease-in hover:scale-125 transition bg-gradient-to-br from-emerald-500 to-indigo-800 hover:bg-gradient-to-b hover:text-slate-100 hover:focus:scale-110" onClick={handleLayerBtn} title="Collapse">
-                                    <svg className="w-5 h-5 text-gray-200 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 10">
+                                <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-gradient-to-bl from-emerald-500 to-sky-800 ring-2 ring-sky-400 hover:bg-gradient-to-br dark:from-gray-800 dark:to-gray-800 dark:ring-slate-500 hover:scale-110 dark:hover:bg-gray-900" onClick={handleLayerBtn} title="Collapse">
+                                    <svg className="w-5 h-5 text-gray-200 dark:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 10">
                                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="m7 9 4-4-4-4M1 9l4-4-4-4"/>
                                     </svg>
                                     <span className="sr-only">Layers Legend</span>
                                 </button>
                                 : 
-                                <button type="button" className="h-7 bg-slate-200 hover:bg-slate-50 ring-1 ring-sky-300 hover:text-slate-200 hover:ring-sky-500 focus:ring-2 focus:outline-none focus:ring-sky-300 font-sm rounded text-sm p-1 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800 hover:border-sky-400 ease-in duration-300 hover:ease-in hover:scale-110 transition" onClick={handleLayerBtn} title="Layer">
-                                    <svg className="w-5 h-5 text-slate-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 19 20">
+                                <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-slate-200 dark:bg-gray-800 hover:scale-110 dark:hover:bg-gray-900 ring-1 dark:ring-slate-600 dark:focus:ring-slate-500 dark:focus:ring-2" onClick={handleLayerBtn} title="Layer">
+                                    <svg className="w-5 h-5 text-slate-800 dark:text-gray-400 dark:hover:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 19 20">
                                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2 9.376v.786l8 3.925 8-3.925v-.786M1.994 14.191v.786l8 3.925 8-3.925v-.786M10 1.422 2 5.347l8 3.925 8-3.925-8-3.925Z"/>
                                     </svg>
                                     <span className="sr-only">Layers</span>
@@ -598,15 +597,15 @@ const WeatherMapDisplay = () => {
                         {
                             showChartBtn && showChartBtn ?
                                 <>
-                                    <button type="button" className="h-7 bg-slate-200 hover:bg-slate-50 ring-1 ring-sky-300 hover:text-slate-200 hover:ring-sky-500 focus:ring-2 focus:outline-none focus:ring-sky-300 font-sm rounded text-sm p-1 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800 hover:border-sky-400 ease-in duration-300 hover:ease-in hover:scale-110 transition" onClick={handleChartBtn} title="Charts">
-                                            <svg className="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
-                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1v14h16m0-9-3-2-3 5-3-2-3 4"/>
-                                            </svg>
+                                    <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-gradient-to-bl from-emerald-500 to-sky-800 ring-2 ring-sky-400 hover:bg-gradient-to-br dark:from-gray-800 dark:to-gray-800 dark:ring-slate-500 hover:scale-110 dark:hover:bg-gray-900" onClick={handleChartBtn} title="Charts">
+                                        <svg className="w-5 h-5 text-gray-200 dark:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
+                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1v14h16m0-9-3-2-3 5-3-2-3 4" />
+                                        </svg>
                                         <span className="sr-only">Chart</span>
                                     </button>
                                     <span className="flex absolute h-3 w-3 top-0 right-0 -mt-1 -mr-1">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 dark:bg-sky-300 opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-400 dark:bg-sky-400"></span>
                                     </span>
                                 </>
                                 : <></>
@@ -614,11 +613,11 @@ const WeatherMapDisplay = () => {
                         }
                     </div>
                     <div className="flex justify-end">
-                        <div className={`max-w-sm bg-white transition duration-1000 ease-in shadow-lg shadow-blue-400/50 dark:shadow-lg last:rounded-b-lg ${isClickChartBtn ? null : 'hidden'}` }>
+                        <div className={`max-w-sm bg-white dark:bg-gray-800 transition duration-1000 ease-in shadow-lg shadow-blue-400/50 dark:shadow-lg last:rounded-b-lg ${isClickChartBtn ? null : 'hidden'}`}>
                             <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
                                 <ul className="flex flex-wrap focus:bg-sky-600 -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
                                     <li className="me-2" role="presentation">
-                                        <button className="inline-block p-4 border-b-2 rounded-t-lg" id="aqhi-tab" data-tabs-target="#aqhi-tab-id" type="button" role="tab" aria-controls="aqhi-tab-id" aria-selected="false">AQHI</button>
+                                        <button className="inline-block p-4 border-b-2 rounded-t-lg dark:text-slate-400 dark:hover:text-slate-300" id="aqhi-tab" data-tabs-target="#aqhi-tab-id" type="button" role="tab" aria-controls="aqhi-tab-id" aria-selected="false">AQHI</button>
                                     </li>
                                 </ul>
                             </div>
