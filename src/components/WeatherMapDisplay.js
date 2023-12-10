@@ -655,14 +655,14 @@ const WeatherMapDisplay = () => {
                 </div>
                 :
                 <div ref={popupDiv}>
-                    <div data-popover role="tooltip" className="ol-popup absolute rounded-lg bottom-3 min-w-max border border-solid border-slate-400 -left-12 transition-opacity duration-300 bg-white max-[w-56] dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800 shadow-lg shadow-blue-400/50 dark:shadow-lg dark:shadow-blue-800/80">
+                    <div data-popover role="tooltip" className="ol-popup absolute rounded-lg bottom-3 pb-1 min-w-max border border-solid border-slate-400 -left-12 transition-opacity duration-300 bg-white max-[w-56] dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800 shadow-lg shadow-blue-400/50 dark:shadow-lg dark:shadow-blue-800/80">
                         <span id="popup-closer" className="ol-popup-closer hover:cursor-pointer" onClick={closePopup}></span>
                         <div className="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
-                            <h4 className="font-medium text-sm text-gray-900 dark:text-white">({t('common:lonlat')}): <span className="font-thin text-gray-900 dark:text-white">{airTableData.coordinate}</span></h4>
+                            <h4 className="font-medium text-sm text-gray-900 dark:text-slate-300">({t('common:lonlat')}): <span className="font-normal text-gray-900 dark:text-slate-300">{airTableData.coordinate}</span></h4>
                         </div>
-                        <div className="grid grid-cols-2 border-b border-b-slate-300 gap-3 p-1 max-w-xs">
+                        <div className="grid grid-cols-2 border-b border-b-slate-300 dark:border-b-gray-600 gap-3 p-1 max-w-xs">
                             <div className="text-right self-center">
-                                <p className="text-xs text-gray-900 dark:text-white">{t('common:airSurfaceTemperature')} : </p>
+                                <p className="text-xs text-gray-900 dark:text-slate-400">{t('common:airSurfaceTemperature')} : </p>
                             </div>
                             <div className="self-center text-xs">
                                 <p>{Math.round(airTableData.airsurftemp)} °C</p>
@@ -674,7 +674,7 @@ const WeatherMapDisplay = () => {
                                     <div key={item.id} className="px-1">
                                         <div className="grid grid-cols-2 gap-3 py-1 max-w-xs">
                                             <div className="text-right self-center">
-                                                <p className="text-xs text-gray-900 dark:text-white">{i18n.t('common:forecastAQHI')} : </p>
+                                                <p className="text-xs text-gray-900 dark:text-slate-400">{i18n.t('common:forecastAQHI')} : </p>
                                             </div>
                                             <div className="self-center text-xs">
                                                 <p>{item.value}</p>
@@ -682,18 +682,18 @@ const WeatherMapDisplay = () => {
                                         </div>
                                         <div className="grid grid-cols-2 gap-3 pb-1 max-w-xs">
                                             <div className="text-right self-center">
-                                                <p className="text-xs text-gray-900 dark:text-white">{i18n.t('common:forecastDateTime')} : </p>
+                                                <p className="text-xs text-gray-900 dark:text-slate-400">{i18n.t('common:forecastDateTime')} : </p>
                                             </div>
                                             <div className="self-center text-xs">
-                                                <p className="text-xs text-gray-900 dark:text-white">{item.forecastDate}</p>
+                                                <p className="text-xs text-gray-900 dark:text-slate-400">{item.forecastDate}</p>
                                             </div>
                                         </div>
-                                        <div className="grid grid-cols-2 gap-3 pb-1 border-b border-b-slate-300 max-w-xs">
+                                        <div className="grid grid-cols-2 gap-3 pb-1 max-w-xs">
                                             <div className="text-right self-center">
-                                                <p className="text-xs text-gray-900 dark:text-white">{i18n.t('common:forecastClosestLoc')} : </p>
+                                                <p className="text-xs text-gray-900 dark:text-slate-400">{i18n.t('common:forecastClosestLoc')} : </p>
                                             </div>
                                             <div className="self-center">
-                                                <p className="text-xs text-gray-900 dark:text-white">{item.forecastLoc}</p>
+                                                <p className="text-xs text-gray-900 dark:text-slate-400">{item.forecastLoc}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -705,16 +705,16 @@ const WeatherMapDisplay = () => {
                                 _alertsPopup?.data.map((item) => (
                                     <div key={item.id}>
                                         <div className="grid grid-flow-row p-1">
-                                            <div className={`text-center self-center py-1 ${item.type === 'warning' ? 'bg-[#FF0000] text-white' : item.type === 'watch' ? ' bg-[#FFFF00] text-slate-600' : item.type === 'statement' ? 'bg-[#7F7F7F] text-slate-100' : item.type === 'advisory' ? 'bg-[#7F7F7F] text-slate-100' : null}`}>
+                                            <div className={`text-center self-center py-1 ${item.type === 'warning' ? 'bg-[#FF0000] text-white dark:text-slate-200' : item.type === 'watch' ? ' bg-[#FFFF00] text-slate-600' : item.type === 'statement' ? 'bg-[#7F7F7F] text-slate-100' : item.type === 'advisory' ? 'bg-[#7F7F7F] text-slate-100' : null}`}>
                                                 <p className='text-xs whitespace-pre-line capitalize font-medium'>{item.headline} </p>
                                             </div>
                                             <div className="text-center self-center max-w-xs">
-                                                <p className="text-xs font-medium text-gray-900 dark:text-white">{item.area} </p>
+                                                <p className="text-xs font-medium text-gray-900 dark:text-slate-400">{item.area} </p>
                                             </div>
                                         </div>
                                         <div className="grid grid-cols-2 gap-3 pb-1 max-w-xs">
                                             <div className="text-right self-center">
-                                                <p className="text-xs text-gray-900 dark:text-white">{ i18n.t('common:effective') } : </p>
+                                                <p className="text-xs text-gray-900 dark:text-slate-400">{i18n.t('common:effective')} : </p>
                                             </div>
                                             <div className="self-center text-xs">
                                                 <p>{item.effective}</p>
@@ -722,7 +722,7 @@ const WeatherMapDisplay = () => {
                                         </div>
                                         <div className="grid grid-cols-2 gap-3 pb-1 max-w-xs">
                                             <div className="text-right self-center">
-                                                <p className="text-xs text-gray-900 dark:text-white">{ i18n.t('common:expires') } : </p>
+                                                <p className="text-xs text-gray-900 dark:text-slate-400">{i18n.t('common:expires')} : </p>
                                             </div>
                                             <div className="self-center text-xs">
                                                 <p>{item.expires}</p>
@@ -730,10 +730,10 @@ const WeatherMapDisplay = () => {
                                         </div>
                                         <div className="grid pb-1 px-1 max-w-xs">
                                             <div className="mb-1">
-                                                <p className="text-xs text-center text-gray-900 dark:text-white">Description </p>
+                                                <p className="text-xs text-center text-gray-900 dark:text-slate-400">Description </p>
                                             </div>
-                                            <div className=" max-w-xs overflow-y-auto max-h-20 border-t">
-                                                <p className="text-xs whitespace-normal p-2 text-justify text-gray-900 dark:text-white">{item.description} </p>
+                                            <div className=" max-w-xs overflow-y-auto max-h-20 border-t dark:border-t-gray-600">
+                                                <p className="text-xs whitespace-normal p-2 text-justify text-gray-900 dark:text-slate-400">{item.description} </p>
                                             </div>
                                         </div>
                                     </div>

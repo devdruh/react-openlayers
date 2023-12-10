@@ -29,7 +29,7 @@
 	.ol-popup:after {
 		border-width: 10px;
 		margin-left: -0.7rem;
-		@apply border-t-white left-12;
+		@apply border-t-white left-12 dark:border-t-gray-800;
 	}
 
 	.ol-popup:before {
@@ -97,6 +97,10 @@
 	.highcharts-dark {
 		/* UI colors */
 		--highcharts-background-color: rgb(31 41 55 / var(--tw-bg-opacity));
+	}
+
+	text .apexcharts-xaxis-title-text {
+		@apply dark:text-slate-200;
 	}
 
 }
