@@ -547,7 +547,7 @@ const WeatherMapDisplay = () => {
                             </div>
                             : 
                             <div className="flex">
-                                <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-slate-200 dark:bg-gray-800 hover:scale-110 dark:hover:bg-gray-900 ring-1 dark:ring-slate-600 dark:focus:ring-slate-500 dark:focus:ring-2" onClick={handleLegendBtn} title="Legend">
+                                <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-slate-200 dark:bg-gray-800 hover:scale-110 dark:hover:bg-gray-900 ring-1 dark:ring-slate-600 dark:focus:ring-slate-600 dark:hover:ring-2" onClick={handleLegendBtn} title="Legend">
                                     <svg className="w-5 h-5 text-slate-800 dark:text-gray-400 dark:hover:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 10">
                                         <path stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M6 1h10M6 5h10M6 9h10M1.49 1h.01m-.01 4h.01m-.01 4h.01"/>
                                     </svg>
@@ -573,7 +573,7 @@ const WeatherMapDisplay = () => {
                                     <span className="sr-only">Layers Legend</span>
                                 </button>
                                 : 
-                                <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-slate-200 dark:bg-gray-800 hover:scale-110 dark:hover:bg-gray-900 ring-1 dark:ring-slate-600 dark:focus:ring-slate-500 dark:focus:ring-2" onClick={handleLayerBtn} title="Layer">
+                                <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-slate-200 dark:bg-gray-800 hover:scale-110 dark:hover:bg-gray-900 ring-1 dark:ring-slate-600 dark:focus:ring-slate-600 dark:hover:ring-2" onClick={handleLayerBtn} title="Layer">
                                     <svg className="w-5 h-5 text-slate-800 dark:text-gray-400 dark:hover:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 19 20">
                                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2 9.376v.786l8 3.925 8-3.925v-.786M1.994 14.191v.786l8 3.925 8-3.925v-.786M10 1.422 2 5.347l8 3.925 8-3.925-8-3.925Z"/>
                                     </svg>
@@ -597,8 +597,8 @@ const WeatherMapDisplay = () => {
                         {
                             showChartBtn && showChartBtn ?
                                 <>
-                                    <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-gradient-to-bl from-emerald-500 to-sky-800 ring-2 ring-sky-400 hover:bg-gradient-to-br dark:from-gray-800 dark:to-gray-800 dark:ring-slate-500 hover:scale-110 dark:hover:bg-gray-900" onClick={handleChartBtn} title="Charts">
-                                        <svg className="w-5 h-5 text-gray-200 dark:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
+                                    <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-gradient-to-bl from-emerald-500 to-sky-800 ring-1 ring-sky-400 hover:bg-gradient-to-br dark:from-gray-800 dark:to-gray-800 dark:ring-slate-600 dark:focus:ring-slate-600 hover:scale-110 dark:hover:from-gray-900 dark:hover:to-gray-900 dark:hover:ring-2" onClick={handleChartBtn} title="Charts">
+                                        <svg className="w-5 h-5 text-gray-200 dark:text-gray-400 dark:hover:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
                                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1v14h16m0-9-3-2-3 5-3-2-3 4" />
                                         </svg>
                                         <span className="sr-only">Chart</span>

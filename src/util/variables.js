@@ -63,7 +63,7 @@ var aqhiChartOptions = {
         show: true,
         strokeDashArray: 4,
         padding: {
-            top: -26
+            top: -20
         },
     },
     series: [
@@ -86,8 +86,10 @@ var aqhiChartOptions = {
             },
         },
         title: {
+            text: '',
             style: {
-                fontWeight: 400
+                fontWeight: 400,
+                color: ''
             }
         },
         axisBorder: {
