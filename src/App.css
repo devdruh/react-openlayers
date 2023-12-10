@@ -1,11 +1,10 @@
 @import "./../node_modules/ol/ol.css";
+@import url("https://code.highcharts.com/css/highcharts.css");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer components {
-
-	@import url("https://code.highcharts.com/css/highcharts.css");
 
 	.mapRef {
 		height: calc(100vh - 250px);
@@ -46,6 +45,10 @@
         content: "✖";
         color: theme('colors.gray.400');
     }
+
+	.ol-zoom button {
+		@apply dark:bg-gray-800 dark:text-gray-400
+	}
 	
 	.weekForecastScroll::-webkit-scrollbar {
 		@apply h-3;
@@ -93,7 +96,7 @@
 
 	.highcharts-dark {
 		/* UI colors */
-		--highcharts-background-color: rgb(31 41 55 / var(--tw-bg-opacity));	
+		--highcharts-background-color: rgb(31 41 55 / var(--tw-bg-opacity));
 	}
 
 }
