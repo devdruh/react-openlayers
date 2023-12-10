@@ -757,7 +757,7 @@ const WeatherMapDisplay = () => {
                     </div>
                 </div>
             }
-            <div className="flex flex-row bg-slate-300 content-center items-center">
+            <div className="flex flex-row bg-slate-300 content-center items-center dark:bg-gray-800">
                 <div className="px-3">
                     {
                         !isClickPlayBtn ?
