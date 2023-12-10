@@ -63,6 +63,10 @@
 		@apply dark:bg-gray-800 border dark:border-slate-500;
 	}
 
+	.ol-attribution-new {
+		@apply dark:border-slate-700;
+	}
+
 	.ol-attribution-new button:hover, .ol-attribution-new button:focus,
 	.ol-zoom button:hover, .ol-zoom button:focus {
 		@apply dark:bg-gray-900 dark:text-slate-300 ease-in transition duration-300;
