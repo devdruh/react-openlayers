@@ -25,6 +25,8 @@ import { useTranslation } from "react-i18next";
 import { StadiaMaps } from 'ol/source.js';
 import { useDarkTheme } from "./DarkThemeContext";
 import Zoom from 'ol/control/Zoom.js';
+import { Attribution, defaults as defaultControls } from 'ol/control.js';
+
 
 const WeatherMapDisplay = () => {
 
@@ -191,10 +193,25 @@ const WeatherMapDisplay = () => {
                 layers: [airSurfaceTempLayer, raqdpsLayer, weatherAlertsLayer]
             });
 
+            const attribution = new Attribution({
+                collapsed: true,
+                collapsible: true,
+                className: 'ol-attribution ol-attribution-new',
+                label: 'i',
+                expandClassName: '-expand',
+                collapseClassName: '-collapse'
+            });
+
+            const _zoom = new Zoom({
+                className: 'ol-zoom',
+            });
+
             map.current = new Map({
                 layers: [basemapLightLayer, basemapDarkLayer, layerGroup, aqhiVectorLayer, pinLocLayer],
                 view: view,
-                overlays: [overlay]
+                overlays: [overlay],
+                controls: defaultControls({ attribution: false, zoom: true }).extend([attribution, _zoom]),
+
             });
 
             map.current.setTarget(mapRef.current);
@@ -437,9 +454,6 @@ const WeatherMapDisplay = () => {
         if (darkTheme) {
             findLightLayer.setVisible(false)
             findDarkLayer.setVisible(true);
-            new Zoom({
-                className: 'dark:bg-gray-800 dark:text-gray-400'
-            });
         } else {
             findLightLayer.setVisible(true)
             findDarkLayer.setVisible(false);

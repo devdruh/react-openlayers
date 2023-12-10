@@ -50,6 +50,19 @@
 		@apply dark:bg-gray-800 dark:text-gray-400;
 	}
 
+	.ol-attribution button, .ol-attribution ul {
+		text-shadow: none;
+		@apply dark:bg-gray-800 dark:text-slate-400;
+	}
+
+	.ol-attribution ul li a {
+		@apply dark:text-slate-500;
+	}
+
+	.ol-attribution-new {
+		@apply dark:bg-gray-800 border dark:border-slate-500;
+	}
+
 	.weekForecastScroll::-webkit-scrollbar {
 		@apply h-3;
 	}
