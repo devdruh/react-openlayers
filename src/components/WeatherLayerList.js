@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { layerSourceInfo } from '../util/variables';
+import { t } from 'i18next';
 
 const WeatherLayerList = ({ layerGroupList }) => {
 
@@ -82,7 +83,7 @@ const WeatherLayerList = ({ layerGroupList }) => {
 
     return (
         <>
-            <ul className="text-xs space-y-1 font-medium text-gray-900 bg-white border border-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white list-inside py-1 last:rounded-b-lg">
+            <ul className="text-xs space-y-1 font-medium text-gray-900 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-600 dark:text-white list-inside py-1 last:rounded-b-lg">
             {
                 layerList.length > 0 ? 
                 
@@ -90,12 +91,12 @@ const WeatherLayerList = ({ layerGroupList }) => {
                         <li className="w-full border-b last:border-b-0" key={item.id}>
                             <div className="flex items-center ps-3">
                                 <input id={item.id} type="checkbox" value={item.layer} className="w-4 h-4 text-sky-600 bg-gray-100 border-gray-300 focus:ring-sky-500 dark:focus:ring-sky-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500 cursor-pointer" onChange={handleLayerVisible} checked={item.visible} />
-                                <label htmlFor="vue-checkbox" className="w-full py-1 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{item.name}{ item.visible}</label>
+                                <label htmlFor="vue-checkbox" className={`w-full py-1 ms-2 text-sm font-medium text-gray-900 ${item.visible ? 'dark:text-slate-300' : 'dark:text-slate-400'}`}>{item.name}{item.visible}</label>
                             </div>
                             <ul className="ps-5 space-y-1 list-inside list-none">
                                 <li>
                                     <div className="flex items-center ps-5 pr-2 gap-1">
-                                        <label htmlFor="vue-checkbox" className=" w-1/4 py-1 ms-2 text-xs font-thin text-gray-900 dark:text-gray-300">Opacity</label>
+                                        <label htmlFor="vue-checkbox" className={`w-1/4 py-1 ms-2 text-xs font-thin text-gray-900 ${item.visible ? 'dark:text-slate-300' : 'dark:text-slate-400'}`}>{t('common:opacity')}</label>
                                         <input className=" h-1 w-3/4 rounded-lg range-sm dark:bg-gray-700 disabled:cursor-not-allowed" id={item.id} value={item.opacity} onChange={handleLayerOpacity} type="range" min="0" max="1" step="0.01" disabled={!item.visible } />
                                     </div>
                                 </li>

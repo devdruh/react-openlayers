@@ -1,10 +1,10 @@
 import i18n from 'i18next';
-import Backend from 'i18next-http-backend';
+// import Backend from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 
 i18n
-    .use(Backend)
+    // .use(Backend)
     .use(LanguageDetector)
     .use(initReactI18next)
     .init({
@@ -45,6 +45,7 @@ i18n.addResourceBundle('en', 'common', {
     "day": "Day",
     "night": "Night",
     "weekForecast": "7 Day Weather Forecast",
+    "opacity": "Opacity",
 
 }, true, true);
 
@@ -71,7 +72,8 @@ i18n.addResourceBundle('fr', 'common', {
     "moreInfo": "Plus d'informations",
     "day": "Jour",
     "night": "Nuit",
-    "weekForecast": "Prévisions météo à 7 jours"
+    "weekForecast": "Prévisions météo à 7 jours",
+    "opacity": "Opacité"
 
 }, true, true);
 
