@@ -47,302 +47,298 @@ const WeatherForecastWeek = ({ forecast }) => {
     },[forecast])
 
     return (
-        <div className='py-5 px-2 w-full bg-gradient-to-br mt-3 from-sky-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% rounded-md dark:from-gray-900 dark:to-gray-800'>
+        <div className='pt-5 mb-4 w-full bg-gradient-to-br mt-3 from-sky-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% rounded-md dark:from-gray-900 dark:to-gray-800'>
             <h4 className='text-center text-slate-100 dark:text-gray-300 font-medium text-lg'>{ t('common:weekForecast')}</h4>
-            <p className='text-center text-slate-200 dark:text-gray-400 font-normal text-xs'>{t('common:forecastAsOf')}  { new Date(forecastData?.dateTime[1].year, forecastData?.dateTime[1].month - 1, forecastData?.dateTime[1].day, forecastData?.dateTime[1].hour, forecastData?.dateTime[1].minute).toLocaleDateString(i18n.language === 'fr' ? 'fr-CA' : undefined, { weekday: 'short', hour: 'numeric', minute: 'numeric', timeZoneName:'short'}) }</p>
-            <div className='flex flex-nowrap max-w-full p-3 gap-1 overflow-y-auto max-lg:flex-wrap max-md:justify-center weekForecastScroll'>
-                {/* xl:justify-center */}
-            
-                {
-                    formatWeek.length > 0 ?
-                        formatWeek.map((item, i) => (
+            <p className='text-center text-slate-200 dark:text-gray-400 font-normal text-xs'>{t('common:forecastAsOf')}  {new Date(forecastData?.dateTime[1].year, forecastData?.dateTime[1].month - 1, forecastData?.dateTime[1].day, forecastData?.dateTime[1].hour, forecastData?.dateTime[1].minute).toLocaleDateString(i18n.language === 'fr' ? 'fr-CA' : undefined, { weekday: 'short', hour: 'numeric', minute: 'numeric', timeZoneName: 'short' })}</p>
 
-                            item.length > 1 ?
-                                    
-                            <div key={i} className='shadow-lg shadow-sky-500/800 dark:shadow-sky-800/80 dark:shadow-none'>
-                                
-                                <div className="sm:w-[120px] min-w-[100px] max-sm:min-w-[120px] max-sm:max-w-[120px] p-1 text-center bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                            
-                                    <div><p className='text-sm font-medium text-gray-700 dark:text-gray-400'>{t('common:day') }</p></div>
-                                    <div className='border-b border-b-slate-400 grid grid-cols-2 justify-items-center'>
-                                        <div>
-                                            <p className='text-xs text-gray-500 dark:text-gray-400'>{item[0].period}</p>
-                                        </div>
-                                        <div>
-                                            <p className='text-xs text-gray-500 dark:text-gray-400'></p>
-                                        </div>
-                                    </div>
-                                    <div className='flex justify-center'>
-                                    <div><img src={`https://meteo.gc.ca/weathericons/${item[0].abbreviatedForecast.iconCode}.gif`} className='h-[51px] translate-y-1' width={60} alt={`${item[0].abbreviatedForecast.textSummary}`} /></div>
-                                    </div>
-                                    <h5 className='text-xl font-semibold text-gray-600 dark:text-gray-300'>{item[0].temperatures.temperature } °C</h5>
-                                    <div className='min-h-[40px] max-h-[40px]'>
-                                        <p className='font-normal text-xs text-gray-500 dark:text-gray-400' title={`${item[0].abbreviatedForecast.textSummary}`}>{item[0].abbreviatedForecast.textSummary}</p>
-                                    </div>
-                                    <p className=" inline-flex text-xs text-center align-middle text-gray-500 dark:text-gray-400">{t('common:moreInfo')}
-                                        <button data-popover-target={`popover-summary-${item[0].period}-day`} data-popover-placement="top-start" type="button">
-                                            <svg className="w-4 h-4 ms-2 text-gray-400 hover:text-gray-500" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd"></path>
-                                            </svg>
-                                            <span className="sr-only">Show information</span>
-                                        </button>
-                                    </p>
+            <div className="relative pt-2 shadow-md rounded-lg">
+                <table className="min-w-full text-sm text-gray-500 dark:text-gray-400">
+                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr className='text-center'>
+                            <th scope="col" className="px-6 py-3">
 
-                                    <div data-popover id={`popover-summary-${item[0].period}-day`} role="tooltip" className="absolute z-10 invisible inline-block text-sm max-w-xs text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
-                                        <div className="p-3 space-y-2">
-                                            <h3 className="font-semibold text-gray-900 dark:text-gray-300">{t('common:summary') }</h3>
-                                            {
-                                                item[0]?.cloudPrecip?.textSummary !== '' && item[0]?.cloudPrecip?.textSummary !== undefined ? 
-                                                <p className='text-justify text-xs'>- { item[0]?.cloudPrecip?.textSummary}</p> : null
-                                            }
-                                            {
-                                                item[0]?.uv?.textSummary !== '' && item[0]?.uv?.textSummary !== undefined ? 
-                                                <p className='text-justify text-xs'>- { item[0]?.uv?.textSummary}</p> : null
-                                            }
-                                            {
-                                                item[0]?.visibility?.windVisib?.textSummary !== '' && item[0]?.visibility?.windVisib?.textSummary !== undefined ? 
-                                                <p className='text-justify text-xs'>- { item[0]?.visibility?.windVisib?.textSummary}</p> : null
-                                            }
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                Day
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                Night
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            formatWeek.length > 0 ?
+                                formatWeek.map((item, i) => (
+                                    <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 dark:last:border-none w-full" key={i}>
+                                        <th scope="row" className="px-6 py-1 w-1/3 text-left font-medium text-gray-900 whitespace-nowrap dark:text-slate-400 dark:bg-gray-900">
+                                            {item[0].period.includes('night') ? item[0].period.replace(' night', ' ') : item[0].period}
+                                        </th>
+                                        <td className='px-2 py-1 w-1/3'>
+                                            <table className='w-full'>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <table className='w-full'>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td className='whitespace-nowrap text-right font-medium dark:text-slate-300 w-1/2'>
+                                                                            {
+                                                                                item.length > 1 ?
+                                                                                    item[0].temperatures.temperature + ' °C' :
+                                                                                    i === 0 ? null : item[0].temperatures.temperature + ' °C'
+                                                                            }
+                                                                        </td>
+                                                                        <td className='w-1/2'>
+                                                                            {
+                                                                                item.length > 1 ?
+                                                                                    <img src={`https://meteo.gc.ca/weathericons/${item[0].abbreviatedForecast.iconCode}.gif`} width={30} alt={`${item[0].abbreviatedForecast.textSummary}`} /> :
+                                                                                    i === 0 ? null : <img src={`https://meteo.gc.ca/weathericons/${item[0].abbreviatedForecast.iconCode}.gif`} width={30} alt={`${item[0].abbreviatedForecast.textSummary}`} />
+                                                                            }
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td className='text-xs text-center'>
 
-                                            {
-                                                item[0]?.precipitation?.textSummary !== '' && item[0]?.precipitation?.textSummary !== undefined ? 
-                                                <p className='text-justify text-xs'>- { item[0]?.precipitation?.textSummary}</p> : null
-                                            }
-                                            {
-                                                item[0]?.temperatures?.textSummary !== '' && item[0]?.temperatures?.textSummary !== undefined ? 
-                                                <p className='text-justify text-xs'>- { item[0]?.temperatures?.textSummary}</p> : null
-                                            }
-                                            {
-                                                item[0]?.winds?.textSummary !== '' && item[0]?.winds?.textSummary !== undefined ? 
-                                                <p className='text-justify text-xs'>- { item[0]?.winds?.textSummary}</p> : null
-                                            }
-                                            {
-                                                item[0]?.windChill?.textSummary !== '' && item[0]?.windChill?.textSummary !== undefined ? 
-                                                <p className='text-justify text-xs'>- { item[0]?.windChill?.textSummary}</p> : null
-                                            }
-                                        </div>
-                                        <div data-popper-arrow></div>
-                                    </div>
-                                </div>
+                                                            <table className='w-full'>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td className='w-1/12'></td>
+                                                                        <td className='w-10/12 text-center'>
+                                                                            {
+                                                                                item.length > 1 ?
+                                                                                    item[0].abbreviatedForecast.textSummary :
+                                                                                    i === 0 ? null : item[0].abbreviatedForecast.textSummary
+                                                                            }
+                                                                        </td>
+                                                                        <td className='w-1/12'>
+                                                                            {
+                                                                                item.length > 1 ?
+                                                                                    <button data-popover-target={`popover-summary-sm-${item[0].period}-day`} data-popover-placement="top-start" type="button">
+                                                                                        <svg className="w-4 h-4 ms-2 text-gray-400 hover:text-gray-500" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                                                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd"></path>
+                                                                                        </svg>
+                                                                                        <span className="sr-only">Show information</span>
+                                                                                    </button>
+                                                                                    :
+                                                                                    i === 0 ? null :
+                                                                                        <button data-popover-target={`popover-summary-sm-${item[0].period}-day`} data-popover-placement="top-start" type="button">
+                                                                                            <svg className="w-4 h-4 ms-2 text-gray-400 hover:text-gray-500" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                                                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd"></path>
+                                                                                            </svg>
+                                                                                            <span className="sr-only">Show information</span>
+                                                                                        </button>
+                                                                            }
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td className='px-2 py-1 w-1/3 dark:bg-gray-900'>
+                                            <table className='w-full'>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <table className='w-full'>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td className='whitespace-nowrap px-1 text-right font-medium dark:text-slate-300 w-1/2'>
+                                                                            {
+                                                                                item.length > 1 ?
+                                                                                    item[1].temperatures.temperature + ' °C' :
+                                                                                    i === 0 ? item[0].temperatures.temperature + ' °C' : null
+                                                                            }
+                                                                        </td>
+                                                                        <td className='w-1/2'>
+                                                                            {
+                                                                                item.length > 1 ?
+                                                                                    <img src={`https://meteo.gc.ca/weathericons/${item[1].abbreviatedForecast.iconCode}.gif`} width={30} alt={`${item[1].abbreviatedForecast.textSummary}`} /> :
+                                                                                    i === 0 ? <img src={`https://meteo.gc.ca/weathericons/${item[0].abbreviatedForecast.iconCode}.gif`} width={30} alt={`${item[0].abbreviatedForecast.textSummary}`} /> : null
+                                                                            }
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td className='text-xs'>
+                                                            <table className='w-full'>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td className='w-1/12'></td>
+                                                                        <td className='w-10/12 text-center'>
+                                                                            {
+                                                                                item.length > 1 ?
+                                                                                    item[1].abbreviatedForecast.textSummary :
+                                                                                    i === 0 ? item[0].abbreviatedForecast.textSummary : null
+                                                                            }
+                                                                        </td>
+                                                                        <td className='w-1/12'>
+                                                                            {
+                                                                                item.length > 1 ?
 
-                                <div className="sm:w-[120px] min-w-[100px] max-sm:min-w-[120px] max-sm:max-w-[120px] p-1 text-center bg-white border border-gray-200 rounded-lg shadow-lg shadow-sky-100/50 dark:bg-gray-800 dark:border-gray-700 dark:shadow-none">
-                                    <div><p className='text-sm font-medium text-gray-700 dark:text-gray-400'>{t('common:night')} </p></div>
-                                    <div className='border-b border-b-slate-400 grid grid-cols-2 justify-items-center'>
-                                        <div>
-                                            <p className='text-xs text-gray-500 dark:text-gray-400'>{item[0].period.replace(' night','') }</p>
-                                        </div>
-                                        <div>
-                                            <p className='text-xs text-gray-500 dark:text-gray-400'></p>
-                                        </div>
-                                    </div>
-                                    <div className='flex justify-center'>
-                                        <div><img src={`https://meteo.gc.ca/weathericons/${item[1].abbreviatedForecast.iconCode}.gif`} className='h-[51px] translate-y-1' width={60} alt={`${item[1].abbreviatedForecast.textSummary}`} /></div>
-                                    </div>
-                                    <h5 className='text-xl font-medium text-gray-600 dark:text-gray-300'>{item[1].temperatures.temperature} °C</h5>
-                                    <div className='min-h-[40px] max-h-[40px]'>
-                                        <p className='font-normal text-xs text-gray-500 dark:text-gray-400' title={`${item[1].abbreviatedForecast.textSummary}`}>{item[1].abbreviatedForecast.textSummary}</p>
-                                    </div>
-                                        <p className=" inline-flex text-xs text-center align-middle text-gray-500 dark:text-gray-400">{t('common:moreInfo') }
-                                        <button data-popover-target={`popover-summary-${item[1].period.replace(' night','')}-night`} data-popover-placement="top-start" type="button">
-                                            <svg className="w-4 h-4 ms-2 text-gray-400 hover:text-gray-500" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd"></path>
-                                            </svg>
-                                            <span className="sr-only">Show information</span>
-                                        </button>
-                                    </p>
+                                                                                    <button data-popover-target={`popover-summary-sm-${item[1].period.replace(' night', '')}-night`} data-popover-placement="top-start" type="button">
+                                                                                        <svg className="w-4 h-4 text-gray-400 hover:text-gray-500" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                                                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd"></path>
+                                                                                        </svg>
+                                                                                        <span className="sr-only">Show information</span>
+                                                                                    </button> :
+                                                                                    i === 0 ?
+                                                                                        <button data-popover-target={`popover-summary-sm-${item[0].period.replace(' night', '')}-night`} data-popover-placement="top-start" type="button">
+                                                                                            <svg className="w-4 h-4 text-gray-400 hover:text-gray-500" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                                                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd"></path>
+                                                                                            </svg>
+                                                                                            <span className="sr-only">Show information</span>
+                                                                                        </button>
+                                                                                        : null
+                                                                            }
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <div data-popover id={
 
-                                    <div data-popover id={`popover-summary-${item[1].period.replace(' night','')}-night`} role="tooltip" className="absolute z-10 invisible inline-block text-sm max-w-xs text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
-                                        <div className="p-3 space-y-2">
-                                            <h3 className="font-semibold text-gray-900 dark:text-gray-300">{t('common:summary') }</h3>
-                                            {
-                                                item[1].cloudPrecip.textSummary !== '' ? 
-                                                <p className='text-justify text-xs'>- { item[1].cloudPrecip.textSummary}</p> : null
-                                            }
-                                            {
-                                                item[1]?.uv?.textSummary !== '' && item[1]?.uv?.textSummary !== undefined ? 
-                                                <p className='text-justify text-xs'>- { item[1]?.uv?.textSummary}</p> : null
-                                            }
-                                            {
-                                                item[1]?.visibility?.windVisib?.textSummary !== '' && item[1]?.visibility?.windVisib?.textSummary !== undefined ? 
-                                                <p className='text-justify text-xs'>- { item[1]?.visibility?.windVisib?.textSummary}</p> : null
-                                            }
+                                            item.length > 1 ?
+                                                `popover-summary-sm-${item[0].period}-day` :
+                                                i === 0 ? null : `popover-summary-sm-${item[0].period}-day`
 
-                                            {
-                                                item[1]?.precipitation?.textSummary !== '' && item[1]?.precipitation?.textSummary !== undefined ? 
-                                                <p className='text-justify text-xs'>- { item[1]?.precipitation?.textSummary}</p> : null
-                                            }
-                                            {
-                                                item[1]?.temperatures?.textSummary !== '' && item[1]?.temperatures?.textSummary !== undefined ? 
-                                                <p className='text-justify text-xs'>- { item[1]?.temperatures?.textSummary}</p> : null
-                                            }
-                                            {
-                                                item[1]?.winds?.textSummary !== '' && item[1]?.winds?.textSummary !== undefined ? 
-                                                <p className='text-justify text-xs'>- { item[1]?.winds?.textSummary}</p> : null
-                                            }
-                                            {
-                                                item[1]?.windChill?.textSummary !== '' && item[1]?.windChill?.textSummary !== undefined ? 
-                                                <p className='text-justify text-xs'>- { item[1]?.windChill?.textSummary}</p> : null
-                                            }
-                                        </div>
-                                        <div data-popper-arrow></div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            :
-                            
-                                i === 0 ?
-                                    
-                                    <div key={i} className='shadow-lg shadow-sky-500/800 dark:shadow-sky-800/80 dark:shadow-none'>
-                                        
-                                        <div className={`sm:w-[120px] min-w-[100px] max-sm:min-w-[120px] max-sm:max-w-[120px] ${i18n.language === 'fr' ? ' min-h-[198px]' : ' min-h-[190px]'} p-1 text-center bg-slate-200 border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:shadow-none`}>
-                                            
-                                        </div>
-
-                                        <div className="sm:w-[120px] min-w-[100px] max-sm:min-w-[120px] max-sm:max-w-[120px] p-1 text-center bg-white border border-gray-200 rounded-lg shadow-lg shadow-sky-100/50 dark:bg-gray-800 dark:border-gray-700 dark:shadow-none">
-                                            <div><p className='text-sm font-medium text-gray-700 dark:text-gray-400'>{t('common:night') }</p></div>
-                                            <div className='border-b border-b-slate-400 grid grid-cols-2 justify-items-center'>
-                                                <div>
-                                                    <p className='text-xs text-gray-500 dark:text-gray-400'>{i18n.language === 'fr' ? item[0].period.replace(' soir et nuit', '') : item[0].period.replace(' night', '')}</p>
-                                                </div>
-                                                <div>
-                                                    <p className='text-xs text-gray-500 dark:text-gray-400'>{ new Date(forecastData?.dateTime[0].year, forecastData?.dateTime[0].month - 1, forecastData?.dateTime[0].day, forecastData?.dateTime[0].hour, forecastData?.dateTime[0].minute).toLocaleDateString(i18n.language === 'fr' ? 'fr-CA' : undefined, { month: 'short', day: '2-digit'}) }</p>
-                                                </div>
+                                        } role="tooltip" className="absolute z-10 invisible text-sm max-w-xs text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
+                                            <div className="p-3 space-y-2">
+                                                <h3 className="font-semibold text-gray-900 dark:text-gray-300">{t('common:summary')}</h3>
+                                                {
+                                                    item.length > 1 ?
+                                                        item[0].cloudPrecip.textSummary !== '' ?
+                                                            <p className='text-justify text-xs'>- {item[0].cloudPrecip.textSummary}</p> : null :
+                                                        i === 0 ? null : item[0].cloudPrecip.textSummary !== '' ?
+                                                            <p className='text-justify text-xs'>- {item[0].cloudPrecip.textSummary}</p> : null
+                                                }
+                                                {
+                                                    item.length > 1 ?
+                                                        item[0]?.uv?.textSummary !== '' && item[0]?.uv?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[0]?.uv?.textSummary}</p> : null :
+                                                        i === 0 ? null : item[0]?.uv?.textSummary !== '' && item[0]?.uv?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[0]?.uv?.textSummary}</p> : null
+                                                }
+                                                {
+                                                    item.length > 1 ?
+                                                        item[0]?.visibility?.windVisib?.textSummary !== '' && item[0]?.visibility?.windVisib?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[0]?.visibility?.windVisib?.textSummary}</p> : null :
+                                                        i === 0 ? null : item[0]?.visibility?.windVisib?.textSummary !== '' && item[0]?.visibility?.windVisib?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[0]?.visibility?.windVisib?.textSummary}</p> : null
+                                                }
+                                                {
+                                                    item.length > 1 ?
+                                                        item[0]?.precipitation?.textSummary !== '' && item[0]?.precipitation?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[0]?.precipitation?.textSummary}</p> : null :
+                                                        i === 0 ? null : item[0]?.precipitation?.textSummary !== '' && item[0]?.precipitation?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[0]?.precipitation?.textSummary}</p> : null
+                                                }
+                                                {
+                                                    item.length > 1 ?
+                                                        item[0]?.temperatures?.textSummary !== '' && item[0]?.temperatures?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[0]?.temperatures?.textSummary}</p> : null :
+                                                        i === 0 ? null : item[0]?.temperatures?.textSummary !== '' && item[0]?.temperatures?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[0]?.temperatures?.textSummary}</p> : null
+                                                }
+                                                {
+                                                    item.length > 1 ?
+                                                        item[0]?.winds?.textSummary !== '' && item[0]?.winds?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[0]?.winds?.textSummary}</p> : null :
+                                                        i === 0 ? null : item[0]?.winds?.textSummary !== '' && item[0]?.winds?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[0]?.winds?.textSummary}</p> : null
+                                                }
+                                                {
+                                                    item.length > 1 ?
+                                                        item[0]?.windChill?.textSummary !== '' && item[0]?.windChill?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[0]?.windChill?.textSummary}</p> : null :
+                                                        i === 0 ? null : item[0]?.windChill?.textSummary !== '' && item[0]?.windChill?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[0]?.windChill?.textSummary}</p> : null
+                                                }
                                             </div>
-                                            <div className='flex justify-center'>
-                                                <div><img src={`https://meteo.gc.ca/weathericons/${item[0].abbreviatedForecast.iconCode}.gif`} className='h-[51px] translate-y-1' width={60} alt={`${item[0].abbreviatedForecast.textSummary}`} /></div>
-                                            </div>
-                                            <h5 className='text-xl font-medium text-gray-600 dark:text-gray-300'>{item[0].temperatures.temperature } °C</h5>
-                                            <div className='min-h-[40px] max-h-[40px]'>
-                                                <p className='font-normal text-xs text-gray-500 dark:text-gray-400' title={`${item[0].abbreviatedForecast.textSummary}`}>{item[0].abbreviatedForecast.textSummary}</p>
-                                            </div>
-
-                                            <p className=" inline-flex text-xs text-center align-middle text-gray-500 dark:text-gray-400">{t('common:moreInfo') }
-                                                <button data-popover-target={`popover-summary-${item[0].period.replace(' night','')}-night`} data-popover-placement="top-start" type="button">
-                                                    <svg className="w-4 h-4 ms-2 text-gray-400 hover:text-gray-500" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd"></path>
-                                                    </svg>
-                                                    <span className="sr-only">Show information</span>
-                                                </button>
-                                            </p>
-
-                                            <div data-popover id={`popover-summary-${item[0].period.replace(' night','')}-night`} role="tooltip" className="absolute z-10 invisible inline-block text-sm max-w-xs text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
-                                                <div className="p-3 space-y-2">
-                                                    <h3 className="font-semibold text-gray-900 dark:text-gray-300">{ t('common:summary')}</h3>
-                                                    {
-                                                        item[0]?.cloudPrecip?.textSummary !== '' && item[0]?.cloudPrecip?.textSummary !== undefined ? 
-                                                        <p className='text-justify text-xs'>- { item[0]?.cloudPrecip?.textSummary}</p> : null
-                                                    }
-                                                    {
-                                                        item[0]?.uv?.textSummary !== '' && item[0]?.uv?.textSummary !== undefined ? 
-                                                        <p className='text-justify text-xs'>- { item[0]?.uv?.textSummary}</p> : null
-                                                    }
-                                                    {
-                                                        item[0]?.visibility?.windVisib?.textSummary !== '' && item[0]?.visibility?.windVisib?.textSummary !== undefined ? 
-                                                        <p className='text-justify text-xs'>- { item[0]?.visibility?.windVisib?.textSummary}</p> : null
-                                                    }
-
-                                                    {
-                                                        item[0]?.precipitation?.textSummary !== '' && item[0]?.precipitation?.textSummary !== undefined ? 
-                                                        <p className='text-justify text-xs'>- { item[0]?.precipitation?.textSummary}</p> : null
-                                                    }
-                                                    {
-                                                        item[0]?.temperatures?.textSummary !== '' && item[0]?.temperatures?.textSummary !== undefined ? 
-                                                        <p className='text-justify text-xs'>- { item[0]?.temperatures?.textSummary}</p> : null
-                                                    }
-                                                    {
-                                                        item[0]?.winds?.textSummary !== '' && item[0]?.winds?.textSummary !== undefined ? 
-                                                        <p className='text-justify text-xs'>- { item[0]?.winds?.textSummary}</p> : null
-                                                    }
-                                                    {
-                                                        item[0]?.windChill?.textSummary !== '' && item[0]?.windChill?.textSummary !== undefined ? 
-                                                        <p className='text-justify text-xs'>- { item[0]?.windChill?.textSummary}</p> : null
-                                                    }
-                                                </div>
-                                                <div data-popper-arrow></div>
-                                            </div>
+                                            <div data-popper-arrow></div>
                                         </div>
-                                    </div>
-                                    :
-                                    <div key={i} className='shadow-lg shadow-sky-500/800 dark:shadow-sky-800/80 dark:shadow-none'>
-                                
-                                        <div className="sm:w-[120px] min-w-[100px] max-sm:min-w-[120px] max-sm:max-w-[120px] p-1 text-center bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                                    
-                                            <div><p className='text-sm font-medium text-gray-700 dark:text-gray-400'>{ t('common:day')}</p></div>
-                                            <div className='border-b border-b-slate-400 grid grid-cols-2 justify-items-center'>
-                                                <div>
-                                                    <p className='text-xs text-gray-500 dark:text-gray-400'>{item[0].period}</p>
-                                                </div>
-                                                <div>
-                                                    <p className='text-xs text-gray-500 dark:text-gray-400'></p>
-                                                </div>
-                                            </div>
-                                            <div className='flex justify-center'>
-                                            <div><img src={`https://meteo.gc.ca/weathericons/${item[0].abbreviatedForecast.iconCode}.gif`} className='h-[51px] translate-y-1' width={60} alt={`${item[0].abbreviatedForecast.textSummary}`} /></div>
-                                            </div>
-                                            <h5 className='text-xl font-semibold text-gray-600 dark:text-gray-300'>{item[0].temperatures.temperature } °C</h5>
-                                            <div className='min-h-[40px] max-h-[40px]'>
-                                                <p className='font-normal text-xs text-gray-500 dark:text-gray-400' title={`${item[0].abbreviatedForecast.textSummary}`}>{item[0].abbreviatedForecast.textSummary}</p>
-                                            </div>
+                                        <div data-popover id={
 
-                                            <p className=" inline-flex text-xs text-center align-middle text-gray-500 dark:text-gray-400">{t('common:moreInfo')}
-                                                <button data-popover-target={`popover-summary-${item[0].period}-day`} data-popover-placement="top-end" type="button">
-                                                    <svg className="w-4 h-4 ms-2 text-gray-400 hover:text-gray-500" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd"></path>
-                                                    </svg>
-                                                    <span className="sr-only">Show information</span>
-                                                </button>
-                                            </p>
+                                            item.length > 1 ?
+                                                `popover-summary-sm-${item[1].period.replace(' night', '')}-night` :
+                                                i === 0 ? `popover-summary-sm-${item[0].period.replace(' night', '')}-night` : null
 
-                                            <div data-popover id={`popover-summary-${item[0].period}-day`} role="tooltip" className="absolute z-10 invisible inline-block text-sm max-w-xs text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
-                                                <div className="p-3 space-y-2">
-                                                    <h3 className="font-semibold text-gray-900 dark:text-gray-300">{t('common:summary') }</h3>
-                                                    {
-                                                        item[0]?.cloudPrecip?.textSummary !== '' && item[0]?.cloudPrecip?.textSummary !== undefined ? 
-                                                        <p className='text-justify text-xs'>- { item[0]?.cloudPrecip?.textSummary}</p> : null
-                                                    }
-                                                    {
-                                                        item[0]?.uv?.textSummary !== '' && item[0]?.uv?.textSummary !== undefined ? 
-                                                        <p className='text-justify text-xs'>- { item[0]?.uv?.textSummary}</p> : null
-                                                    }
-                                                    {
-                                                        item[0]?.visibility?.windVisib?.textSummary !== '' && item[0]?.visibility?.windVisib?.textSummary !== undefined ? 
-                                                        <p className='text-justify text-xs'>- { item[0]?.visibility?.windVisib?.textSummary}</p> : null
-                                                    }
-
-                                                    {
-                                                        item[0]?.precipitation?.textSummary !== '' && item[0]?.precipitation?.textSummary !== undefined ? 
-                                                        <p className='text-justify text-xs'>- { item[0]?.precipitation?.textSummary}</p> : null
-                                                    }
-                                                    {
-                                                        item[0]?.temperatures?.textSummary !== '' && item[0]?.temperatures?.textSummary !== undefined ? 
-                                                        <p className='text-justify text-xs'>- { item[0]?.temperatures?.textSummary}</p> : null
-                                                    }
-                                                    {
-                                                        item[0]?.winds?.textSummary !== '' && item[0]?.winds?.textSummary !== undefined ? 
-                                                        <p className='text-justify text-xs'>- { item[0]?.winds?.textSummary}</p> : null
-                                                    }
-                                                    {
-                                                        item[0]?.windChill?.textSummary !== '' && item[0]?.windChill?.textSummary !== undefined ? 
-                                                        <p className='text-justify text-xs'>- { item[0]?.windChill?.textSummary}</p> : null
-                                                    }
-                                                    
-                                                </div>
-                                                <div data-popper-arrow></div>
+                                        } role="tooltip" className="absolute z-10 invisible text-sm max-w-xs text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
+                                            <div className="p-3 space-y-2">
+                                                <h3 className="font-semibold text-gray-900 dark:text-gray-300">{t('common:summary')}</h3>
+                                                {
+                                                    item.length > 1 ?
+                                                        item[1].cloudPrecip.textSummary !== '' ?
+                                                            <p className='text-justify text-xs'>- {item[1].cloudPrecip.textSummary}</p> : null :
+                                                        i === 0 ? item[0].cloudPrecip.textSummary !== '' ?
+                                                            <p className='text-justify text-xs'>- {item[0].cloudPrecip.textSummary}</p> : null : null
+                                                }
+                                                {
+                                                    item.length > 1 ?
+                                                        item[1]?.uv?.textSummary !== '' && item[1]?.uv?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[1]?.uv?.textSummary}</p> : null :
+                                                        i === 0 ? item[0]?.uv?.textSummary !== '' && item[0]?.uv?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[0]?.uv?.textSummary}</p> : null : null
+                                                }
+                                                {
+                                                    item.length > 1 ?
+                                                        item[1]?.visibility?.windVisib?.textSummary !== '' && item[1]?.visibility?.windVisib?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[1]?.visibility?.windVisib?.textSummary}</p> : null :
+                                                        i === 0 ? item[0]?.visibility?.windVisib?.textSummary !== '' && item[0]?.visibility?.windVisib?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[0]?.visibility?.windVisib?.textSummary}</p> : null : null
+                                                }
+                                                {
+                                                    item.length > 1 ?
+                                                        item[1]?.precipitation?.textSummary !== '' && item[1]?.precipitation?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[1]?.precipitation?.textSummary}</p> : null :
+                                                        i === 0 ? item[0]?.precipitation?.textSummary !== '' && item[0]?.precipitation?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[0]?.precipitation?.textSummary}</p> : null : null
+                                                }
+                                                {
+                                                    item.length > 1 ?
+                                                        item[1]?.temperatures?.textSummary !== '' && item[1]?.temperatures?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[1]?.temperatures?.textSummary}</p> : null :
+                                                        i === 0 ? item[0]?.temperatures?.textSummary !== '' && item[0]?.temperatures?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[0]?.temperatures?.textSummary}</p> : null : null
+                                                }
+                                                {
+                                                    item.length > 1 ?
+                                                        item[1]?.winds?.textSummary !== '' && item[1]?.winds?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[1]?.winds?.textSummary}</p> : null :
+                                                        i === 0 ? item[0]?.winds?.textSummary !== '' && item[0]?.winds?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[0]?.winds?.textSummary}</p> : null : null
+                                                }
+                                                {
+                                                    item.length > 1 ?
+                                                        item[1]?.windChill?.textSummary !== '' && item[1]?.windChill?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[1]?.windChill?.textSummary}</p> : null :
+                                                        i === 0 ? item[0]?.windChill?.textSummary !== '' && item[0]?.windChill?.textSummary !== undefined ?
+                                                            <p className='text-justify text-xs'>- {item[0]?.windChill?.textSummary}</p> : null : null
+                                                }
                                             </div>
+                                            <div data-popper-arrow></div>
                                         </div>
+                                    </tr>
 
-                                        <div className={`sm:w-[120px] min-w-[100px] max-sm:min-w-[120px] max-sm:max-w-[120px] ${i18n.language === 'fr' ? 'min-h-[198px]' : 'min-h-[190px]'} p-1 text-center bg-slate-200 border border-gray-200 rounded-lg shadow-lg shadow-sky-100/50 dark:bg-gray-800 dark:border-gray-700 dark:shadow-none`}>
-                                            
-                                        </div>
-                                    </div>
-                            
-                        ))
-                    
-                        : null
-                }
-            
+
+                                )) : null
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
     )
