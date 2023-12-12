@@ -53,16 +53,16 @@ const WeatherForecastWeek = ({ forecast }) => {
 
             <div className="relative pt-2 shadow-md rounded-lg overflow-hidden">
                 <table className="min-w-full text-sm text-gray-500 dark:text-gray-400">
-                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
                         <tr className='text-center'>
                             <th scope="col" className="px-6 py-3">
 
                             </th>
                             <th scope="col" className="px-6 py-3">
-                                Day
+                                {t('common:day')}
                             </th>
                             <th scope="col" className="px-6 py-3">
-                                Night
+                                {t('common:night')}
                             </th>
                         </tr>
                     </thead>
