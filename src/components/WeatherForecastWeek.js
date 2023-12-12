@@ -51,7 +51,7 @@ const WeatherForecastWeek = ({ forecast }) => {
             <h4 className='text-center text-slate-100 dark:text-gray-300 font-medium text-lg'>{ t('common:weekForecast')}</h4>
             <p className='text-center text-slate-200 dark:text-gray-400 font-normal text-xs'>{t('common:forecastAsOf')}  {new Date(forecastData?.dateTime[1].year, forecastData?.dateTime[1].month - 1, forecastData?.dateTime[1].day, forecastData?.dateTime[1].hour, forecastData?.dateTime[1].minute).toLocaleDateString(i18n.language === 'fr' ? 'fr-CA' : undefined, { weekday: 'short', hour: 'numeric', minute: 'numeric', timeZoneName: 'short' })}</p>
 
-            <div className="relative pt-2 shadow-md rounded-lg">
+            <div className="relative pt-2 shadow-md rounded-lg overflow-hidden">
                 <table className="min-w-full text-sm text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr className='text-center'>
