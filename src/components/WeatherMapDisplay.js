@@ -683,6 +683,7 @@ const WeatherMapDisplay = () => {
                             </div>
                         </div>
                         {
+                            Array.isArray(_aqhiPopup?.data) ?
                             _aqhiPopup?.data.length > 0 ?
                                 _aqhiPopup?.data.map((item) => (
                                     <div key={item.id} className="px-1">
@@ -712,7 +713,8 @@ const WeatherMapDisplay = () => {
                                         </div>
                                     </div>
                                 ))
-                            : null
+                                    : null
+                                : null
                         }
                         {
                             _alertsPopup?.data.length > 0 ? 
