@@ -72,7 +72,7 @@ const WeatherForecastWeek = ({ forecast }) => {
                                 formatWeek.map((item, i) => (
                                     <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 dark:last:border-none w-full" key={i}>
                                         <th scope="row" className="px-6 py-1 w-1/3 text-left font-medium text-gray-900 whitespace-nowrap dark:text-slate-400 dark:bg-gray-900">
-                                            {item[0].period.includes('night') ? item[0].period.replace(' night', ' ') : item[0].period}
+                                            {i === 0 ? `${t('common:today')}` : item[0].period}
                                         </th>
                                         <td className='px-2 py-1 w-1/3'>
                                             <table className='w-full'>
@@ -103,7 +103,6 @@ const WeatherForecastWeek = ({ forecast }) => {
                                                     </tr>
                                                     <tr>
                                                         <td className='text-xs text-center'>
-
                                                             <table className='w-full'>
                                                                 <tbody>
                                                                     <tr>
@@ -133,6 +132,67 @@ const WeatherForecastWeek = ({ forecast }) => {
                                                                                             <span className="sr-only">Show information</span>
                                                                                         </button>
                                                                             }
+                                                                            <div data-popover id={
+
+                                                                                item.length > 1 ?
+                                                                                    `popover-summary-sm-${item[0].period}-day` :
+                                                                                    i === 0 ? null : `popover-summary-sm-${item[0].period}-day`
+
+                                                                            } role="tooltip" className="absolute z-10 invisible text-sm max-w-xs text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
+                                                                                <div className="p-3 space-y-2">
+                                                                                    <h3 className="font-semibold text-gray-900 dark:text-gray-300">{t('common:summary')}</h3>
+                                                                                    {
+                                                                                        item.length > 1 ?
+                                                                                            item[0].cloudPrecip.textSummary !== '' ?
+                                                                                                <p className='text-justify text-xs'>- {item[0].cloudPrecip.textSummary}</p> : null :
+                                                                                            i === 0 ? null : item[0].cloudPrecip.textSummary !== '' ?
+                                                                                                <p className='text-justify text-xs'>- {item[0].cloudPrecip.textSummary}</p> : null
+                                                                                    }
+                                                                                    {
+                                                                                        item.length > 1 ?
+                                                                                            item[0]?.uv?.textSummary !== '' && item[0]?.uv?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[0]?.uv?.textSummary}</p> : null :
+                                                                                            i === 0 ? null : item[0]?.uv?.textSummary !== '' && item[0]?.uv?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[0]?.uv?.textSummary}</p> : null
+                                                                                    }
+                                                                                    {
+                                                                                        item.length > 1 ?
+                                                                                            item[0]?.visibility?.windVisib?.textSummary !== '' && item[0]?.visibility?.windVisib?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[0]?.visibility?.windVisib?.textSummary}</p> : null :
+                                                                                            i === 0 ? null : item[0]?.visibility?.windVisib?.textSummary !== '' && item[0]?.visibility?.windVisib?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[0]?.visibility?.windVisib?.textSummary}</p> : null
+                                                                                    }
+                                                                                    {
+                                                                                        item.length > 1 ?
+                                                                                            item[0]?.precipitation?.textSummary !== '' && item[0]?.precipitation?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[0]?.precipitation?.textSummary}</p> : null :
+                                                                                            i === 0 ? null : item[0]?.precipitation?.textSummary !== '' && item[0]?.precipitation?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[0]?.precipitation?.textSummary}</p> : null
+                                                                                    }
+                                                                                    {
+                                                                                        item.length > 1 ?
+                                                                                            item[0]?.temperatures?.textSummary !== '' && item[0]?.temperatures?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[0]?.temperatures?.textSummary}</p> : null :
+                                                                                            i === 0 ? null : item[0]?.temperatures?.textSummary !== '' && item[0]?.temperatures?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[0]?.temperatures?.textSummary}</p> : null
+                                                                                    }
+                                                                                    {
+                                                                                        item.length > 1 ?
+                                                                                            item[0]?.winds?.textSummary !== '' && item[0]?.winds?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[0]?.winds?.textSummary}</p> : null :
+                                                                                            i === 0 ? null : item[0]?.winds?.textSummary !== '' && item[0]?.winds?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[0]?.winds?.textSummary}</p> : null
+                                                                                    }
+                                                                                    {
+                                                                                        item.length > 1 ?
+                                                                                            item[0]?.windChill?.textSummary !== '' && item[0]?.windChill?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[0]?.windChill?.textSummary}</p> : null :
+                                                                                            i === 0 ? null : item[0]?.windChill?.textSummary !== '' && item[0]?.windChill?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[0]?.windChill?.textSummary}</p> : null
+                                                                                    }
+                                                                                </div>
+                                                                                <div data-popper-arrow></div>
+                                                                            </div>
                                                                         </td>
                                                                     </tr>
                                                                 </tbody>
@@ -201,6 +261,68 @@ const WeatherForecastWeek = ({ forecast }) => {
                                                                                         </button>
                                                                                         : null
                                                                             }
+
+                                                                            <div data-popover id={
+
+                                                                                item.length > 1 ?
+                                                                                    `popover-summary-sm-${item[1].period.replace(' night', '')}-night` :
+                                                                                    i === 0 ? `popover-summary-sm-${item[0].period.replace(' night', '')}-night` : null
+
+                                                                            } role="tooltip" className="absolute z-10 invisible text-sm max-w-xs text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
+                                                                                <div className="p-3 space-y-2">
+                                                                                    <h3 className="font-semibold text-gray-900 dark:text-gray-300">{t('common:summary')}</h3>
+                                                                                    {
+                                                                                        item.length > 1 ?
+                                                                                            item[1].cloudPrecip.textSummary !== '' ?
+                                                                                                <p className='text-justify text-xs'>- {item[1].cloudPrecip.textSummary}</p> : null :
+                                                                                            i === 0 ? item[0].cloudPrecip.textSummary !== '' ?
+                                                                                                <p className='text-justify text-xs'>- {item[0].cloudPrecip.textSummary}</p> : null : null
+                                                                                    }
+                                                                                    {
+                                                                                        item.length > 1 ?
+                                                                                            item[1]?.uv?.textSummary !== '' && item[1]?.uv?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[1]?.uv?.textSummary}</p> : null :
+                                                                                            i === 0 ? item[0]?.uv?.textSummary !== '' && item[0]?.uv?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[0]?.uv?.textSummary}</p> : null : null
+                                                                                    }
+                                                                                    {
+                                                                                        item.length > 1 ?
+                                                                                            item[1]?.visibility?.windVisib?.textSummary !== '' && item[1]?.visibility?.windVisib?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[1]?.visibility?.windVisib?.textSummary}</p> : null :
+                                                                                            i === 0 ? item[0]?.visibility?.windVisib?.textSummary !== '' && item[0]?.visibility?.windVisib?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[0]?.visibility?.windVisib?.textSummary}</p> : null : null
+                                                                                    }
+                                                                                    {
+                                                                                        item.length > 1 ?
+                                                                                            item[1]?.precipitation?.textSummary !== '' && item[1]?.precipitation?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[1]?.precipitation?.textSummary}</p> : null :
+                                                                                            i === 0 ? item[0]?.precipitation?.textSummary !== '' && item[0]?.precipitation?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[0]?.precipitation?.textSummary}</p> : null : null
+                                                                                    }
+                                                                                    {
+                                                                                        item.length > 1 ?
+                                                                                            item[1]?.temperatures?.textSummary !== '' && item[1]?.temperatures?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[1]?.temperatures?.textSummary}</p> : null :
+                                                                                            i === 0 ? item[0]?.temperatures?.textSummary !== '' && item[0]?.temperatures?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[0]?.temperatures?.textSummary}</p> : null : null
+                                                                                    }
+                                                                                    {
+                                                                                        item.length > 1 ?
+                                                                                            item[1]?.winds?.textSummary !== '' && item[1]?.winds?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[1]?.winds?.textSummary}</p> : null :
+                                                                                            i === 0 ? item[0]?.winds?.textSummary !== '' && item[0]?.winds?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[0]?.winds?.textSummary}</p> : null : null
+                                                                                    }
+                                                                                    {
+                                                                                        item.length > 1 ?
+                                                                                            item[1]?.windChill?.textSummary !== '' && item[1]?.windChill?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[1]?.windChill?.textSummary}</p> : null :
+                                                                                            i === 0 ? item[0]?.windChill?.textSummary !== '' && item[0]?.windChill?.textSummary !== undefined ?
+                                                                                                <p className='text-justify text-xs'>- {item[0]?.windChill?.textSummary}</p> : null : null
+                                                                                    }
+                                                                                </div>
+                                                                                <div data-popper-arrow></div>
+                                                                            </div>
                                                                         </td>
                                                                     </tr>
                                                                 </tbody>
@@ -210,130 +332,7 @@ const WeatherForecastWeek = ({ forecast }) => {
                                                 </tbody>
                                             </table>
                                         </td>
-                                        <div data-popover id={
-
-                                            item.length > 1 ?
-                                                `popover-summary-sm-${item[0].period}-day` :
-                                                i === 0 ? null : `popover-summary-sm-${item[0].period}-day`
-
-                                        } role="tooltip" className="absolute z-10 invisible text-sm max-w-xs text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
-                                            <div className="p-3 space-y-2">
-                                                <h3 className="font-semibold text-gray-900 dark:text-gray-300">{t('common:summary')}</h3>
-                                                {
-                                                    item.length > 1 ?
-                                                        item[0].cloudPrecip.textSummary !== '' ?
-                                                            <p className='text-justify text-xs'>- {item[0].cloudPrecip.textSummary}</p> : null :
-                                                        i === 0 ? null : item[0].cloudPrecip.textSummary !== '' ?
-                                                            <p className='text-justify text-xs'>- {item[0].cloudPrecip.textSummary}</p> : null
-                                                }
-                                                {
-                                                    item.length > 1 ?
-                                                        item[0]?.uv?.textSummary !== '' && item[0]?.uv?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[0]?.uv?.textSummary}</p> : null :
-                                                        i === 0 ? null : item[0]?.uv?.textSummary !== '' && item[0]?.uv?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[0]?.uv?.textSummary}</p> : null
-                                                }
-                                                {
-                                                    item.length > 1 ?
-                                                        item[0]?.visibility?.windVisib?.textSummary !== '' && item[0]?.visibility?.windVisib?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[0]?.visibility?.windVisib?.textSummary}</p> : null :
-                                                        i === 0 ? null : item[0]?.visibility?.windVisib?.textSummary !== '' && item[0]?.visibility?.windVisib?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[0]?.visibility?.windVisib?.textSummary}</p> : null
-                                                }
-                                                {
-                                                    item.length > 1 ?
-                                                        item[0]?.precipitation?.textSummary !== '' && item[0]?.precipitation?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[0]?.precipitation?.textSummary}</p> : null :
-                                                        i === 0 ? null : item[0]?.precipitation?.textSummary !== '' && item[0]?.precipitation?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[0]?.precipitation?.textSummary}</p> : null
-                                                }
-                                                {
-                                                    item.length > 1 ?
-                                                        item[0]?.temperatures?.textSummary !== '' && item[0]?.temperatures?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[0]?.temperatures?.textSummary}</p> : null :
-                                                        i === 0 ? null : item[0]?.temperatures?.textSummary !== '' && item[0]?.temperatures?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[0]?.temperatures?.textSummary}</p> : null
-                                                }
-                                                {
-                                                    item.length > 1 ?
-                                                        item[0]?.winds?.textSummary !== '' && item[0]?.winds?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[0]?.winds?.textSummary}</p> : null :
-                                                        i === 0 ? null : item[0]?.winds?.textSummary !== '' && item[0]?.winds?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[0]?.winds?.textSummary}</p> : null
-                                                }
-                                                {
-                                                    item.length > 1 ?
-                                                        item[0]?.windChill?.textSummary !== '' && item[0]?.windChill?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[0]?.windChill?.textSummary}</p> : null :
-                                                        i === 0 ? null : item[0]?.windChill?.textSummary !== '' && item[0]?.windChill?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[0]?.windChill?.textSummary}</p> : null
-                                                }
-                                            </div>
-                                            <div data-popper-arrow></div>
-                                        </div>
-                                        <div data-popover id={
-
-                                            item.length > 1 ?
-                                                `popover-summary-sm-${item[1].period.replace(' night', '')}-night` :
-                                                i === 0 ? `popover-summary-sm-${item[0].period.replace(' night', '')}-night` : null
-
-                                        } role="tooltip" className="absolute z-10 invisible text-sm max-w-xs text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
-                                            <div className="p-3 space-y-2">
-                                                <h3 className="font-semibold text-gray-900 dark:text-gray-300">{t('common:summary')}</h3>
-                                                {
-                                                    item.length > 1 ?
-                                                        item[1].cloudPrecip.textSummary !== '' ?
-                                                            <p className='text-justify text-xs'>- {item[1].cloudPrecip.textSummary}</p> : null :
-                                                        i === 0 ? item[0].cloudPrecip.textSummary !== '' ?
-                                                            <p className='text-justify text-xs'>- {item[0].cloudPrecip.textSummary}</p> : null : null
-                                                }
-                                                {
-                                                    item.length > 1 ?
-                                                        item[1]?.uv?.textSummary !== '' && item[1]?.uv?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[1]?.uv?.textSummary}</p> : null :
-                                                        i === 0 ? item[0]?.uv?.textSummary !== '' && item[0]?.uv?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[0]?.uv?.textSummary}</p> : null : null
-                                                }
-                                                {
-                                                    item.length > 1 ?
-                                                        item[1]?.visibility?.windVisib?.textSummary !== '' && item[1]?.visibility?.windVisib?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[1]?.visibility?.windVisib?.textSummary}</p> : null :
-                                                        i === 0 ? item[0]?.visibility?.windVisib?.textSummary !== '' && item[0]?.visibility?.windVisib?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[0]?.visibility?.windVisib?.textSummary}</p> : null : null
-                                                }
-                                                {
-                                                    item.length > 1 ?
-                                                        item[1]?.precipitation?.textSummary !== '' && item[1]?.precipitation?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[1]?.precipitation?.textSummary}</p> : null :
-                                                        i === 0 ? item[0]?.precipitation?.textSummary !== '' && item[0]?.precipitation?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[0]?.precipitation?.textSummary}</p> : null : null
-                                                }
-                                                {
-                                                    item.length > 1 ?
-                                                        item[1]?.temperatures?.textSummary !== '' && item[1]?.temperatures?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[1]?.temperatures?.textSummary}</p> : null :
-                                                        i === 0 ? item[0]?.temperatures?.textSummary !== '' && item[0]?.temperatures?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[0]?.temperatures?.textSummary}</p> : null : null
-                                                }
-                                                {
-                                                    item.length > 1 ?
-                                                        item[1]?.winds?.textSummary !== '' && item[1]?.winds?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[1]?.winds?.textSummary}</p> : null :
-                                                        i === 0 ? item[0]?.winds?.textSummary !== '' && item[0]?.winds?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[0]?.winds?.textSummary}</p> : null : null
-                                                }
-                                                {
-                                                    item.length > 1 ?
-                                                        item[1]?.windChill?.textSummary !== '' && item[1]?.windChill?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[1]?.windChill?.textSummary}</p> : null :
-                                                        i === 0 ? item[0]?.windChill?.textSummary !== '' && item[0]?.windChill?.textSummary !== undefined ?
-                                                            <p className='text-justify text-xs'>- {item[0]?.windChill?.textSummary}</p> : null : null
-                                                }
-                                            </div>
-                                            <div data-popper-arrow></div>
-                                        </div>
                                     </tr>
-
 
                                 )) : null
                         }
