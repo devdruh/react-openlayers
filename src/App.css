@@ -47,7 +47,7 @@
     }
 
 	.ol-zoom button {
-		@apply dark:bg-gray-800 dark:text-gray-400;
+		@apply dark:bg-gray-800 dark:text-gray-400 dark:w-6 dark:h-6;
 	}
 
 	.ol-attribution button, .ol-attribution ul {
@@ -63,8 +63,8 @@
 		@apply dark:bg-gray-800 border dark:border-slate-500;
 	}
 
-	.ol-attribution-new {
-		@apply dark:border-slate-700;
+	.ol-attribution-new button {
+		@apply dark:w-5 dark:h-5;
 	}
 
 	.ol-attribution-new button:hover, .ol-attribution-new button:focus,
