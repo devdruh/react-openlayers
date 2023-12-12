@@ -503,8 +503,8 @@ const WeatherMapDisplay = () => {
 
         getRadarStartEndTime();
 
-
-        var getSmokeLayer = map.current.getAllLayers()[2];
+        const allLayers = map?.current.getAllLayers();
+        const getSmokeLayer = allLayers.find((item) => item.values_.title === layerSourceInfo[1].name);
         var _radarInterval;
         if (isClickPlayBtn) {
 
