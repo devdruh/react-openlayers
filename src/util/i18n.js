@@ -46,6 +46,7 @@ i18n.addResourceBundle('en', 'common', {
     "night": "Night",
     "weekForecast": "7 Day Weather Forecast",
     "opacity": "Opacity",
+    "today": "Today",
 
 }, true, true);
 
@@ -73,7 +74,8 @@ i18n.addResourceBundle('fr', 'common', {
     "day": "Jour",
     "night": "Nuit",
     "weekForecast": "Prévisions météo à 7 jours",
-    "opacity": "Opacité"
+    "opacity": "Opacité",
+    "today": "Aujourd'hui",
 
 }, true, true);
 
