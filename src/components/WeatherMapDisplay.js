@@ -643,7 +643,7 @@ const WeatherMapDisplay = () => {
                         </div>
                     </div>
                 </div>
-                <div className="absolute right-5 translate-y-96 flex flex-row-reverse z-[2] justify-end gap-2">
+                <div className="absolute right-5 translate-y-52 md:translate-y-72 flex flex-row-reverse z-[2] justify-end gap-2">
                     {
                         isMapLoading && isMapLoading ?
                             <div role="status" className=" px-0.5">

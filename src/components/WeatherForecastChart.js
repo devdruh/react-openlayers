@@ -186,20 +186,20 @@ const DisplayForecastChart = () => {
         <div className='flex flex-col'>
             <DisplayAlert />
             <div className="flex self-center">
-                <button id="dropdown-button-2"  className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600" type="button" onClick={handleSearchProvince} title={provinceName.description}>
+                <button id="dropdown-button-2" className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-slate-200 dark:border-gray-600" type="button" onClick={handleSearchProvince} title={provinceName.description}>
                     
                     {provinceName.term} <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
                     </svg>
                 </button>
                 <div id="dropdown-search-city" className={`absolute order-1 z-10 translate-y-12 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 ${isSelectProvince ? '': 'hidden'}`}>
-                    <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-button-2">
+                    <ul className="py-2 text-sm text-gray-700 dark:text-slate-300" aria-labelledby="dropdown-button-2">
                         {
                             provinces.length > 0 ? 
                                 provinces.map((item) => {
                                     return (
                                         <li key={item.code}>
-                                            <button type="button" id={item.term} className="inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem" onClick={handleSelectProvince}>
+                                            <button type="button" id={item.term} className="inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-gray-600 dark:hover:text-slate-200" role="menuitem" onClick={handleSelectProvince}>
                                                        
                                                 {item.description}
                                                 
@@ -212,7 +212,7 @@ const DisplayForecastChart = () => {
                     </ul>
                 </div>
                 <div className="relative max-sm:w-60 sm:w-60 max-md:w-80 lg:w-96">
-                    <input type="search" id="location-search" className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-sky-500 focus:border-sky-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-sky-500" placeholder="Search for city | address | station" required value={stationName} onChange={handleSearchStation}/>
+                    <input type="search" id="location-search" className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-sky-500 focus:border-sky-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-500 dark:text-slate-200 dark:focus:border-slate-500 dark:focus:ring-slate-500" placeholder="Search for city | address | station" required value={stationName} onChange={handleSearchStation} />
                     
                     <div id='list-station-result' className={`z-10 w-full absolute translate-y-1 bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 ${!isSelectStation ? '' : 'hidden'}`}>
                         <ul className="text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-button-2">
@@ -220,8 +220,8 @@ const DisplayForecastChart = () => {
                             searchResults.length > 0 ? 
                                 searchResults.map((item, i) => {
                                     return (
-                                        <li key={i} className='border-b last:border-b-0'>
-                                            <button type="button" id={item.properties.Codes} className="inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem" onClick={handleSelectCity}>
+                                        <li key={i} className='border-b last:border-b-0 dark:border-slate-600'>
+                                            <button type="button" id={item.properties.Codes} className="inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-gray-600 dark:hover:text-slate-200" role="menuitem" onClick={handleSelectCity}>
                                                 {item.properties["English Names"]}
                                             </button>
                                         </li>

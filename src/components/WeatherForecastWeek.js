@@ -48,7 +48,7 @@ const WeatherForecastWeek = ({ forecast }) => {
 
     return (
         <div className='pt-5 mb-4 w-full bg-gradient-to-br mt-3 from-sky-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% rounded-md dark:from-gray-900 dark:to-gray-800'>
-            <h4 className='text-center text-slate-100 dark:text-gray-300 font-medium text-lg'>{ t('common:weekForecast')}</h4>
+            <p className='text-center text-slate-100 dark:text-gray-300 font-medium text-md'>{t('common:weekForecast')}</p>
             <p className='text-center text-slate-200 dark:text-gray-400 font-normal text-xs'>{t('common:forecastAsOf')}  {new Date(forecastData?.dateTime[1].year, forecastData?.dateTime[1].month - 1, forecastData?.dateTime[1].day, forecastData?.dateTime[1].hour, forecastData?.dateTime[1].minute).toLocaleDateString(i18n.language === 'fr' ? 'fr-CA' : undefined, { weekday: 'short', hour: 'numeric', minute: 'numeric', timeZoneName: 'short' })}</p>
 
             <div className="relative pt-2 shadow-md rounded-lg overflow-hidden">
@@ -92,8 +92,8 @@ const WeatherForecastWeek = ({ forecast }) => {
                                                                         <td className='w-1/2'>
                                                                             {
                                                                                 item.length > 1 ?
-                                                                                    <img src={`https://meteo.gc.ca/weathericons/${item[0].abbreviatedForecast.iconCode}.gif`} width={30} alt={`${item[0].abbreviatedForecast.textSummary}`} /> :
-                                                                                    i === 0 ? null : <img src={`https://meteo.gc.ca/weathericons/${item[0].abbreviatedForecast.iconCode}.gif`} width={30} alt={`${item[0].abbreviatedForecast.textSummary}`} />
+                                                                                    <img src={`https://meteo.gc.ca/weathericons/${item[0].abbreviatedForecast.iconCode}.gif`} width={30} height={26} alt={`${item[0].abbreviatedForecast.textSummary}`} /> :
+                                                                                    i === 0 ? null : <img src={`https://meteo.gc.ca/weathericons/${item[0].abbreviatedForecast.iconCode}.gif`} width={30} height={26} alt={`${item[0].abbreviatedForecast.textSummary}`} />
                                                                             }
                                                                         </td>
                                                                     </tr>
@@ -220,8 +220,8 @@ const WeatherForecastWeek = ({ forecast }) => {
                                                                         <td className='w-1/2'>
                                                                             {
                                                                                 item.length > 1 ?
-                                                                                    <img src={`https://meteo.gc.ca/weathericons/${item[1].abbreviatedForecast.iconCode}.gif`} width={30} alt={`${item[1].abbreviatedForecast.textSummary}`} /> :
-                                                                                    i === 0 ? <img src={`https://meteo.gc.ca/weathericons/${item[0].abbreviatedForecast.iconCode}.gif`} width={30} alt={`${item[0].abbreviatedForecast.textSummary}`} /> : null
+                                                                                    <img src={`https://meteo.gc.ca/weathericons/${item[1].abbreviatedForecast.iconCode}.gif`} width={30} height={26} alt={`${item[1].abbreviatedForecast.textSummary}`} /> :
+                                                                                    i === 0 ? <img src={`https://meteo.gc.ca/weathericons/${item[0].abbreviatedForecast.iconCode}.gif`} width={30} height={26} alt={`${item[0].abbreviatedForecast.textSummary}`} /> : null
                                                                             }
                                                                         </td>
                                                                     </tr>
