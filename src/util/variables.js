@@ -108,6 +108,7 @@ const weatherForecastChartOptions = {
 
     chart: {
         styledMode: true,
+        marginRight: 20,
         events: {
 
             redraw: function (event) {
