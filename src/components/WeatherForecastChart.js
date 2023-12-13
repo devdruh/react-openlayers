@@ -6,7 +6,7 @@ import "flowbite";
 const DisplayAlert = () => {
     return (
         <>
-            <div id="advisory-alert" className="p-4 mb-10 border border-sky-300 rounded-lg bg-slate-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800" role="alert">
+            <div id="advisory-alert" className="p-4 border border-sky-300 rounded-lg bg-slate-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800" role="alert">
                 <div className="flex items-center">
                     <svg className="flex-shrink-0 w-4 h-4 mr-2 fill-sky-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
@@ -185,7 +185,7 @@ const DisplayForecastChart = () => {
     return (
         <div className='flex flex-col'>
             <DisplayAlert />
-            <div className="flex self-center">
+            <div className="flex self-center mt-10">
                 <button id="dropdown-button-2" className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-slate-200 dark:border-gray-600" type="button" onClick={handleSearchProvince} title={provinceName.description}>
                     
                     {provinceName.term} <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">

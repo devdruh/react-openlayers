@@ -8,6 +8,7 @@ const Index = () => {
         <DarkThemeProvider>
             <div className="dark:bg-slate-900 bg-gray-100">
                 <Navbar />
+                <div className='h-16'></div>
                 <Outlet />
                 <Footer />
             </div>

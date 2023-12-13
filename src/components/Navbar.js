@@ -53,7 +53,7 @@ const Navbar = () => {
 
     return (
         <>
-            <nav className="bg-gradient-to-tr from-gray-50 to-sky-200 border-gray-200 dark:bg-gray-900 dark:bg-gradient-to-br dark:from-gray-950 dark:to-gray-800 z-20 relative shadow-md">
+            <nav className="bg-gradient-to-tr fixed top-0 start-0 w-full from-gray-50 to-sky-200 border-gray-200 dark:bg-gray-900 dark:bg-gradient-to-br dark:from-gray-950 dark:to-gray-800 z-20 shadow-md dark:shadow-sky-950">
                 <div className="flex flex-wrap justify-between items-center mx-auto p-4">
                     <a href="/" className="flex items-center">
                         {/* <img src='https://via.placeholder.com/120/120&text=LOGO' className='h-8 mr-3 rounded-full' alt='Logo here' /> */}
