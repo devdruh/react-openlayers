@@ -24,7 +24,7 @@ const DisplayAlert = () => {
                     </svg>
                     View more
                     </button>
-                    <button type="button" className="text-sky-800 bg-transparent border border-sky-700 from-orange-400 to-pink-500 hover:border-yellow-500 hover:bg-gradient-to-bl hover:text-white focus:ring-3 focus:outline-none focus:ring-orange-200 font-medium rounded-lg text-xs px-3 py-1.5 text-center dark:hover:bg-blue-600 dark:border-blue-600 dark:text-blue-400 dark:hover:text-white dark:focus:ring-blue-800" data-dismiss-target="#advisory-alert" aria-label="Close">
+                    <button type="button" className="text-sky-800 bg-transparent border border-sky-700 from-orange-400 to-pink-500 hover:border-yellow-500 hover:bg-gradient-to-bl hover:text-white focus:ring-3 focus:outline-none focus:ring-orange-200 font-medium rounded-lg text-xs px-3 py-1.5 text-center dark:hover:bg-blue-600 dark:border-blue-600 dark:text-blue-400 dark:hover:text-white dark:focus:ring-blue-800" data-dismiss-target="#advisory-alert" aria-label="Dismiss">
                     Dismiss
                     </button>
                 </div>
