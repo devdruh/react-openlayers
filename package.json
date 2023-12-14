@@ -9,6 +9,7 @@
     "apexcharts": "^3.44.0",
     "flowbite": "^2.0.0",
     "flowbite-react": "^0.6.4",
+    "framer-motion": "^10.16.16",
     "highcharts": "^11.2.0",
     "highcharts-react-official": "^3.2.1",
     "i18next": "^23.7.7",
