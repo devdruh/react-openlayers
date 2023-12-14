@@ -26,7 +26,8 @@ import { StadiaMaps } from 'ol/source.js';
 import { useDarkTheme } from "./DarkThemeContext";
 import Zoom from 'ol/control/Zoom.js';
 import { Attribution, defaults as defaultControls } from 'ol/control.js';
-
+import { LazyMotion, m } from "framer-motion"
+const loadFeatures = () => import("./../util/features").then(res => res.default);
 
 const WeatherMapDisplay = () => {
 
@@ -55,7 +56,7 @@ const WeatherMapDisplay = () => {
 
     const _alertsPopup = t('alerts', { returnObjects: true });
     const _aqhiPopup = t('aqhi', { returnObjects: true });
-    
+
     const closePopup = (e) => {
         e.target.parentElement.setAttribute('class', 'invisible');
         return false;
@@ -80,7 +81,7 @@ const WeatherMapDisplay = () => {
             setIsClickChartBtn(false);
         }
     }
-    
+
     const handleChartBtn = (e) => {
         setIsClickChartBtn(!isClickChartBtn);
         if (!isClickChartBtn) {
@@ -126,11 +127,11 @@ const WeatherMapDisplay = () => {
             const raqdpsWMS = new TileWMS({
                 url: layerSourceInfo[1].url,
                 params: { 'LAYERS': layerSourceInfo[1].layer, 't': new Date(Math.round(Date.now())).toISOString().split('.')[0] + "Z" },
-                
+
             });
             const weatherAlertsWMS = new TileWMS({
                 url: layerSourceInfo[5].url,
-                params: { 'LAYERS': layerSourceInfo[5].layer},
+                params: { 'LAYERS': layerSourceInfo[5].layer },
             });
 
             const airSurfaceTempLayer = new TileLayer({
@@ -161,7 +162,7 @@ const WeatherMapDisplay = () => {
                 url: layerSourceInfo[2].url,
                 format: new GeoJSON()
             });
-            
+
             const aqhiVectorLayer = new VectorLayer({
                 source: aqhiVector,
                 opacity: 1
@@ -180,7 +181,7 @@ const WeatherMapDisplay = () => {
             const pinLocLayer = new VectorLayer({
                 source: new VectorSource()
             });
-            
+
             const view = new View({
                 center: fromLonLat([-97, 57]),
                 zoom: 3,
@@ -240,8 +241,8 @@ const WeatherMapDisplay = () => {
                 const pinLocCircle = new CircleStyle({
                     radius: 5,
                     fill: new Fill({
-                         color: '#16a34a',
-                     }),
+                        color: '#16a34a',
+                    }),
                     stroke: new Stroke({ color: '#22d3ee', width: 1 }),
                 });
                 const pinLocStyle = new Style({
@@ -251,7 +252,7 @@ const WeatherMapDisplay = () => {
                 const pinFeature = new Feature({
                     geometry: new Point(event.coordinate),
                 });
-                
+
                 const pinLayerSource = new VectorSource({
                     features: [pinFeature]
                 });
@@ -259,7 +260,7 @@ const WeatherMapDisplay = () => {
                 pinLocLayer.getSource().clear();
                 pinLocLayer.setSource(pinLayerSource);
                 pinLocLayer.setStyle(pinLocStyle);
-                
+
                 overlay.setPosition(coordinate);
                 setIsLoading(true);
 
@@ -291,7 +292,7 @@ const WeatherMapDisplay = () => {
 
                         for (let index = 0; index < features.length; index++) {
                             const element = features[index];
-                            
+
                             i18n.addResourceBundle('en', 'translation', {
                                 "alerts": {
                                     "data": [
@@ -325,9 +326,9 @@ const WeatherMapDisplay = () => {
                                     ]
                                 },
                             }, true, true);
-                            
+
                         }
-                        
+
                     } else {
                         i18n.addResourceBundle('en', 'translation', {
                             "alerts": {
@@ -340,13 +341,13 @@ const WeatherMapDisplay = () => {
                             }
                         });
                     }
-                    
+
                 });
-                
+
             }
 
             async function findAstFeatures(coordinate) {
-                
+
                 const viewResolution = map.current.getView().getResolution();
                 const astUrl = airSurfaceTempWMS.getFeatureInfoUrl(
                     coordinate,
@@ -379,7 +380,7 @@ const WeatherMapDisplay = () => {
                 var aqhiData = [];
 
                 aqhiFeaturesToday.forEach((element) => {
-                                
+
                     if (aqhiData.length > 0) {
 
                         const findNewElement = aqhiData.find((item) => item.properties.forecast_datetime_text_en === element.properties.forecast_datetime_text_en);
@@ -388,9 +389,9 @@ const WeatherMapDisplay = () => {
 
                             const pubDate = new Date(findNewElement.properties.publication_datetime);
                             const newPubDate = new Date(element.properties.publication_datetime);
-                                
+
                             if (newPubDate > pubDate) {
-                                    
+
                                 const aqhiDataIndex = aqhiData.findIndex((item) => item.properties.forecast_datetime_text_en === findNewElement.properties.forecast_datetime_text_en);
                                 aqhiData[aqhiDataIndex] = element;
                             }
@@ -409,7 +410,7 @@ const WeatherMapDisplay = () => {
                 });
 
                 if (aqhiData.length > 0) {
-                    getClosestAqhiNow(aqhiData).then(response => { 
+                    getClosestAqhiNow(aqhiData).then(response => {
 
                         i18n.addResourceBundle('en', 'translation', {
                             "aqhi": {
@@ -542,252 +543,271 @@ const WeatherMapDisplay = () => {
             }
             clearInterval(_radarInterval)
         };
-                
+
     }, [initMap, isClickPlayBtn, isNewTimeVal]);
-    
+
+    const sectionRef = useRef(null);
+
     return (
-        <div className="max-sm:col-start-1 max-sm:col-span-1">
-            <div className="mapRef" id='mapRef' ref={mapRef}>
-                <div className="absolute right-5 translate-y-2 flex flex-row-reverse z-[1] justify-end gap-2">
-                    {
-                        isClickLegendBtn && isClickLegendBtn ? 
-                            <div className="flex">
-                                <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-gradient-to-bl from-emerald-500 to-sky-800 ring-2 ring-sky-400 hover:bg-gradient-to-br dark:from-gray-800 dark:to-gray-800 dark:ring-slate-500 hover:scale-110 dark:hover:bg-gray-900" onClick={handleLegendBtn} title="Collapse">
-                                    <svg className="w-5 h-5 text-gray-200 dark:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 10">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="m7 9 4-4-4-4M1 9l4-4-4-4"/>
-                                    </svg>
-                                    <span className="sr-only">Layers Legend</span>
-                                </button>
+        <section ref={sectionRef}>
+            <LazyMotion features={loadFeatures}>
+                <m.div
+                    initial={{ opacity: 0.5, scale: 0.5, y: 100 }}
+                    whileInView={{ opacity: 1 }}
+                    animate={{
+                        opacity: 1,
+                        transitionEnd: {
+                            y: 0,
+                            scale: 1
+                        },
+                    }}
+                    transition={{ type: "spring", damping: 60, mass: 1, delay: 1 }}
+                >
+                    <div className="max-sm:col-start-1 max-sm:col-span-1">
+                        <div className="mapRef" id='mapRef' ref={mapRef}>
+                            <div className="absolute right-5 translate-y-2 flex flex-row-reverse z-[1] justify-end gap-2">
+                                {
+                                    isClickLegendBtn && isClickLegendBtn ?
+                                        <div className="flex">
+                                            <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-gradient-to-bl from-emerald-500 to-sky-800 ring-2 ring-sky-400 hover:bg-gradient-to-br dark:from-gray-800 dark:to-gray-800 dark:ring-slate-500 hover:scale-110 dark:hover:bg-gray-900" onClick={handleLegendBtn} title="Collapse">
+                                                <svg className="w-5 h-5 text-gray-200 dark:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 10">
+                                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="m7 9 4-4-4-4M1 9l4-4-4-4" />
+                                                </svg>
+                                                <span className="sr-only">Layers Legend</span>
+                                            </button>
+                                        </div>
+                                        :
+                                        <div className="flex">
+                                            <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-slate-200 dark:bg-gray-800 hover:scale-110 dark:hover:bg-gray-900 ring-1 dark:ring-slate-600 dark:focus:ring-slate-600 dark:hover:ring-2" onClick={handleLegendBtn} title="Legend">
+                                                <svg className="w-5 h-5 text-slate-800 dark:text-gray-400 dark:hover:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 10">
+                                                    <path stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M6 1h10M6 5h10M6 9h10M1.49 1h.01m-.01 4h.01m-.01 4h.01" />
+                                                </svg>
+                                                <span className="sr-only">Layers Legend</span>
+                                            </button>
+                                        </div>
+                                }
+                                {
+                                    isClickLegendBtn && isClickLegendBtn ?
+                                        <div className=" bg-white w-52 transition duration-1000 ease-in">
+                                            <WeatherLayerLegend layerLegendList={layerLegendList} map={map.current} />
+                                        </div> : ""
+                                }
                             </div>
-                            : 
-                            <div className="flex">
-                                <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-slate-200 dark:bg-gray-800 hover:scale-110 dark:hover:bg-gray-900 ring-1 dark:ring-slate-600 dark:focus:ring-slate-600 dark:hover:ring-2" onClick={handleLegendBtn} title="Legend">
-                                    <svg className="w-5 h-5 text-slate-800 dark:text-gray-400 dark:hover:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 10">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M6 1h10M6 5h10M6 9h10M1.49 1h.01m-.01 4h.01m-.01 4h.01"/>
-                                    </svg>
-                                    <span className="sr-only">Layers Legend</span>
-                                </button>
-                            </div>
-                    }
-                    {
-                        isClickLegendBtn && isClickLegendBtn ? 
-                            <div className=" bg-white w-52 transition duration-1000 ease-in">
-                                <WeatherLayerLegend layerLegendList={layerLegendList} map={map.current} />
-                            </div>  : ""
-                    }
-                </div>
-                <div className="absolute right-5 translate-y-11 flex flex-row-reverse z-[2] justify-end gap-2">
-                    <div className="flex">
-                        {
-                            isClickLayerBtn && isClickLayerBtn ? 
-                                <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-gradient-to-bl from-emerald-500 to-sky-800 ring-2 ring-sky-400 hover:bg-gradient-to-br dark:from-gray-800 dark:to-gray-800 dark:ring-slate-500 hover:scale-110 dark:hover:bg-gray-900" onClick={handleLayerBtn} title="Collapse">
-                                    <svg className="w-5 h-5 text-gray-200 dark:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 10">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="m7 9 4-4-4-4M1 9l4-4-4-4"/>
-                                    </svg>
-                                    <span className="sr-only">Layers Legend</span>
-                                </button>
-                                : 
-                                <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-slate-200 dark:bg-gray-800 hover:scale-110 dark:hover:bg-gray-900 ring-1 dark:ring-slate-600 dark:focus:ring-slate-600 dark:hover:ring-2" onClick={handleLayerBtn} title="Layer">
-                                    <svg className="w-5 h-5 text-slate-800 dark:text-gray-400 dark:hover:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 19 20">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2 9.376v.786l8 3.925 8-3.925v-.786M1.994 14.191v.786l8 3.925 8-3.925v-.786M10 1.422 2 5.347l8 3.925 8-3.925-8-3.925Z"/>
-                                    </svg>
-                                    <span className="sr-only">Layers</span>
-                                </button>
-                        }
-                    </div>
-                    <div className="flex justify-end">
-                        {
-                            isClickLayerBtn && isClickLayerBtn ?
-                                <div className=" bg-white w-52 transition duration-1000 ease-in shadow-lg shadow-blue-400/50 dark:shadow-lg last:rounded-b-lg">
-                                    <WeatherLayerList layerGroupList={layerGroupList} />
+                            <div className="absolute right-5 translate-y-11 flex flex-row-reverse z-[2] justify-end gap-2">
+                                <div className="flex">
+                                    {
+                                        isClickLayerBtn && isClickLayerBtn ?
+                                            <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-gradient-to-bl from-emerald-500 to-sky-800 ring-2 ring-sky-400 hover:bg-gradient-to-br dark:from-gray-800 dark:to-gray-800 dark:ring-slate-500 hover:scale-110 dark:hover:bg-gray-900" onClick={handleLayerBtn} title="Collapse">
+                                                <svg className="w-5 h-5 text-gray-200 dark:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 10">
+                                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="m7 9 4-4-4-4M1 9l4-4-4-4" />
+                                                </svg>
+                                                <span className="sr-only">Layers Legend</span>
+                                            </button>
+                                            :
+                                            <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-slate-200 dark:bg-gray-800 hover:scale-110 dark:hover:bg-gray-900 ring-1 dark:ring-slate-600 dark:focus:ring-slate-600 dark:hover:ring-2" onClick={handleLayerBtn} title="Layer">
+                                                <svg className="w-5 h-5 text-slate-800 dark:text-gray-400 dark:hover:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 19 20">
+                                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2 9.376v.786l8 3.925 8-3.925v-.786M1.994 14.191v.786l8 3.925 8-3.925v-.786M10 1.422 2 5.347l8 3.925 8-3.925-8-3.925Z" />
+                                                </svg>
+                                                <span className="sr-only">Layers</span>
+                                            </button>
+                                    }
                                 </div>
-                                :
-                                null
-                        }
-                    </div>
-                </div>
-                <div className="absolute right-5 translate-y-20 flex flex-row-reverse z-[2] justify-end gap-2">
-                    <div className="flex">
-                        {
-                            showChartBtn && showChartBtn ?
-                                <>
-                                    <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-gradient-to-bl from-emerald-500 to-sky-800 ring-1 ring-sky-400 hover:bg-gradient-to-br dark:from-gray-800 dark:to-gray-800 dark:ring-slate-600 dark:focus:ring-slate-600 hover:scale-110 dark:hover:from-gray-900 dark:hover:to-gray-900 dark:hover:ring-2" onClick={handleChartBtn} title="Charts">
-                                        <svg className="w-5 h-5 text-gray-200 dark:text-gray-400 dark:hover:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
-                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1v14h16m0-9-3-2-3 5-3-2-3 4" />
-                                        </svg>
-                                        <span className="sr-only">Chart</span>
-                                    </button>
-                                    <span className="flex absolute h-3 w-3 top-0 right-0 -mt-1 -mr-1">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 dark:bg-sky-300 opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-400 dark:bg-sky-400"></span>
-                                    </span>
-                                </>
-                                : <></>
-                                
-                        }
-                    </div>
-                    <div className="flex justify-end">
-                        <div className={`max-w-sm bg-white dark:bg-gray-800 transition duration-1000 ease-in shadow-lg shadow-blue-400/50 dark:shadow-lg last:rounded-b-lg ${isClickChartBtn ? null : 'hidden'}`}>
-                            <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
-                                <ul className="flex flex-wrap focus:bg-sky-600 -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
-                                    <li className="me-2" role="presentation">
-                                        <button className="inline-block p-4 border-b-2 rounded-t-lg dark:text-slate-400 dark:hover:text-slate-300" id="aqhi-tab" data-tabs-target="#aqhi-tab-id" type="button" role="tab" aria-controls="aqhi-tab-id" aria-selected="false">AQHI</button>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div id="default-tab-content">
-                                <div className="hidden rounded-lg bg-gray-50 dark:bg-gray-800" id="aqhi-tab-id" role="tabpanel" aria-labelledby="aqhi-tab">
-                                    <WeatherWidgetChart aqhiChartData={aqhiChartData} />
+                                <div className="flex justify-end">
+                                    {
+                                        isClickLayerBtn && isClickLayerBtn ?
+                                            <div className=" bg-white w-52 transition duration-1000 ease-in shadow-lg shadow-blue-400/50 dark:shadow-lg last:rounded-b-lg">
+                                                <WeatherLayerList layerGroupList={layerGroupList} />
+                                            </div>
+                                            :
+                                            null
+                                    }
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="absolute right-5 translate-y-52 md:translate-y-72 flex flex-row-reverse z-[2] justify-end gap-2">
-                    {
-                        isMapLoading && isMapLoading ?
-                            <div role="status" className=" px-0.5">
-                                <svg aria-hidden="true" className="inline w-6 h-6 text-gray-50 animate-spin dark:text-gray-600 fill-sky-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
-                                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
-                                </svg>
-                                <span className="sr-only">Loading...</span>
-                            </div>
-                        : null
-                    }
-                </div>
-            </div>
-            
-            {isLoading ?
-                <div ref={popupDiv}>
-                    <div className="text-center">
-                        <div role="status" className="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2">
-                            <svg aria-hidden="true" className="w-6 h-6 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" /><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" /></svg>
-                            <span className="sr-only">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-                :
-                <div ref={popupDiv}>
-                    <div data-popover role="tooltip" className="ol-popup absolute rounded-lg bottom-3 pb-1 min-w-max border border-solid border-slate-400 -left-12 transition-opacity duration-300 bg-white max-[w-56] dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800 shadow-lg shadow-blue-400/50 dark:shadow-lg dark:shadow-blue-800/80">
-                        <span id="popup-closer" className="ol-popup-closer hover:cursor-pointer" onClick={closePopup}></span>
-                        <div className="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
-                            <h4 className="font-medium text-sm text-gray-900 dark:text-slate-300">({t('common:lonlat')}): <span className="font-normal text-gray-900 dark:text-slate-300">{airTableData.coordinate}</span></h4>
-                        </div>
-                        <div className="grid grid-cols-2 border-b border-b-slate-300 dark:border-b-gray-600 gap-3 p-1 max-w-xs">
-                            <div className="text-right self-center">
-                                <p className="text-xs text-gray-900 dark:text-slate-400">{t('common:airSurfaceTemperature')} : </p>
-                            </div>
-                            <div className="self-center text-xs">
-                                <p>{Math.round(airTableData.airsurftemp)} °C</p>
-                            </div>
-                        </div>
-                        {
-                            Array.isArray(_aqhiPopup?.data) ?
-                            _aqhiPopup?.data.length > 0 ?
-                                _aqhiPopup?.data.map((item) => (
-                                    <div key={item.id} className="px-1">
-                                        <div className="grid grid-cols-2 gap-3 py-1 max-w-xs">
-                                            <div className="text-right self-center">
-                                                <p className="text-xs text-gray-900 dark:text-slate-400">{i18n.t('common:forecastAQHI')} : </p>
-                                            </div>
-                                            <div className="self-center text-xs">
-                                                <p>{item.value}</p>
-                                            </div>
+                            <div className="absolute right-5 translate-y-20 flex flex-row-reverse z-[2] justify-end gap-2">
+                                <div className="flex">
+                                    {
+                                        showChartBtn && showChartBtn ?
+                                            <>
+                                                <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-gradient-to-bl from-emerald-500 to-sky-800 ring-1 ring-sky-400 hover:bg-gradient-to-br dark:from-gray-800 dark:to-gray-800 dark:ring-slate-600 dark:focus:ring-slate-600 hover:scale-110 dark:hover:from-gray-900 dark:hover:to-gray-900 dark:hover:ring-2" onClick={handleChartBtn} title="Charts">
+                                                    <svg className="w-5 h-5 text-gray-200 dark:text-gray-400 dark:hover:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
+                                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1v14h16m0-9-3-2-3 5-3-2-3 4" />
+                                                    </svg>
+                                                    <span className="sr-only">Chart</span>
+                                                </button>
+                                                <span className="flex absolute h-3 w-3 top-0 right-0 -mt-1 -mr-1">
+                                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 dark:bg-sky-300 opacity-75"></span>
+                                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-400 dark:bg-sky-400"></span>
+                                                </span>
+                                            </>
+                                            : <></>
+
+                                    }
+                                </div>
+                                <div className="flex justify-end">
+                                    <div className={`max-w-sm bg-white dark:bg-gray-800 transition duration-1000 ease-in shadow-lg shadow-blue-400/50 dark:shadow-lg last:rounded-b-lg ${isClickChartBtn ? null : 'hidden'}`}>
+                                        <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
+                                            <ul className="flex flex-wrap focus:bg-sky-600 -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
+                                                <li className="me-2" role="presentation">
+                                                    <button className="inline-block p-4 border-b-2 rounded-t-lg dark:text-slate-400 dark:hover:text-slate-300" id="aqhi-tab" data-tabs-target="#aqhi-tab-id" type="button" role="tab" aria-controls="aqhi-tab-id" aria-selected="false">AQHI</button>
+                                                </li>
+                                            </ul>
                                         </div>
-                                        <div className="grid grid-cols-2 gap-3 pb-1 max-w-xs">
-                                            <div className="text-right self-center">
-                                                <p className="text-xs text-gray-900 dark:text-slate-400">{i18n.t('common:forecastDateTime')} : </p>
-                                            </div>
-                                            <div className="self-center text-xs">
-                                                <p className="text-xs text-gray-900 dark:text-slate-400">{item.forecastDate}</p>
-                                            </div>
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-3 pb-1 max-w-xs">
-                                            <div className="text-right self-center">
-                                                <p className="text-xs text-gray-900 dark:text-slate-400">{i18n.t('common:forecastClosestLoc')} : </p>
-                                            </div>
-                                            <div className="self-center">
-                                                <p className="text-xs text-gray-900 dark:text-slate-400">{item.forecastLoc}</p>
+                                        <div id="default-tab-content">
+                                            <div className="hidden rounded-lg bg-gray-50 dark:bg-gray-800" id="aqhi-tab-id" role="tabpanel" aria-labelledby="aqhi-tab">
+                                                <WeatherWidgetChart aqhiChartData={aqhiChartData} />
                                             </div>
                                         </div>
                                     </div>
-                                ))
-                                    : null
-                                : null
-                        }
-                        {
-                            _alertsPopup?.data.length > 0 ? 
-                                _alertsPopup?.data.map((item) => (
-                                    <div key={item.id}>
-                                        <div className="grid grid-flow-row p-1">
-                                            <div className={`text-center self-center py-1 ${item.type === 'warning' ? 'bg-[#FF0000] text-white dark:text-slate-200' : item.type === 'watch' ? ' bg-[#FFFF00] text-slate-600' : item.type === 'statement' ? 'bg-[#7F7F7F] text-slate-100' : item.type === 'advisory' ? 'bg-[#7F7F7F] text-slate-100' : null}`}>
-                                                <p className='text-xs whitespace-pre-line capitalize font-medium'>{item.headline} </p>
-                                            </div>
-                                            <div className="text-center self-center max-w-xs">
-                                                <p className="text-xs font-medium text-gray-900 dark:text-slate-400">{item.area} </p>
-                                            </div>
+                                </div>
+                            </div>
+                            <div className="absolute right-5 translate-y-52 md:translate-y-72 flex flex-row-reverse z-[2] justify-end gap-2">
+                                {
+                                    isMapLoading && isMapLoading ?
+                                        <div role="status" className=" px-0.5">
+                                            <svg aria-hidden="true" className="inline w-6 h-6 text-gray-50 animate-spin dark:text-gray-600 fill-sky-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+                                                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                                            </svg>
+                                            <span className="sr-only">Loading...</span>
                                         </div>
-                                        <div className="grid grid-cols-2 gap-3 pb-1 max-w-xs">
-                                            <div className="text-right self-center">
-                                                <p className="text-xs text-gray-900 dark:text-slate-400">{i18n.t('common:effective')} : </p>
-                                            </div>
-                                            <div className="self-center text-xs">
-                                                <p>{item.effective}</p>
-                                            </div>
+                                        : null
+                                }
+                            </div>
+                        </div>
+
+                        {isLoading ?
+                            <div ref={popupDiv}>
+                                <div className="text-center">
+                                    <div role="status" className="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2">
+                                        <svg aria-hidden="true" className="w-6 h-6 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" /><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" /></svg>
+                                        <span className="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                            :
+                            <div ref={popupDiv}>
+                                <div data-popover role="tooltip" className="ol-popup absolute rounded-lg bottom-3 pb-1 min-w-max border border-solid border-slate-400 -left-12 transition-opacity duration-300 bg-white max-[w-56] dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800 shadow-lg shadow-blue-400/50 dark:shadow-lg dark:shadow-blue-800/80">
+                                    <span id="popup-closer" className="ol-popup-closer hover:cursor-pointer" onClick={closePopup}></span>
+                                    <div className="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                                        <h4 className="font-medium text-sm text-gray-900 dark:text-slate-300">({t('common:lonlat')}): <span className="font-normal text-gray-900 dark:text-slate-300">{airTableData.coordinate}</span></h4>
+                                    </div>
+                                    <div className="grid grid-cols-2 border-b border-b-slate-300 dark:border-b-gray-600 gap-3 p-1 max-w-xs">
+                                        <div className="text-right self-center">
+                                            <p className="text-xs text-gray-900 dark:text-slate-400">{t('common:airSurfaceTemperature')} : </p>
                                         </div>
-                                        <div className="grid grid-cols-2 gap-3 pb-1 max-w-xs">
-                                            <div className="text-right self-center">
-                                                <p className="text-xs text-gray-900 dark:text-slate-400">{i18n.t('common:expires')} : </p>
-                                            </div>
-                                            <div className="self-center text-xs">
-                                                <p>{item.expires}</p>
-                                            </div>
-                                        </div>
-                                        <div className="grid pb-1 px-1 max-w-xs">
-                                            <div className="mb-1">
-                                                <p className="text-xs text-center text-gray-900 dark:text-slate-400">Description </p>
-                                            </div>
-                                            <div className=" max-w-xs overflow-y-auto max-h-20 border-t dark:border-t-gray-600">
-                                                <p className="text-xs whitespace-normal p-2 text-justify text-gray-900 dark:text-slate-400">{item.description} </p>
-                                            </div>
+                                        <div className="self-center text-xs">
+                                            <p>{Math.round(airTableData.airsurftemp)} °C</p>
                                         </div>
                                     </div>
-                                ))
-                                : null
+                                    {
+                                        Array.isArray(_aqhiPopup?.data) ?
+                                            _aqhiPopup?.data.length > 0 ?
+                                                _aqhiPopup?.data.map((item) => (
+                                                    <div key={item.id} className="px-1">
+                                                        <div className="grid grid-cols-2 gap-3 py-1 max-w-xs">
+                                                            <div className="text-right self-center">
+                                                                <p className="text-xs text-gray-900 dark:text-slate-400">{i18n.t('common:forecastAQHI')} : </p>
+                                                            </div>
+                                                            <div className="self-center text-xs">
+                                                                <p>{item.value}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="grid grid-cols-2 gap-3 pb-1 max-w-xs">
+                                                            <div className="text-right self-center">
+                                                                <p className="text-xs text-gray-900 dark:text-slate-400">{i18n.t('common:forecastDateTime')} : </p>
+                                                            </div>
+                                                            <div className="self-center text-xs">
+                                                                <p className="text-xs text-gray-900 dark:text-slate-400">{item.forecastDate}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="grid grid-cols-2 gap-3 pb-1 max-w-xs">
+                                                            <div className="text-right self-center">
+                                                                <p className="text-xs text-gray-900 dark:text-slate-400">{i18n.t('common:forecastClosestLoc')} : </p>
+                                                            </div>
+                                                            <div className="self-center">
+                                                                <p className="text-xs text-gray-900 dark:text-slate-400">{item.forecastLoc}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))
+                                                : null
+                                            : null
+                                    }
+                                    {
+                                        _alertsPopup?.data.length > 0 ?
+                                            _alertsPopup?.data.map((item) => (
+                                                <div key={item.id}>
+                                                    <div className="grid grid-flow-row p-1">
+                                                        <div className={`text-center self-center py-1 ${item.type === 'warning' ? 'bg-[#FF0000] text-white dark:text-slate-200' : item.type === 'watch' ? ' bg-[#FFFF00] text-slate-600' : item.type === 'statement' ? 'bg-[#7F7F7F] text-slate-100' : item.type === 'advisory' ? 'bg-[#7F7F7F] text-slate-100' : null}`}>
+                                                            <p className='text-xs whitespace-pre-line capitalize font-medium'>{item.headline} </p>
+                                                        </div>
+                                                        <div className="text-center self-center max-w-xs">
+                                                            <p className="text-xs font-medium text-gray-900 dark:text-slate-400">{item.area} </p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="grid grid-cols-2 gap-3 pb-1 max-w-xs">
+                                                        <div className="text-right self-center">
+                                                            <p className="text-xs text-gray-900 dark:text-slate-400">{i18n.t('common:effective')} : </p>
+                                                        </div>
+                                                        <div className="self-center text-xs">
+                                                            <p>{item.effective}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="grid grid-cols-2 gap-3 pb-1 max-w-xs">
+                                                        <div className="text-right self-center">
+                                                            <p className="text-xs text-gray-900 dark:text-slate-400">{i18n.t('common:expires')} : </p>
+                                                        </div>
+                                                        <div className="self-center text-xs">
+                                                            <p>{item.expires}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="grid pb-1 px-1 max-w-xs">
+                                                        <div className="mb-1">
+                                                            <p className="text-xs text-center text-gray-900 dark:text-slate-400">Description </p>
+                                                        </div>
+                                                        <div className=" max-w-xs overflow-y-auto max-h-20 border-t dark:border-t-gray-600">
+                                                            <p className="text-xs whitespace-normal p-2 text-justify text-gray-900 dark:text-slate-400">{item.description} </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))
+                                            : null
+                                    }
+                                </div>
+                            </div>
                         }
+                        <div className="flex flex-row bg-slate-300 content-center items-center dark:bg-gray-800">
+                            <div className="px-3">
+                                {
+                                    !isClickPlayBtn ?
+                                        <>
+                                            <button type="button" className="px-3 py-2 text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80" onClick={handlePlayBtn}>
+                                                <svg className="w-3 h-3 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 18">
+                                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1.984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L2.506 1.139A1 1 0 0 0 1 1.984Z" />
+                                                </svg>
+                                                <span className="sr-only">Play</span>
+                                            </button>
+                                        </>
+                                        :
+                                        <>
+                                            <button type="button" className="px-3 py-2 text-white bg-gradient-to-br from-orange-400 to-pink-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-orange-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm shadow-lg shadow-orange-500/50 dark:shadow-lg dark:shadow-orange-800/80" onClick={handlePlayBtn}>
+                                                <svg className="w-3 h-3 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 10 16">
+                                                    <path fillRule="evenodd" d="M0 .8C0 .358.32 0 .714 0h1.429c.394 0 .714.358.714.8v14.4c0 .442-.32.8-.714.8H.714a.678.678 0 0 1-.505-.234A.851.851 0 0 1 0 15.2V.8Zm7.143 0c0-.442.32-.8.714-.8h1.429c.19 0 .37.084.505.234.134.15.209.354.209.566v14.4c0 .442-.32.8-.714.8H7.857c-.394 0-.714-.358-.714-.8V.8Z" clipRule="evenodd" />
+                                                </svg>
+                                                <span className="sr-only">Pause</span>
+                                            </button>
+                                            <span id="info"></span>
+                                        </>
+                                }
+                            </div>
+                            <div className=" flex-auto">
+                                <WeatherMapInfo radarTime={radarTime} isClickPlayBtn={isClickPlayBtn} />
+                            </div>
+                        </div>
                     </div>
-                </div>
-            }
-            <div className="flex flex-row bg-slate-300 content-center items-center dark:bg-gray-800">
-                <div className="px-3">
-                    {
-                        !isClickPlayBtn ?
-                        <>
-                            <button type="button" className="px-3 py-2 text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80" onClick={handlePlayBtn}>
-                                <svg className="w-3 h-3 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 18">
-                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1.984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L2.506 1.139A1 1 0 0 0 1 1.984Z" />
-                                </svg>
-                                <span className="sr-only">Play</span>
-                            </button>
-                        </>
-                        :
-                        <>  
-                            <button type="button" className="px-3 py-2 text-white bg-gradient-to-br from-orange-400 to-pink-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-orange-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm shadow-lg shadow-orange-500/50 dark:shadow-lg dark:shadow-orange-800/80" onClick={handlePlayBtn}>
-                                <svg className="w-3 h-3 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 10 16">
-                                    <path fillRule="evenodd" d="M0 .8C0 .358.32 0 .714 0h1.429c.394 0 .714.358.714.8v14.4c0 .442-.32.8-.714.8H.714a.678.678 0 0 1-.505-.234A.851.851 0 0 1 0 15.2V.8Zm7.143 0c0-.442.32-.8.714-.8h1.429c.19 0 .37.084.505.234.134.15.209.354.209.566v14.4c0 .442-.32.8-.714.8H7.857c-.394 0-.714-.358-.714-.8V.8Z" clipRule="evenodd" />
-                                </svg>
-                                <span className="sr-only">Pause</span>
-                            </button>
-                            <span id="info"></span>
-                        </>
-                    }
-                </div>
-                <div className=" flex-auto">
-                    <WeatherMapInfo radarTime={radarTime} isClickPlayBtn={isClickPlayBtn} />
-                </div>
-            </div>
-        </div>
+                </m.div>
+            </LazyMotion>
+        </section>
     )
 }
 
