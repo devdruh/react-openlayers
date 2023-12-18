@@ -5,23 +5,40 @@ import { LazyMotion, m, useScroll, useTransform } from "framer-motion"
 
 const loadFeatures = () => import("./../util/features").then(res => res.default)
 
-const WeatherForecastWeek = ({ forecast }) => {
+const WeatherForecastWeek = ({ cityWeather }) => {
 
     const [formatWeek, setFormatWeek] = useState([]);
     const { t, i18n } = useTranslation();
     const [forecastData, setForecastData] = useState();
 
+    const language = i18n.language;
+    const [weekForecast, setWeekForecast] = useState({});
+    const [isWidth640, setIsWidth640] = useState(false);
+
     const sectionRef = useRef(null);
     const { scrollY } = useScroll();
-    const scaleLazyMotion = useTransform(scrollY, [0, 250], [0, 1]);
+    const scaleLazyMotion = useTransform((scrollY), [0, isWidth640 ? 250 : 0], [0, 1]);
 
     useEffect(() => {
-        if (Object.keys(forecast).length > 0) {
-            setForecastData(forecast);
+
+        if (window.matchMedia("(max-width: 640px)").matches) {
+            setIsWidth640(true);
+        }
+
+        if (Array.isArray(cityWeather) && cityWeather.length > 0) {
+            if (language === 'en') {
+                setWeekForecast(cityWeather[0].siteData.forecastGroup);
+            } else if (language === 'fr') {
+                setWeekForecast(cityWeather[1].siteData.forecastGroup);
+            }
+        }
+
+        if (Object.keys(weekForecast).length > 0) {
+            setForecastData(weekForecast);
             var _format = [];
 
-            for (let index = 0; index < forecast.forecast.length; index++) {
-                const element = forecast.forecast[index];
+            for (let index = 0; index < weekForecast.forecast.length; index++) {
+                const element = weekForecast.forecast[index];
 
                 if (index % 2 === 0) {
 
@@ -50,25 +67,27 @@ const WeatherForecastWeek = ({ forecast }) => {
 
             setFormatWeek(_format);
         }
-        initFlowbite()
-    }, [forecast])
+
+        initFlowbite();
+
+    }, [weekForecast, cityWeather, language])
 
     return (
         <section ref={sectionRef}>
             <LazyMotion features={loadFeatures}>
                 <m.div
-                    initial={{ opacity: 0.5 }}
-                    whileInView={{ opacity: 1 }}
+                    initial={{ opacity: 0 }}
+                    // whileInView={{ opacity: 1 }}
                     animate={{
                         opacity: 1,
                         transitionEnd: {
                             y: 0
                         }
                     }}
-                    style={{ scale: scaleLazyMotion }}
+                    style={{ scale: scaleLazyMotion, marginBottom: window.matchMedia("(max-width: 640px)").matches ? 0 : 200 }}
                     viewport={{ once: true }}
                 >
-                    <div className='pt-5 mb-4 w-full bg-gradient-to-br mt-3 from-sky-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% rounded-md dark:from-gray-900 dark:to-gray-800'>
+                    <div className='pt-5 mb-4 w-full bg-gradient-to-br mt-3 from-sky-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% rounded-lg dark:from-gray-900 dark:to-gray-800'>
                         <p className='text-center text-slate-100 dark:text-gray-300 font-medium text-md'>{t('common:weekForecast')}</p>
                         <p className='text-center text-slate-200 dark:text-gray-400 font-normal text-xs'>{t('common:forecastAsOf')}  {new Date(forecastData?.dateTime[1].year, forecastData?.dateTime[1].month - 1, forecastData?.dateTime[1].day, forecastData?.dateTime[1].hour, forecastData?.dateTime[1].minute).toLocaleDateString(i18n.language === 'fr' ? 'fr-CA' : undefined, { weekday: 'short', hour: 'numeric', minute: 'numeric', timeZoneName: 'short' })}</p>
 

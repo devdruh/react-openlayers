@@ -1,7 +1,12 @@
-import React, { useEffect, useCallback, useState } from 'react';
-import WeatherMeteogram from './WeatherMeteogram';
+import React, { useEffect, useCallback, useState, Suspense, lazy } from 'react';
 import { getProvincesName, getProvinceCitiesByProvCode, getCityWeatherByCode } from '../util/api';
+import { LoadingCurrentCondition, LoadingForecastWeek, LoadingMeteogram } from '../util/skeleton';
+import { delaySkeleton } from '../util/utilities';
 import "flowbite";
+
+const WeatherCurrentCondition = lazy(() => delaySkeleton(import('./WeatherCurrentCondition'), 800));
+const WeatherMeteogram = lazy(() => delaySkeleton(import('./WeatherMeteogram'), 1000));
+const WeatherForecastWeek = lazy(() => delaySkeleton(import('./WeatherForecastWeek'), 1500));
 
 const DisplayAlert = () => {
     return (
@@ -239,7 +244,19 @@ const DisplayForecastChart = () => {
                     </button>
                 </div>
             </div>
-            <WeatherMeteogram cityWeather={cityWeather} />
+            <div className='flex flex-col'>
+                <section className='pt-5 w-full'>
+                    <Suspense fallback={<LoadingCurrentCondition />}>
+                        <WeatherCurrentCondition cityWeather={cityWeather} />
+                    </Suspense>
+                    <Suspense fallback={<LoadingMeteogram />}>
+                        <WeatherMeteogram cityWeather={cityWeather} />
+                    </Suspense>
+                    <Suspense fallback={<LoadingForecastWeek />}>
+                        <WeatherForecastWeek cityWeather={cityWeather} />
+                    </Suspense>
+                </section>
+            </div>
         </div>
     )
 }

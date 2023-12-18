@@ -109,6 +109,10 @@ const weatherForecastChartOptions = {
     chart: {
         styledMode: true,
         marginRight: 20,
+        borderRadius: 10,
+        spacingBottom: 25,
+        spacingTop: 20,
+        className: 'rounded-lg',
         events: {
 
             redraw: function (event) {
@@ -174,11 +178,12 @@ const weatherForecastChartOptions = {
     },
 
     credits: {
-        text: 'Source: <a href="https://weather.gc.ca/">Canada Weather</a>',
+        text: 'Source: Canada Weather',
         href: 'https://weather.gc.ca/',
-        // position: {
-        //     x: -40
-        // }
+        position: {
+            x: -20,
+            y: -10
+        }
     },
 
 

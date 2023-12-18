@@ -38,6 +38,12 @@ const isDarkTheme = () => {
     return false
 }
 
+const delaySkeleton = async (promise, time) => {
+    return new Promise((resolve) => {
+        setTimeout(resolve, time !== undefined ? time : 1000);
+    }).then(() => promise);
+}
+
 export {
-    xml2json, isDarkTheme
+    xml2json, isDarkTheme, delaySkeleton
 }

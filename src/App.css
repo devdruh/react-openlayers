@@ -106,6 +106,7 @@
 
 	.highcharts-background {
 		transition: all 250ms;
+		@apply fill-white dark:fill-slate-800;
 	}
 
 	.highcharts-description {
@@ -115,7 +116,8 @@
 	@media (prefers-color-scheme: dark) {
 		:root {
 			/* UI colors */
-			--highcharts-background-color: rgb(31 41 55 / var(--tw-bg-opacity));
+			/* --highcharts-background-color: rgb(31 41 55 / var(--tw-bg-opacity)); */
+			--highcharts-background-color: @apply dark:fill-gray-800 fill-white;
 		}
 	}
 

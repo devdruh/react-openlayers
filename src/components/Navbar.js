@@ -37,22 +37,30 @@ const Navbar = () => {
     useEffect(() => {
         setLang(i18n.language)
 
-        const forecastWeatherChart = document.getElementById('forecast-weather-highchart');
         if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
             localStorage.setItem('color-theme', 'dark');
-            if (forecastWeatherChart !== null) {
-                forecastWeatherChart.firstChild.classList.add('highcharts-dark');
-            }
             setIsDartkTheme(true);
         } else {
             document.documentElement.classList.remove('dark');
             localStorage.setItem('color-theme', 'light');
-            if (forecastWeatherChart !== null) {
-                forecastWeatherChart.firstChild.classList.add('highcharts-light');
-            }
             setIsDartkTheme(false);
         }
+
+        setTimeout(() => { //For HighChart
+            const forecastWeatherChart = document.getElementById('forecast-weather-highchart');
+            if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                if (forecastWeatherChart !== null) {
+                    forecastWeatherChart.firstChild.classList.add('highcharts-dark');
+                }
+            } else {
+                if (forecastWeatherChart !== null) {
+                    forecastWeatherChart.firstChild.classList.add('highcharts-light');
+                }
+            }
+
+        }, 1000);
+
     }, [i18n]);
 
     return (
