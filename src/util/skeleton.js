@@ -147,4 +147,26 @@ const LoadingMapDisplay = () => {
     )
 }
 
-export { LoadingCurrentCondition, LoadingMeteogram, LoadingForecastWeek, LoadingMapDisplay }
+const LoadingLayerLegend = () => {
+    return (
+        <div className="w-52 h-16 p-2 border rounded-lg animate-pulse border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+            <div role="status">
+                <div className="flex flex-row gap-3 mt-1">
+                    <div className="w-full">
+                        <div className="h-3 w-full bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                    </div>
+                    <div className="w-full">
+                        <div className="h-3 w-5/12 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                    </div>
+                </div>
+                <div className="flex flex-col mt-4">
+                    <div className="w-full">
+                        <div className="h-3 w-full bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export { LoadingCurrentCondition, LoadingMeteogram, LoadingForecastWeek, LoadingMapDisplay, LoadingLayerLegend }

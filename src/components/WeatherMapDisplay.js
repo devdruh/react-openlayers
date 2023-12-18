@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, useCallback, useId } from "react";
+import { useRef, useEffect, useState, useCallback, useId, lazy, Suspense } from "react";
 import Map from 'ol/Map.js';
 import TileLayer from 'ol/layer/Tile.js';
 import TileWMS from 'ol/source/TileWMS.js';
@@ -16,7 +16,6 @@ import { getAirSurfaceTemp, getClosestAqhi, getClosestAqhiNow, getClosestAqhiTod
 import WeatherMapInfo from "./WeatherMapInfo";
 import WeatherLayerList from "./WeatherLayerList";
 import WeatherWidgetChart from "./WeatherWidgetChart";
-import WeatherLayerLegend from "./WeatherLayerLegend";
 import VectorSource from "ol/source/Vector";
 import GeoJSON from 'ol/format/GeoJSON.js';
 import VectorLayer from 'ol/layer/Vector.js';
@@ -27,7 +26,11 @@ import { useDarkTheme } from "./DarkThemeContext";
 import Zoom from 'ol/control/Zoom.js';
 import { Attribution, defaults as defaultControls } from 'ol/control.js';
 import { LazyMotion, m } from "framer-motion"
+import { delaySkeleton } from "../util/utilities";
+import { LoadingLayerLegend } from "../util/skeleton";
+
 const loadFeatures = () => import("./../util/features").then(res => res.default);
+const WeatherLayerLegend = lazy(() => delaySkeleton(import('./WeatherLayerLegend'), 200));
 
 const WeatherMapDisplay = () => {
 
@@ -569,7 +572,7 @@ const WeatherMapDisplay = () => {
                                 {
                                     isClickLegendBtn && isClickLegendBtn ?
                                         <div className="flex">
-                                            <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-gradient-to-bl from-emerald-500 to-sky-800 ring-2 ring-sky-400 hover:bg-gradient-to-br dark:from-gray-800 dark:to-gray-800 dark:ring-slate-500 hover:scale-110 dark:hover:bg-gray-900" onClick={handleLegendBtn} title="Collapse">
+                                            <button type="button" className="h-7 p-1 rounded ease-in transition duration-500 bg-gradient-to-bl from-emerald-500 to-sky-800 ring-2 ring-sky-400 hover:bg-gradient-to-br dark:from-gray-800 dark:to-gray-800 dark:ring-slate-500 hover:scale-110 dark:hover:bg-gray-900" onClick={handleLegendBtn} title="Collapse">
                                                 <svg className="w-5 h-5 text-gray-200 dark:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 10">
                                                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="m7 9 4-4-4-4M1 9l4-4-4-4" />
                                                 </svg>
@@ -578,7 +581,7 @@ const WeatherMapDisplay = () => {
                                         </div>
                                         :
                                         <div className="flex">
-                                            <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-slate-200 dark:bg-gray-800 hover:scale-110 dark:hover:bg-gray-900 ring-1 dark:ring-slate-600 dark:focus:ring-slate-600 dark:hover:ring-2" onClick={handleLegendBtn} title="Legend">
+                                            <button type="button" className="h-7 p-1 rounded ease-in transition duration-500 bg-slate-200 dark:bg-gray-800 hover:scale-110 dark:hover:bg-gray-900 ring-1 dark:ring-slate-600 dark:focus:ring-slate-600 dark:hover:ring-2" onClick={handleLegendBtn} title="Legend">
                                                 <svg className="w-5 h-5 text-slate-800 dark:text-gray-400 dark:hover:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 10">
                                                     <path stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M6 1h10M6 5h10M6 9h10M1.49 1h.01m-.01 4h.01m-.01 4h.01" />
                                                 </svg>
@@ -587,10 +590,13 @@ const WeatherMapDisplay = () => {
                                         </div>
                                 }
                                 {
-                                    isClickLegendBtn && isClickLegendBtn ?
-                                        <div className=" bg-white w-52 transition duration-1000 ease-in">
-                                            <WeatherLayerLegend layerLegendList={layerLegendList} map={map.current} />
-                                        </div> : ""
+                                    isClickLegendBtn && (
+                                        <div className="bg-white dark:bg-transparent w-52 transition duration-1000 ease-in-out">
+                                            <Suspense fallback={<LoadingLayerLegend />}>
+                                                <WeatherLayerLegend layerLegendList={layerLegendList} map={map.current} />
+                                            </Suspense>
+                                        </div>
+                                    )
                                 }
                             </div>
                             <div className="absolute right-5 translate-y-11 flex flex-row-reverse z-[2] justify-end gap-2">
