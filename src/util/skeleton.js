@@ -169,4 +169,49 @@ const LoadingLayerLegend = () => {
     )
 }
 
-export { LoadingCurrentCondition, LoadingMeteogram, LoadingForecastWeek, LoadingMapDisplay, LoadingLayerLegend }
+const LoadingLayerList = () => {
+    return (
+        <div className="w-52 h-44 px-2 border rounded-lg animate-pulse border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+            <div role="status">
+
+                <div className="flex flex-row gap-3 mt-3">
+                    <div className="w-full">
+                        <div className="h-3 w-full bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                    </div>
+                    <div className="w-full">
+                        <div className="h-3 w-5/12 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                    </div>
+                </div>
+                <div className="flex mt-4">
+                    <div className="w-full flex justify-end items-end">
+                        <div className="h-2 w-4/5 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                    </div>
+                </div>
+                {
+                    [0, 1].map((item) => {
+                        return (
+                            <div key={item}>
+                                <div className="flex flex-row gap-3 mt-5">
+                                    <div className="w-full">
+                                        <div className="h-3 w-full bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                                    </div>
+                                    <div className="w-full">
+                                        <div className="h-3 w-8/12 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                                    </div>
+                                </div>
+                                <div className="flex mt-4">
+                                    <div className="w-full flex justify-end items-end">
+                                        <div className="h-2 w-4/5 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })
+                }
+
+            </div>
+        </div>
+    )
+}
+
+export { LoadingCurrentCondition, LoadingMeteogram, LoadingForecastWeek, LoadingMapDisplay, LoadingLayerLegend, LoadingLayerList }

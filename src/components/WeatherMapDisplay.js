@@ -14,7 +14,6 @@ import { dateOptions, dateOptions_1, layerSourceInfo } from "../util/variables";
 import { initFlowbite } from "flowbite";
 import { getAirSurfaceTemp, getClosestAqhi, getClosestAqhiNow, getClosestAqhiToday, getWeatherAlerts } from "../util/api";
 import WeatherMapInfo from "./WeatherMapInfo";
-import WeatherLayerList from "./WeatherLayerList";
 import WeatherWidgetChart from "./WeatherWidgetChart";
 import VectorSource from "ol/source/Vector";
 import GeoJSON from 'ol/format/GeoJSON.js';
@@ -27,10 +26,11 @@ import Zoom from 'ol/control/Zoom.js';
 import { Attribution, defaults as defaultControls } from 'ol/control.js';
 import { LazyMotion, m } from "framer-motion"
 import { delaySkeleton } from "../util/utilities";
-import { LoadingLayerLegend } from "../util/skeleton";
+import { LoadingLayerLegend, LoadingLayerList } from "../util/skeleton";
 
 const loadFeatures = () => import("./../util/features").then(res => res.default);
-const WeatherLayerLegend = lazy(() => delaySkeleton(import('./WeatherLayerLegend'), 200));
+const WeatherLayerLegend = lazy(() => delaySkeleton(import('./WeatherLayerLegend'), 500));
+const WeatherLayerList = lazy(() => delaySkeleton(import('./WeatherLayerList'), 500));
 
 const WeatherMapDisplay = () => {
 
@@ -591,7 +591,7 @@ const WeatherMapDisplay = () => {
                                 }
                                 {
                                     isClickLegendBtn && (
-                                        <div className="bg-white dark:bg-transparent w-52 transition duration-1000 ease-in-out">
+                                        <div className="bg-white w-52 rounded-b-lg shadow-lg shadow-blue-400/50 dark:bg-gray-900 dark:shadow-lg dark:shadow-blue-800/50">
                                             <Suspense fallback={<LoadingLayerLegend />}>
                                                 <WeatherLayerLegend layerLegendList={layerLegendList} map={map.current} />
                                             </Suspense>
@@ -620,12 +620,13 @@ const WeatherMapDisplay = () => {
                                 </div>
                                 <div className="flex justify-end">
                                     {
-                                        isClickLayerBtn && isClickLayerBtn ?
-                                            <div className=" bg-white w-52 transition duration-1000 ease-in shadow-lg shadow-blue-400/50 dark:shadow-lg last:rounded-b-lg">
-                                                <WeatherLayerList layerGroupList={layerGroupList} />
+                                        isClickLayerBtn && (
+                                            <div className=" bg-white w-52 rounded-b-lg shadow-lg shadow-blue-400/50 dark:bg-gray-800 dark:shadow-lg dark:shadow-blue-800/50 ">
+                                                <Suspense fallback={<LoadingLayerList />}>
+                                                    <WeatherLayerList layerGroupList={layerGroupList} />
+                                                </Suspense>
                                             </div>
-                                            :
-                                            null
+                                        )
                                     }
                                 </div>
                             </div>
