@@ -93,7 +93,7 @@ const WeatherForecastWeek = ({ cityWeather }) => {
 
                         <div className="relative pt-2 shadow-md rounded-lg overflow-hidden">
                             <table className="min-w-full text-sm text-slate-800 dark:text-gray-400">
-                                <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                                <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gradient-to-r dark:from-gray-900 dark:to-gray-800 dark:text-gray-300 tracking-widest">
                                     <tr className='text-center'>
                                         <th scope="col" className="px-6 py-3">
 

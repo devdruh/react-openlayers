@@ -5,10 +5,10 @@ const WeatherMapInfo = ({ radarTime }) => {
     return (
         <div className='px-2 flex items-center py-3 content-evenly'>
             <div className='text-sm md:text-base px-3'>
-                <p className='dark:text-slate-500'><span className='font-semibold'>Local Time: </span> {radarTime.local}</p>
+                <p className='dark:text-slate-400'><span className='font-semibold'>Local Time: </span> {radarTime.local}</p>
             </div>
             <div className='text-sm md:text-base px-3'>
-                <p className='dark:text-slate-500'><span className='font-semibold'>UTC: </span> {radarTime.iso}</p>
+                <p className='dark:text-slate-400'><span className='font-semibold'>UTC: </span> {radarTime.iso}</p>
             </div>
         </div>
     )
