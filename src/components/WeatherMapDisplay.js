@@ -14,7 +14,6 @@ import { dateOptions, dateOptions_1, layerSourceInfo } from "../util/variables";
 import { initFlowbite } from "flowbite";
 import { getAirSurfaceTemp, getClosestAqhi, getClosestAqhiNow, getClosestAqhiToday, getWeatherAlerts } from "../util/api";
 import WeatherMapInfo from "./WeatherMapInfo";
-import WeatherWidgetChart from "./WeatherWidgetChart";
 import VectorSource from "ol/source/Vector";
 import GeoJSON from 'ol/format/GeoJSON.js';
 import VectorLayer from 'ol/layer/Vector.js';
@@ -26,11 +25,12 @@ import Zoom from 'ol/control/Zoom.js';
 import { Attribution, defaults as defaultControls } from 'ol/control.js';
 import { LazyMotion, m } from "framer-motion"
 import { delaySkeleton } from "../util/utilities";
-import { LoadingLayerLegend, LoadingLayerList } from "../util/skeleton";
+import { LoadingLayerLegend, LoadingLayerList, LoadingWidgetChart } from "../util/skeleton";
 
 const loadFeatures = () => import("./../util/features").then(res => res.default);
 const WeatherLayerLegend = lazy(() => delaySkeleton(import('./WeatherLayerLegend'), 500));
 const WeatherLayerList = lazy(() => delaySkeleton(import('./WeatherLayerList'), 500));
+const WeatherWidgetChart = lazy(() => delaySkeleton(import('./WeatherWidgetChart'), 500));
 
 const WeatherMapDisplay = () => {
 
@@ -607,7 +607,7 @@ const WeatherMapDisplay = () => {
                                                 <svg className="w-5 h-5 text-gray-200 dark:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 10">
                                                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="m7 9 4-4-4-4M1 9l4-4-4-4" />
                                                 </svg>
-                                                <span className="sr-only">Layers Legend</span>
+                                                <span className="sr-only">Layers</span>
                                             </button>
                                             :
                                             <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-slate-200 dark:bg-gray-800 hover:scale-110 dark:hover:bg-gray-900 ring-1 dark:ring-slate-600 dark:focus:ring-slate-600 dark:hover:ring-2" onClick={handleLayerBtn} title="Layer">
@@ -633,7 +633,7 @@ const WeatherMapDisplay = () => {
                             <div className="absolute right-5 translate-y-20 flex flex-row-reverse z-[2] justify-end gap-2">
                                 <div className="flex">
                                     {
-                                        showChartBtn && showChartBtn ?
+                                        showChartBtn && (
                                             <>
                                                 <button type="button" className="h-7 p-1 rounded ease-in transition duration-300 bg-gradient-to-bl from-emerald-500 to-sky-800 ring-1 ring-sky-400 hover:bg-gradient-to-br dark:from-gray-800 dark:to-gray-800 dark:ring-slate-600 dark:focus:ring-slate-600 hover:scale-110 dark:hover:from-gray-900 dark:hover:to-gray-900 dark:hover:ring-2" onClick={handleChartBtn} title="Charts">
                                                     <svg className="w-5 h-5 text-gray-200 dark:text-gray-400 dark:hover:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
@@ -646,25 +646,18 @@ const WeatherMapDisplay = () => {
                                                     <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-400 dark:bg-sky-400"></span>
                                                 </span>
                                             </>
-                                            : <></>
+                                        )
 
                                     }
                                 </div>
                                 <div className="flex justify-end">
-                                    <div className={`max-w-sm bg-white dark:bg-gray-800 transition duration-1000 ease-in shadow-lg shadow-blue-400/50 dark:shadow-lg last:rounded-b-lg ${isClickChartBtn ? null : 'hidden'}`}>
-                                        <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
-                                            <ul className="flex flex-wrap focus:bg-sky-600 -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
-                                                <li className="me-2" role="presentation">
-                                                    <button className="inline-block p-4 border-b-2 rounded-t-lg dark:text-slate-400 dark:hover:text-slate-300" id="aqhi-tab" data-tabs-target="#aqhi-tab-id" type="button" role="tab" aria-controls="aqhi-tab-id" aria-selected="false">AQHI</button>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div id="default-tab-content">
-                                            <div className="hidden rounded-lg bg-gray-50 dark:bg-gray-800" id="aqhi-tab-id" role="tabpanel" aria-labelledby="aqhi-tab">
+                                    {
+                                        isClickChartBtn && (
+                                            <Suspense fallback={<LoadingWidgetChart />}>
                                                 <WeatherWidgetChart aqhiChartData={aqhiChartData} />
-                                            </div>
-                                        </div>
-                                    </div>
+                                            </Suspense>
+                                        )
+                                    }
                                 </div>
                             </div>
                             <div className="absolute right-5 translate-y-52 md:translate-y-72 flex flex-row-reverse z-[2] justify-end gap-2">

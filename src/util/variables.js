@@ -27,8 +27,9 @@ const layerSourceInfo = [
 
 var aqhiChartOptions = {
     chart: {
-        height: "100%",
-        maxWidth: "100%",
+        height: 200,
+        parentHeightOffset: 0,
+        // maxWidth: "422px",
         type: "line",
         fontFamily: "Inter, sans-serif",
         dropShadow: {
@@ -63,7 +64,8 @@ var aqhiChartOptions = {
         show: true,
         strokeDashArray: 4,
         padding: {
-            top: -20
+            top: -20,
+            bottom: -20
         },
     },
     series: [
@@ -90,7 +92,8 @@ var aqhiChartOptions = {
             style: {
                 fontWeight: 400,
                 color: ''
-            }
+            },
+            offsetY: -25
         },
         axisBorder: {
             show: false,

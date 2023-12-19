@@ -173,7 +173,6 @@ const LoadingLayerList = () => {
     return (
         <div className="w-52 h-44 px-2 border rounded-lg animate-pulse border-gray-200 dark:border-gray-700 dark:bg-gray-800">
             <div role="status">
-
                 <div className="flex flex-row gap-3 mt-3">
                     <div className="w-full">
                         <div className="h-3 w-full bg-gray-200 rounded-full dark:bg-gray-700"></div>
@@ -214,4 +213,43 @@ const LoadingLayerList = () => {
     )
 }
 
-export { LoadingCurrentCondition, LoadingMeteogram, LoadingForecastWeek, LoadingMapDisplay, LoadingLayerLegend, LoadingLayerList }
+const LoadingWidgetChart = () => {
+    return (
+        <div className="w-80 px-2 border rounded-lg animate-pulse border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+            <div role="status">
+                <div className="flex mt-5">
+                    <div className="w-full">
+                        <div className="h-3 w-1/5 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                    </div>
+                </div>
+                <div className="flex flex-col mt-10">
+                    <div className="w-full">
+                        <div className="h-2 w-2/4 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                    </div>
+                    <div className="w-full">
+                        <div className="h-3 w-1/3 mt-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                    </div>
+                </div>
+                <div className="flex flex-col my-5">
+                    <div className="w-full">
+                        <div className="h-2 mt-4 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                    </div>
+                    <div className="w-full">
+                        <div className="h-2 mt-4 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                    </div>
+                    <div className="w-full">
+                        <div className="h-2 mt-4 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                    </div>
+                    <div className="w-full">
+                        <div className="h-2 mt-4 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                    </div>
+                    <div className="w-full">
+                        <div className="h-2 mt-4 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export { LoadingCurrentCondition, LoadingMeteogram, LoadingForecastWeek, LoadingMapDisplay, LoadingLayerLegend, LoadingLayerList, LoadingWidgetChart }
