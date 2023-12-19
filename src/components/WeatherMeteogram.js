@@ -5,6 +5,8 @@ import { useCallback } from 'react';
 import { weatherForecastChartOptions } from '../util/variables';
 import { useTranslation } from "react-i18next";
 
+require("highcharts/modules/accessibility")(Highcharts);
+
 const WeatherMeteogram = ({ cityWeather }) => {
 
     const [chartOptions, setChartOptions] = useState(weatherForecastChartOptions);

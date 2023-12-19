@@ -24,11 +24,11 @@ const Navbar = () => {
             const forecastWeatherChart = document.getElementById('forecast-weather-highchart');
             if (localStorage.getItem('color-theme') === 'light') {
                 localStorage.setItem('color-theme', 'dark');
-                forecastWeatherChart.firstChild.classList.add('highcharts-dark');
+                forecastWeatherChart.children[2].classList.add('highcharts-dark');
             } else {
                 localStorage.setItem('color-theme', 'light');
-                forecastWeatherChart.firstChild.classList.remove('highcharts-dark');
-                forecastWeatherChart.firstChild.classList.add('highcharts-light');
+                forecastWeatherChart.children[2].classList.remove('highcharts-dark');
+                forecastWeatherChart.children[2].classList.add('highcharts-light');
             }
         }
         switchDarkTheme(!isDarkTheme);
@@ -51,11 +51,11 @@ const Navbar = () => {
             const forecastWeatherChart = document.getElementById('forecast-weather-highchart');
             if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 if (forecastWeatherChart !== null) {
-                    forecastWeatherChart.firstChild.classList.add('highcharts-dark');
+                    forecastWeatherChart.children[2].classList.add('highcharts-dark');
                 }
             } else {
                 if (forecastWeatherChart !== null) {
-                    forecastWeatherChart.firstChild.classList.add('highcharts-light');
+                    forecastWeatherChart.children[2].classList.add('highcharts-light');
                 }
             }
 
