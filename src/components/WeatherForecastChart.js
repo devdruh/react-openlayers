@@ -38,9 +38,10 @@ const DisplayAlert = () => {
     )
 }
 
-const defaultCityName = "Toronto";
+const defaultCityName = "Toronto Island";
 const defaultProvinceCode = "ON";
-const defaultCityCode = "s0000458";
+// const defaultCityCode = "s0000458";
+const defaultCityCode = "s0000785";
 
 const DisplayForecastChart = () => {
 
