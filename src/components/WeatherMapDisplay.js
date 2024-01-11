@@ -706,7 +706,7 @@ const WeatherMapDisplay = () => {
                                     </div>
                                     {
                                         Array.isArray(_aqhiPopup?.data) ?
-                                            _aqhiPopup?.data.length > 0 ?
+                                            _aqhiPopup?.data?.length > 0 ?
                                                 _aqhiPopup?.data.map((item) => (
                                                     <div key={item.id} className="px-1">
                                                         <div className="grid grid-cols-2 gap-3 py-1 max-w-xs">
@@ -739,7 +739,7 @@ const WeatherMapDisplay = () => {
                                             : null
                                     }
                                     {
-                                        _alertsPopup?.data.length > 0 ?
+                                        _alertsPopup?.data?.length > 0 ?
                                             _alertsPopup?.data.map((item) => (
                                                 <div key={item.id}>
                                                     <div className="grid grid-flow-row p-1">
