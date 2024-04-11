@@ -120,7 +120,7 @@ const WeatherMapDisplay = () => {
                 source: new StadiaMaps({
                     layer: 'alidade_smooth_dark',
                     retina: true,
-                    // apiKey: process.env.STADIAMAPS_API_KEY
+                    apiKey: process.env.STADIAMAPS_API_KEY
                 }),
                 opacity: 0.5,
                 visible: false
